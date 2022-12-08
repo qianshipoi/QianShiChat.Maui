@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="QianShiChatClient.Maui.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:views="clr-namespace:QianShiChatClient.Maui.Views"
+    Title="QianShiChatClient.Maui"
+    Shell.FlyoutBehavior="Flyout"
+    Shell.TabBarIsVisible="True">
+
+    <Shell.FlyoutHeader>
+        <Grid
+            Margin="20"
+            ColumnDefinitions="Auto, *"
+            RowDefinitions="Auto,*">
+            <toolkit:AvatarView
+                Grid.RowSpan="2"
+                Margin="0,0,16,0"
+                BorderColor="{StaticResource Gray100}"
+                CornerRadius="100"
+                HeightRequest="58"
+                Text="QS"
+                WidthRequest="58" />
+
+            <Label
+                Grid.Column="1"
+                Margin="0,8,0,0"
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="今天你单推了吗？"
+                VerticalOptions="Center" />
+            <Label
+                Grid.Row="1"
+                Grid.Column="1"
+                Text="个性签名"
+                TextColor="{StaticResource Gray400}"
+                VerticalOptions="Center" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem
+        Title="{local:Localize Home}"
+        Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                         Glyph={x:Static models:IconFontIcons.Dashboard},
+                         Color={StaticResource Gray200}}"
+        Route="Home">
+        <ShellContent
+            Title="{local:Localize Message}"
+            ContentTemplate="{DataTemplate views:MessagePage}"
+            Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                             Glyph={x:Static models:IconFontIcons.Message}}"
+            Route="MessagePage" />
+
+        <ShellContent
+            Title="{local:Localize Friend}"
+            ContentTemplate="{DataTemplate views:FriendPage}"
+            Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                             Glyph={x:Static models:IconFontIcons.Members}}"
+            Route="FriendPage" />
+    </FlyoutItem>
+
+    <ShellContent
+        Title="{local:Localize Settings}"
+        ContentTemplate="{DataTemplate views:SettingsPage}"
+        Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                         Glyph={x:Static models:IconFontIcons.Settings},
+                         Color={StaticResource Gray200}}"
+        Route="SettingsPage" />
+
+</Shell>

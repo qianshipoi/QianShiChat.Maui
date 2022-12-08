@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.Maui.Views.AddFriendPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    Title="{local:Localize AddFriend}"
+    x:DataType="{x:Type viewmodels:AddFriendViewModel}"
+    Shell.TabBarIsVisible="False">
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+        <toolkit:AvatarView
+            Margin="0,80,0,20"
+            CornerRadius="60"
+            HeightRequest="120"
+            ImageSource="{Binding UserInfo.Avatar}"
+            WidthRequest="120" />
+        <Label
+            Grid.Row="1"
+            Margin="40,10,40,0"
+            FontAttributes="Bold"
+            FontSize="22"
+            HorizontalOptions="Center"
+            LineBreakMode="TailTruncation"
+            Text="{Binding UserInfo.NickName}" />
+        <Label
+            Grid.Row="2"
+            Margin="40,20,40,0"
+            HorizontalOptions="Center"
+            LineBreakMode="CharacterWrap"
+            Text="{Binding UserInfo.Content}" />
+        <Editor
+            x:Name="VerificationControl"
+            Grid.Row="3"
+            Margin="20"
+            AutoSize="TextChanges"
+            MaxLength="255"
+            Placeholder="{local:Localize VerificationHit}"
+            VerticalOptions="Start" />
+        <Button
+            Grid.Row="4"
+            Margin="20,60,20,20"
+            Command="{Binding SendCommand}"
+            CommandParameter="{Binding Source={x:Reference VerificationControl}, Path=Text}"
+            Text="{local:Localize Send}" />
+        <ActivityIndicator
+            Grid.RowSpan="5"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}" />
+    </Grid>
+</ContentPage>

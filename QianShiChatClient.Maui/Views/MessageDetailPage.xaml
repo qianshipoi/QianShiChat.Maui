@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.Maui.Views.MessageDetailPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    Title="{Binding Session.User.NickName}"
+    x:DataType="{x:Type vms:MessageDetailViewModel}"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.TabBarIsVisible="False">
+    <Grid RowDefinitions="*,Auto">
+        <CollectionView ItemsSource="{Binding Session.Messages}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="{x:Type models:ChatMessage}">
+                    <Frame
+                        Margin="8,4"
+                        Padding="8,4"
+                        BackgroundColor="Wheat"
+                        CornerRadius="5"
+                        HorizontalOptions="Start">
+                        <Frame.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsSelfSend}"
+                                TargetType="Frame"
+                                Value="True">
+                                <Setter Property="HorizontalOptions" Value="End" />
+                            </DataTrigger>
+                        </Frame.Triggers>
+                        <Label FontSize="18" Text="{Binding Content}" />
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Grid
+            Grid.Row="1"
+            Margin="0,0,0,8"
+            ColumnDefinitions="*, Auto">
+            <Entry Text="{Binding Message}" />
+            <Button
+                Grid.Column="1"
+                Command="{Binding SendCommand}"
+                Text="{local:Localize Send}" />
+        </Grid>
+    </Grid>
+</ContentPage>

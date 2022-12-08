@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.Maui.Views.FriendPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    Title="{Binding Title}"
+    x:DataType="{x:Type viewmodels:FriendViewModel}"
+    Shell.NavBarIsVisible="False">
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{AppThemeBinding Light=White, Default=White, Dark=Black}" StatusBarStyle="{AppThemeBinding Light=DarkContent, Dark=LightContent, Default=DarkContent}" />
+    </ContentPage.Behaviors>
+    <Grid RowDefinitions="Auto,*">
+        <toolkit:DockLayout Padding="10,0,20,0" HeightRequest="60">
+            <toolkit:AvatarView
+                Margin="0,0,10,0"
+                toolkit:DockLayout.DockPosition="Left"
+                BorderColor="{StaticResource Gray100}"
+                BorderWidth="1"
+                HeightRequest="40"
+                ImageSource="{Binding User.Avatar}"
+                Text="A"
+                WidthRequest="40">
+                <toolkit:AvatarView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenMenuCommand}" />
+                </toolkit:AvatarView.GestureRecognizers>
+            </toolkit:AvatarView>
+            <Label
+                toolkit:DockLayout.DockPosition="Right"
+                FontAttributes="Bold"
+                FontSize="22"
+                Style="{DynamicResource IconLabel}"
+                Text="{x:Static models:IconFontIcons.Information_add}"
+                VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding JoinQueryPageCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="{Binding Title}"
+                VerticalOptions="Center" />
+        </toolkit:DockLayout>
+        <ScrollView Grid.Row="1">
+            <StackLayout>
+                <Frame
+                    Grid.Row="1"
+                    Margin="20,0"
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    CornerRadius="4"
+                    HeightRequest="36">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding JoinSearchPageCommand}" />
+                    </Frame.GestureRecognizers>
+                    <Grid>
+                        <BoxView
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100},
+                                                              Dark=Black}"
+                            CornerRadius="4"
+                            Opacity=".2" />
+                        <StackLayout
+                            HorizontalOptions="Center"
+                            Orientation="Horizontal"
+                            VerticalOptions="Center">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                Style="{DynamicResource IconLabel}"
+                                Text="{x:Static models:IconFontIcons.Filter}" />
+                            <Label Text="{local:Localize Search}" />
+                        </StackLayout>
+                    </Grid>
+                </Frame>
+
+                <ListView
+                    Margin="0,10,0,0"
+                    HasUnevenRows="False"
+                    HorizontalScrollBarVisibility="Never"
+                    ItemsSource="{Binding Friends}"
+                    RowHeight="60"
+                    SelectionMode="None"
+                    SeparatorVisibility="None">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="{x:Type models:FriendItem}">
+                            <ViewCell>
+                                <Grid
+                                    Padding="10,0"
+                                    ColumnDefinitions="60,*"
+                                    RowDefinitions="*,*">
+                                    <toolkit:AvatarView
+                                        Grid.RowSpan="2"
+                                        BorderColor="{DynamicResource Gray300}"
+                                        BorderWidth="1"
+                                        CornerRadius="24"
+                                        HeightRequest="48"
+                                        HorizontalOptions="Center"
+                                        ImageSource="default_avatar.png"
+                                        Text="{Binding NickName}"
+                                        VerticalOptions="Center"
+                                        WidthRequest="48" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Margin="0,4,0,0"
+                                        Text="{Binding NickName}"
+                                        VerticalOptions="End" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        LineBreakMode="TailTruncation"
+                                        Text="{Binding Content}" />
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

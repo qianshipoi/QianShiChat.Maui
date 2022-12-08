@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.Maui.Views.SearchPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    Title="{local:Localize Search}"
+    x:DataType="{x:Type vms:SearchViewModel}"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.TabBarIsVisible="False">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Margin="10" ColumnDefinitions="*,Auto">
+            <Entry
+                x:Name="SearchEntry"
+                ClearButtonVisibility="WhileEditing"
+                Text="{Binding SearchContent}" />
+            <Button
+                Grid.Column="1"
+                Command="{Binding SearchCommand}"
+                FontFamily="{x:Static models:IconFontIcons.FontFamily}"
+                Text="{x:Static models:IconFontIcons.Filter}" />
+        </Grid>
+        <ListView
+            Grid.Row="1"
+            IsRefreshing="{Binding IsBusy}"
+            ItemsSource="{Binding Result}"
+            RowHeight="60"
+            SelectionMode="None">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="{x:Type models:FriendItem}">
+                    <ViewCell>
+                        <Grid
+                            Padding="20,10"
+                            ColumnDefinitions="Auto,*,Auto"
+                            RowDefinitions="*,*">
+                            <toolkit:AvatarView Grid.RowSpan="2" ImageSource="{Binding Avatar}" />
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                Text="{Binding NickName}"
+                                VerticalOptions="End" />
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Text="{Binding Content}" />
+                            <Button
+                                Grid.RowSpan="2"
+                                Grid.Column="2"
+                                Text="添加"
+                                VerticalOptions="Center"
+                                WidthRequest="60" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</ContentPage>

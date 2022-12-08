@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.Maui.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    Title="{local:Localize Settings}"
+    x:DataType="{x:Type vms:SettingsViewModel}"
+    Shell.TabBarIsVisible="False">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
+            <ControlTemplate x:Key="RadioButtonTemplate">
+                <Frame
+                    Padding="0"
+                    BackgroundColor="#F3F2F1"
+                    BorderColor="#F3F2F1"
+                    HasShadow="False"
+                    HeightRequest="100"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Start"
+                    WidthRequest="100">
+                    <Grid Margin="4" WidthRequest="100">
+                        <Grid
+                            HeightRequest="18"
+                            HorizontalOptions="End"
+                            VerticalOptions="Start"
+                            WidthRequest="18">
+                            <Ellipse
+                                Fill="White"
+                                HeightRequest="16"
+                                HorizontalOptions="Center"
+                                Stroke="Blue"
+                                VerticalOptions="Center"
+                                WidthRequest="16" />
+                            <Ellipse
+                                x:Name="check"
+                                Fill="Blue"
+                                HeightRequest="8"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                WidthRequest="8" />
+                        </Grid>
+                        <ContentPresenter />
+                    </Grid>
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroupList>
+                            <VisualStateGroup x:Name="CheckedStates">
+                                <VisualState x:Name="Checked">
+                                    <VisualState.Setters>
+                                        <Setter Property="BorderColor" Value="#FF3300" />
+                                        <Setter TargetName="check" Property="Opacity" Value="1" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Unchecked">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor" Value="#F3F2F1" />
+                                        <Setter Property="BorderColor" Value="#F3F2F1" />
+                                        <Setter TargetName="check" Property="Opacity" Value="0" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateGroupList>
+                    </VisualStateManager.VisualStateGroups>
+                </Frame>
+            </ControlTemplate>
+
+            <Style TargetType="RadioButton">
+                <Setter Property="ControlTemplate" Value="{StaticResource RadioButtonTemplate}" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <VerticalStackLayout>
+        <!--<StackLayout>
+            <Label Text="Select your theme." />
+            <StackLayout
+                BindableLayout.ItemsSource="{Binding AppThemes}"
+                Orientation="Horizontal"
+                RadioButtonGroup.GroupName="www">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <RadioButton Value="{Binding}">
+                            <RadioButton.Content>
+                                <StackLayout>
+                                    <Image
+                                        HorizontalOptions="Center"
+                                        Source="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                                                           Glyph={x:Static models:IconFontIcons.Heart}}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        HorizontalOptions="Center"
+                                        Text="{Binding}"
+                                        VerticalOptions="End" />
+                                </StackLayout>
+                            </RadioButton.Content>
+                        </RadioButton>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+                <RadioButton Value="Unspecified">
+                    <RadioButton.Content>
+                        <StackLayout>
+                            <Image
+                                HorizontalOptions="Center"
+                                Source="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                                                   Glyph={x:Static models:IconFontIcons.Heart}}"
+                                VerticalOptions="Center" />
+                            <Label
+                                HorizontalOptions="Center"
+                                Text="Unspecified"
+                                VerticalOptions="End" />
+                        </StackLayout>
+                    </RadioButton.Content>
+                </RadioButton>
+                <RadioButton Value="Light">
+                    <RadioButton.Content>
+                        <StackLayout>
+                            <Image
+                                HorizontalOptions="Center"
+                                Source="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                                                   Glyph={x:Static models:IconFontIcons.Heart}}"
+                                VerticalOptions="Center" />
+                            <Label
+                                HorizontalOptions="Center"
+                                Text="Light"
+                                VerticalOptions="End" />
+                        </StackLayout>
+                    </RadioButton.Content>
+                </RadioButton>
+                <RadioButton Value="Dark">
+                    <RadioButton.Content>
+                        <StackLayout>
+                            <Image
+                                HorizontalOptions="Center"
+                                Source="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                                                   Glyph={x:Static models:IconFontIcons.Heart}}"
+                                VerticalOptions="Center" />
+                            <Label
+                                HorizontalOptions="Center"
+                                Text="Dark"
+                                VerticalOptions="End" />
+                        </StackLayout>
+                    </RadioButton.Content>
+                </RadioButton>
+            </StackLayout>
+        </StackLayout>-->
+
+        <Label
+            HorizontalOptions="Center"
+            Text="{local:Localize Theme}"
+            VerticalOptions="Center" />
+        <ListView ItemsSource="{Binding AppThemes}" SelectedItem="{Binding CurrentAppTheme}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Label
+            HorizontalOptions="Center"
+            Text="{local:Localize Language}"
+            VerticalOptions="Center" />
+        <ListView ItemsSource="{Binding Langs}" SelectedItem="{Binding CurrentLang}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </VerticalStackLayout>
+</ContentPage>

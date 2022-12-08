@@ -1,0 +1,41 @@
+﻿namespace QianShiChatClient.Maui.ViewModels;
+
+public sealed partial class SearchViewModel : ViewModelBase
+{
+    [ObservableProperty]
+    string _searchContent;
+
+    public ObservableCollection<FriendItem> Result { get; set; }
+
+    public SearchViewModel(
+        IStringLocalizer<MyStrings> stringLocalizer,
+        INavigationService navigationService) 
+        : base(navigationService,stringLocalizer)
+    {
+        Result = new ObservableCollection<FriendItem>();
+    }
+
+    [RelayCommand]
+    async Task Search()
+    {
+        if (IsBusy || string.IsNullOrWhiteSpace(SearchContent))
+            return;
+
+        IsBusy = true;
+        try
+        {
+            await Task.Delay(2000);
+            var friends = FakerFriend.GetFriends(20);
+            foreach (var friend in friends)
+            {
+                friend.Avatar = "default_avatar.png";
+                Result.Add(friend);
+            }
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+
+    }
+}
