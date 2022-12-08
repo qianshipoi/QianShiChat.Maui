@@ -12,7 +12,7 @@ public class NavigationService : INavigationService
     {
         var navigationParameter = new Dictionary<string, object>
         {
-            { nameof(MessageDetailViewModel.Session), sesion }
+            { nameof(MessageDetailViewModel.SessionId), sesion.User.Id }
         };
         return Shell.Current.GoToAsync(nameof(MessageDetailPage), true, navigationParameter);
     }

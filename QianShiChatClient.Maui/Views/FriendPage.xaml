@@ -86,8 +86,8 @@
                     SelectionMode="None"
                     SeparatorVisibility="None">
                     <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="{x:Type models:FriendItem}">
-                            <ViewCell>
+                        <DataTemplate >
+                            <ViewCell x:DataType="{x:Type models:FriendItem}">
                                 <Grid
                                     Padding="10,0"
                                     ColumnDefinitions="60,*"

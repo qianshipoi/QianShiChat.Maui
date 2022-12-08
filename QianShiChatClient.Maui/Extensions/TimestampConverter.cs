@@ -6,7 +6,7 @@ public class TimestampConverter : IValueConverter
     {
         if (value is null || value is not long val) return DateTimeOffset.Now;
 
-        return val.ToDateTimeOffset();
+        return val.ToDateTimeOffset().LocalDateTime;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

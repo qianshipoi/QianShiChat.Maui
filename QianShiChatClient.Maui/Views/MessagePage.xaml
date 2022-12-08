@@ -134,7 +134,7 @@
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="{x:Type models:Session}">
                             <ViewCell>
-                                <Grid
+                                <Grid x:DataType="{x:Type models:Session}"
                                     Padding="20,0"
                                     ColumnDefinitions="60,*,80"
                                     RowDefinitions="*,*">
@@ -165,7 +165,7 @@
                                         Grid.Column="1"
                                         Grid.ColumnSpan="2"
                                         LineBreakMode="TailTruncation"
-                                        Text="{Binding LastMessageConent}"
+                                        Text="{Binding LastMessageContent}"
                                         VerticalOptions="Center" />
                                 </Grid>
                             </ViewCell>

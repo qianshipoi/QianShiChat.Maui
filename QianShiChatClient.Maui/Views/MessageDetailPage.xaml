@@ -15,22 +15,29 @@
         <CollectionView ItemsSource="{Binding Session.Messages}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="{x:Type models:ChatMessage}">
-                    <Frame
-                        Margin="8,4"
-                        Padding="8,4"
-                        BackgroundColor="Wheat"
-                        CornerRadius="5"
-                        HorizontalOptions="Start">
-                        <Frame.Triggers>
+                    <FlexLayout Margin="8,4" JustifyContent="Start">
+                        <FlexLayout.Triggers>
                             <DataTrigger
                                 Binding="{Binding IsSelfSend}"
-                                TargetType="Frame"
+                                TargetType="FlexLayout"
                                 Value="True">
-                                <Setter Property="HorizontalOptions" Value="End" />
+                                <Setter Property="Direction" Value="RowReverse" />
                             </DataTrigger>
-                        </Frame.Triggers>
-                        <Label FontSize="18" Text="{Binding Content}" />
-                    </Frame>
+                        </FlexLayout.Triggers>
+                        <toolkit:AvatarView BindingContext="{Binding Source={RelativeSource AncestorType={x:Type vms:MessageDetailViewModel}}}" 
+                                            x:DataType="{x:Type models:Session}"
+                                            HeightRequest="40"
+                                            WidthRequest="40" 
+                                            ImageSource="{Binding User.Avatar}" />
+                        <Frame Margin="4,0"
+                        Padding="8,6"
+                        BackgroundColor="Wheat"
+                        CornerRadius="5" VerticalOptions="Start"
+                        HorizontalOptions="Start">
+                            <Label FontSize="18" Text="{Binding Content}" />
+                        </Frame>
+                    </FlexLayout>
+                   
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

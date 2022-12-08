@@ -4,6 +4,7 @@ public sealed partial class LoginViewModel : ViewModelBase
 {
     readonly IApiClient _apiClient;
     readonly IDispatcher _dispatcher;
+    readonly IServiceProvider _serviceProvider;
     readonly ChatHub _chatHub;
 
     [ObservableProperty]
@@ -17,21 +18,25 @@ public sealed partial class LoginViewModel : ViewModelBase
         INavigationService navigationService,
         IDispatcher dispatcher,
         IApiClient apiClient,
-        ChatHub chatHub)
+        ChatHub chatHub,
+        IServiceProvider serviceProvider)
         : base(navigationService, stringLocalizer)
     {
         _apiClient = apiClient;
         _dispatcher = dispatcher;
         _chatHub = chatHub;
         Task.Run(CheckAccessToken);
+        _serviceProvider = serviceProvider;
     }
 
     void JoinMainPage(UserInfo user)
     {
+        user.Avatar = _apiClient.FormatFile(user.Avatar);
         _dispatcher.Dispatch(() =>
         {
             App.Current.User = user;
-            App.Current.MainPage = new AppShell(_chatHub);
+            Settings.CurrentUser = App.Current.User;
+            App.Current.MainPage = _serviceProvider.GetRequiredService<AppShell>();
         });
     }
 
@@ -44,13 +49,26 @@ public sealed partial class LoginViewModel : ViewModelBase
             if (user != null)
             {
                 JoinMainPage(user);
+                // update user info.
+                _ = Task.Run(async () =>
+                 {
+                     var (isSuccessed, userDto) = await _apiClient.CheckAccessToken(accessToken);
+                     if (isSuccessed)
+                     {
+                         _dispatcher.Dispatch(() =>
+                         {
+                             App.Current.User.Avatar = _apiClient.FormatFile(userDto.Avatar);
+                             App.Current.User.NickName = userDto.NickName;
+                             Settings.CurrentUser = App.Current.User;
+                         });
+                     }
+                 });
             }
             else
             {
                 var (isSuccessed, userDto) = await _apiClient.CheckAccessToken(accessToken);
                 if (isSuccessed)
                 {
-                    Settings.CurrentUser = App.Current.User;
                     JoinMainPage(userDto.ToUserInfo());
                 }
             }

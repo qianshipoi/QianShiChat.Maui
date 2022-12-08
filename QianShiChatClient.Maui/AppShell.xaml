@@ -7,6 +7,8 @@
     xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="clr-namespace:QianShiChatClient.Maui.Views"
+    xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    x:DataType="{x:Type vms:AppShellViewModel}"
     Title="QianShiChatClient.Maui"
     Shell.FlyoutBehavior="Flyout"
     Shell.TabBarIsVisible="True">
@@ -22,6 +24,7 @@
                 BorderColor="{StaticResource Gray100}"
                 CornerRadius="100"
                 HeightRequest="58"
+                ImageSource="{Binding User.Avatar}"
                 Text="QS"
                 WidthRequest="58" />
 
@@ -30,12 +33,12 @@
                 Margin="0,8,0,0"
                 FontAttributes="Bold"
                 FontSize="18"
-                Text="今天你单推了吗？"
+                Text="{Binding User.NickName}"
                 VerticalOptions="Center" />
             <Label
                 Grid.Row="1"
                 Grid.Column="1"
-                Text="个性签名"
+                Text="{Binding User.Content}"
                 TextColor="{StaticResource Gray400}"
                 VerticalOptions="Center" />
         </Grid>

@@ -3,6 +3,7 @@
 public sealed partial class SettingsViewModel : ViewModelBase
 {
     readonly ChatHub _chatHub;
+    readonly IServiceProvider _serviceProvider;
 
     [ObservableProperty]
     string _currentLang;
@@ -15,7 +16,8 @@ public sealed partial class SettingsViewModel : ViewModelBase
     public SettingsViewModel(
         IStringLocalizer<MyStrings> stringLocalizer,
         INavigationService navigationService,
-        ChatHub chatHub)
+        ChatHub chatHub,
+        IServiceProvider serviceProvider)
         : base(navigationService, stringLocalizer)
     {
         Title = "设置";
@@ -24,6 +26,7 @@ public sealed partial class SettingsViewModel : ViewModelBase
 
         Langs = new ObservableCollection<string>() { "English", "简体中文" };
         _chatHub = chatHub;
+        _serviceProvider = serviceProvider;
         //_currentLang = string.Compare(Settings.Culture.Name, "zh-CN", true) == 0 ? "简体中文" : "English";
     }
 
@@ -42,8 +45,7 @@ public sealed partial class SettingsViewModel : ViewModelBase
         CultureInfo.DefaultThreadCurrentUICulture = culture;
         Settings.Culture = culture;
 
-        var shell = new AppShell(_chatHub);
-        App.Current.MainPage = shell;
+        App.Current.MainPage = _serviceProvider.GetRequiredService<AppShell>();
         _navigationService.GoToSettingsPage();
     }
 }

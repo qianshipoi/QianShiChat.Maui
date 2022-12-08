@@ -4,6 +4,7 @@ public class ApiClient : IApiClient
 {
     readonly HttpClient _client;
     readonly INavigationService _navigationService;
+    JsonSerializerOptions _serializerOptions;
 
     public static string BaseAddress =
         DeviceInfo.Platform == DevicePlatform.Android
@@ -21,6 +22,11 @@ public class ApiClient : IApiClient
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
         }
+        _serializerOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        };
     }
 
     public string AccessToken
@@ -37,7 +43,7 @@ public class ApiClient : IApiClient
         AccessToken = accessToken;
         var body = await response.Content.ReadAsStringAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-        return JsonSerializer.Deserialize<UserDto>(body);
+        return JsonSerializer.Deserialize<UserDto>(body, _serializerOptions);
     }
 
     public async Task<(bool, UserDto)> CheckAccessToken(string token, CancellationToken cancellationToken = default)
@@ -51,7 +57,7 @@ public class ApiClient : IApiClient
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
             AccessToken = accessToken;
             var body = await response.Content.ReadAsStringAsync();
-            var user = JsonSerializer.Deserialize<UserDto>(body);
+            var user = JsonSerializer.Deserialize<UserDto>(body, _serializerOptions);
             return (true, user);
         }
         catch (Exception ex)
@@ -63,24 +69,24 @@ public class ApiClient : IApiClient
 
     public async Task<List<UserWithMessageDto>> GetUnreadMessageFriendsAsync(CancellationToken cancellationToken = default)
     {
-        return await _client.GetFromJsonAsync<List<UserWithMessageDto>>("/api/Friend/Unread", cancellationToken);
+        return await _client.GetFromJsonAsync<List<UserWithMessageDto>>("/api/Friend/Unread", _serializerOptions, cancellationToken);
     }
 
     public async Task<ChatMessageDto> SendTextAsync(PrivateChatMessageRequest request, CancellationToken cancellationToken = default)
     {
-        var response = await _client.PostAsJsonAsync($"/api/chat/text", request, cancellationToken);
+        var response = await _client.PostAsJsonAsync($"/api/chat/text", request, _serializerOptions, cancellationToken);
         await HandleUnauthorizedResponse(response);
         return await response.Content.ReadFromJsonAsync<ChatMessageDto>();
     }
 
     public async Task<PagedList<UserDto>> SearchNickNameAsync(string searchContent, uint page = 1, uint size = 20, CancellationToken cancellationToken = default)
     {
-        return await _client.GetFromJsonAsync<PagedList<UserDto>>($"/api/User/{page}/{size}?NickName={searchContent}", cancellationToken);
+        return await _client.GetFromJsonAsync<PagedList<UserDto>>($"/api/User/{page}/{size}?NickName={searchContent}", _serializerOptions, cancellationToken);
     }
 
     public async Task FriendApplyAsync(FriendApplyRequest request, CancellationToken cancellationToken = default)
     {
-        var response = await _client.PostAsJsonAsync("/api/FriendApply", request, cancellationToken);
+        var response = await _client.PostAsJsonAsync("/api/FriendApply", request, _serializerOptions, cancellationToken);
         await HandleUnauthorizedResponse(response);
     }
 

@@ -27,7 +27,6 @@ public sealed partial class DataCenter : ObservableObject
         _isConnected = _chatHub.IsConnected;
 
         _ = GetSessionsAsync();
-        _ = GetUnreadMessageAsync();
     }
 
     void ChatHubPrivateChat(ChatMessageDto obj)
@@ -73,6 +72,7 @@ public sealed partial class DataCenter : ObservableObject
                 }
             }
         }
+        _ = GetUnreadMessageAsync();
     }
 
     async Task GetUnreadMessageAsync()

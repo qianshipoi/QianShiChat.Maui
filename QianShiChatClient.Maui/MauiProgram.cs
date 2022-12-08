@@ -33,6 +33,7 @@ public static class MauiProgram
         services.AddSingleton<ChatDatabase>();
         services.AddSingleton<DataCenter>();
 
+        services.AddTransient<AppShell, AppShellViewModel>();
         services.AddTransient<LoginPage, LoginViewModel>();
         services.AddTransient<MessagePage, MessageViewModel>();
         services.AddTransient<FriendPage, FriendViewModel>();
