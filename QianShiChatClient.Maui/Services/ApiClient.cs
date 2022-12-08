@@ -93,4 +93,6 @@ public class ApiClient : IApiClient
         }
         response.EnsureSuccessStatusCode();
     }
+
+    public string FormatFile(string url) => BaseAddress + url;
 }

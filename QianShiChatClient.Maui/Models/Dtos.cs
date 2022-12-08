@@ -6,7 +6,7 @@ public record PrivateChatMessageRequest(int ToId, string Message, ChatMessageSen
 
 public record FriendApplyRequest(int UserId, string Remark);
 
-public record UserDto(int Id, string Account, string NickName, long CreateTime);
+public record UserDto(int Id, string Account, string NickName, string Avatar, long CreateTime);
 
 public class PagedList<T> where T : class
 {
@@ -16,8 +16,8 @@ public class PagedList<T> where T : class
 
 public record UserWithMessageDto : UserDto
 {
-    public UserWithMessageDto(int Id, string Account, string NickName, long CreateTime, List<ChatMessageDto> Messages)
-        : base(Id, Account, NickName, CreateTime)
+    public UserWithMessageDto(int Id, string Account, string NickName, string Avatar, long CreateTime, List<ChatMessageDto> Messages)
+        : base(Id, Account, NickName, Avatar, CreateTime)
     {
         this.Messages = Messages;
     }

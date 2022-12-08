@@ -15,4 +15,5 @@ public interface IApiClient
     Task<PagedList<UserDto>> SearchNickNameAsync(string searchContent, uint page = 1, uint size = 20, CancellationToken cancellationToken = default);
 
     Task FriendApplyAsync(FriendApplyRequest request, CancellationToken cancellationToken = default);
+    string FormatFile(string url);
 }

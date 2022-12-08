@@ -78,27 +78,34 @@ public sealed partial class DataCenter : ObservableObject
     async Task GetUnreadMessageAsync()
     {
         var users = await _apiClient.GetUnreadMessageFriendsAsync();
-        foreach (var user in users)
+        foreach (var userDto in users)
         {
-            var messages = user.Messages.ToChatMessages();
+            var messages = userDto.Messages.ToChatMessages();
+            var user = userDto.ToUserInfo();
+            user.Avatar = _apiClient.FormatFile(user.Avatar);
             foreach (var message in messages)
             {
                 message.IsSelfSend = message.FromId == App.Current.User.Id;
             }
 
-            var session = Sessions.FirstOrDefault(x => x.User.Id == user.Id);
+            var session = Sessions.FirstOrDefault(x => x.User.Id == userDto.Id);
             _dispatcher.Dispatch(() =>
             {
                 if (session != null)
                 {
+
+                    session.User.Avatar = user.Avatar;
+                    session.User.NickName = user.NickName;
                     session.AddMessages(messages);
                 }
                 else
                 {
-                    session = new Session(user.ToUserInfo(), messages);
+                    session = new Session(user, messages);
                     Sessions.Add(session);
                 }
             });
+
+            await _database.SaveUserAsync(user);
             if (messages.Count() > 0)
             {
                 await _database.SaveChatMessagesAsnyc(messages);

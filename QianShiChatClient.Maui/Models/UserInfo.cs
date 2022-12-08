@@ -25,7 +25,8 @@ public static class UserInfoExtensions
         {
             Account = user.Account,
             NickName = user.NickName,
-            Id = user.Id
+            Id = user.Id,
+            Avatar = user.Avatar,
         };
     }
 }
