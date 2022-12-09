@@ -36,6 +36,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         {
             App.Current.User = user;
             Settings.CurrentUser = App.Current.User;
+            _ = _chatHub.Connect();
             App.Current.MainPage = _serviceProvider.GetRequiredService<AppShell>();
         });
     }

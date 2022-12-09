@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace QianShiChatClient.Maui.Platforms.Windows
+﻿namespace QianShiChatClient.Maui.Platforms.Windows
 {
     public static class ConfigureLifecycleEventsExtensions
     {
