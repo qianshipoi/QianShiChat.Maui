@@ -77,6 +77,8 @@
                     </Grid>
                 </Frame>
 
+                <Button Command="{Binding JoinNewFriendPageCommand}" Text="New Friend" />
+
                 <ListView
                     Margin="0,10,0,0"
                     HasUnevenRows="False"
@@ -86,7 +88,7 @@
                     SelectionMode="None"
                     SeparatorVisibility="None">
                     <ListView.ItemTemplate>
-                        <DataTemplate >
+                        <DataTemplate>
                             <ViewCell x:DataType="{x:Type models:FriendItem}">
                                 <Grid
                                     Padding="10,0"

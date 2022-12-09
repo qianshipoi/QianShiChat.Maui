@@ -17,4 +17,5 @@ public interface IApiClient
     Task FriendApplyAsync(FriendApplyRequest request, CancellationToken cancellationToken = default);
 
     string FormatFile(string url);
+    Task<PagedList<ApplyPendingDto>> FriendApplyPendingAsync(FriendApplyPendingRequest request, CancellationToken cancellationToken = default);
 }

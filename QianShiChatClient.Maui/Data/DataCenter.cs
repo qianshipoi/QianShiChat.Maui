@@ -12,12 +12,15 @@ public sealed partial class DataCenter : ObservableObject
 
     public SortableObservableCollection<Session> Sessions { get; }
 
+    public SortableObservableCollection<ApplyPending> Pendings { get; }
+
     public DataCenter(IApiClient apiClient, ChatDatabase database, ChatHub chatHub, IDispatcher dispatcher)
     {
         _apiClient = apiClient;
         _database = database;
         _chatHub = chatHub;
         _dispatcher = dispatcher;
+        Pendings = new SortableObservableCollection<ApplyPending>();
         Sessions = new SortableObservableCollection<Session>();
         Sessions.Descending = true;
         Sessions.SortingSelector = (t) => t.LastMessageTime;
@@ -27,6 +30,7 @@ public sealed partial class DataCenter : ObservableObject
         _isConnected = _chatHub.IsConnected;
 
         _ = GetSessionsAsync();
+        _ = GetApplyPendingsAsync();
     }
 
     void ChatHubPrivateChat(ChatMessageDto obj)
@@ -111,6 +115,21 @@ public sealed partial class DataCenter : ObservableObject
                 await _database.SaveChatMessagesAsnyc(messages);
             }
             await _database.SaveSessionAsync(session.ToSessionModel());
+        }
+    }
+
+    public async Task GetApplyPendingsAsync()
+    {
+        var paged = await _apiClient.FriendApplyPendingAsync(new FriendApplyPendingRequest(20));
+        if(paged != null && paged.Items.Count > 0)
+        {
+            foreach (var item in paged.Items) 
+            {
+                var apply = item.ToApplyPending();
+                apply.User.Avatar = _apiClient.FormatFile(apply.User.Avatar);
+                apply.Friend.Avatar = _apiClient.FormatFile(apply.Friend.Avatar);
+                Pendings.Add(apply);
+            }
         }
     }
 }

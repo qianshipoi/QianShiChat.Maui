@@ -32,4 +32,5 @@ public class NavigationService : INavigationService
         Settings.CurrentUser = null;
         return Task.CompletedTask;
     }
+    public Task GoToNewFriendPage() => Shell.Current.GoToAsync(nameof(GoToNewFriendPage), true);
 }

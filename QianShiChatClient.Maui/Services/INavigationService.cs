@@ -6,6 +6,7 @@ public interface INavigationService
     Task GoToAddFriendPage(UserInfo user);
     Task GoToLoginPage();
     Task GoToMessageDetailPage(Session sesion);
+    Task GoToNewFriendPage();
     Task GoToQueryPage();
     Task GoToSearchPage();
     Task GoToSettingsPage();

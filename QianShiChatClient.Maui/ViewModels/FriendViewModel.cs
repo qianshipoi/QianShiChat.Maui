@@ -29,4 +29,7 @@ public sealed partial class FriendViewModel : ViewModelBase
 
     [RelayCommand]
     Task JoinQueryPage() => _navigationService.GoToQueryPage();
+
+    [RelayCommand]
+    Task JoinNewFriendPage() => _navigationService.GoToNewFriendPage();
 }

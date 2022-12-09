@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.Services;
+﻿using System.Web;
+
+namespace QianShiChatClient.Maui.Services;
 
 public class ApiClient : IApiClient
 {
@@ -92,6 +94,32 @@ public class ApiClient : IApiClient
     {
         var response = await _client.PostAsJsonAsync("/api/FriendApply", request, _serializerOptions, cancellationToken);
         await HandleUnauthorizedResponse(response);
+    }
+
+    public async Task<PagedList<ApplyPendingDto>> FriendApplyPendingAsync(FriendApplyPendingRequest request, CancellationToken cancellationToken = default)
+    {
+        return await _client.GetFromJsonAsync<PagedList<ApplyPendingDto>>(FormatParam($"/api/FriendApply/Pending", request), _serializerOptions, cancellationToken);
+    }
+
+    string FormatParam(string url, object obj, bool ignoreNull = true)
+    {
+        var properties = obj.GetType().GetProperties();
+        var sb = new StringBuilder();
+        sb.Append(url);
+        sb.Append('?');
+        foreach (var property in properties)
+        {
+            var v = property.GetValue(obj, null);
+            if (v == null)
+                continue;
+
+            sb.Append(property.Name);
+            sb.Append("=");
+            sb.Append(HttpUtility.UrlEncode(v.ToString()));
+            sb.Append("&");
+        }
+        sb.Remove(sb.Length - 1, 1);
+        return sb.ToString();
     }
 
     async Task HandleUnauthorizedResponse(HttpResponseMessage response)

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.Maui.Views.NewFriendPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    Title="New Friend"
+    x:DataType="{x:Type viewmodels:NewFriendViewModel}"
+    Shell.TabBarIsVisible="False">
+    <VerticalStackLayout BindableLayout.ItemsSource="{Binding DataCenter.Pendings}">
+        <BindableLayout.ItemTemplate>
+            <DataTemplate x:DataType="{x:Type models:ApplyPending}">
+                <Grid
+                    Padding="20,10"
+                    ColumnDefinitions="Auto,*,Auto"
+                    RowDefinitions="*,*">
+                    <toolkit:AvatarView Grid.RowSpan="2" ImageSource="{Binding User.Avatar}" />
+                    <Label
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        Text="{Binding User.NickName}"
+                        VerticalOptions="End" />
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Text="{Binding Remark}" />
+                    <Button
+                        Grid.RowSpan="2"
+                        Grid.Column="2"
+                        Padding="12,8"
+                        CommandParameter="{Binding}"
+                        Text="Pass"
+                        VerticalOptions="Center" />
+                </Grid>
+            </DataTemplate>
+        </BindableLayout.ItemTemplate>
+    </VerticalStackLayout>
+</ContentPage>
