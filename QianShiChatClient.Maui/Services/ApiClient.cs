@@ -6,10 +6,14 @@ public class ApiClient : IApiClient
     readonly INavigationService _navigationService;
     JsonSerializerOptions _serializerOptions;
 
+    bool _isLogin;
+
     public static string BaseAddress =
         DeviceInfo.Platform == DevicePlatform.Android
         ? "https://chat.kuriyama.top"
         : "https://chat.kuriyama.top";
+
+    public event Action<bool> IsLoginChanged;
 
     public ApiClient(HttpClient client, INavigationService navigationService)
     {

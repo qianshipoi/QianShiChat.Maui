@@ -64,7 +64,7 @@ public sealed partial class DataCenter : ObservableObject
             if (model.Type == ChatMessageSendType.Personal)
             {
                 var user = await _database.GetUserByIdAsync(model.ToId);
-                if(user != null)
+                if (user != null)
                 {
                     var messages = await _database.GetChatMessageAsync(user.Id);
                     var session = new Session(user, messages);
@@ -72,10 +72,10 @@ public sealed partial class DataCenter : ObservableObject
                 }
             }
         }
-        _ = GetUnreadMessageAsync();
+        //_ = GetUnreadMessageAsync();
     }
 
-    async Task GetUnreadMessageAsync()
+    public async Task GetUnreadMessageAsync()
     {
         var users = await _apiClient.GetUnreadMessageFriendsAsync();
         foreach (var userDto in users)

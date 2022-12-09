@@ -1,27 +1,42 @@
-﻿namespace QianShiChatClient.Maui;
+﻿
+#if ANDROID
+using QianShiChatClient.Maui.Platforms.Android;
+#elif WINDOWS
+using QianShiChatClient.Maui.Platforms.Windows;
+#endif
+
+namespace QianShiChatClient.Maui;
 
 public static class MauiProgram
 {
-	public static MauiApp CreateMauiApp()
-	{
-		var builder = MauiApp.CreateBuilder();
-		builder
-			.UseMauiApp<App>()
+    public static MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
+            .ConfigureLifecycleEvents(events =>
+            {
+#if ANDROID
+                events.ConfigureAndroidLifecycleEvents();
+#elif WINDOWS
+                events.ConfigureWindowsLifecycleEvents();
+#endif
+            })
             .ConfigureFonts(fonts =>
-			{
-				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("iconfont.ttf", IconFontIcons.FontFamily);
             })
             .Services.ConfigureService(); ;
 
 #if DEBUG
-		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
-		return builder.Build();
-	}
+        return builder.Build();
+    }
 
     public static IServiceCollection ConfigureService(this IServiceCollection services)
     {
@@ -46,5 +61,4 @@ public static class MauiProgram
 
         return services;
     }
-
 }

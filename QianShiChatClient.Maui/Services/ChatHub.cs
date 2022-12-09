@@ -7,8 +7,8 @@ public class ChatHub
     readonly IApiClient _apiClient;
 
     HubConnection connection;
-
     bool _isConnected;
+    bool _isConnecting;
 
     public event Action<string, string> ReceiveMessage;
 
@@ -17,7 +17,7 @@ public class ChatHub
     public event Action<ChatMessageDto> PrivateChat;
 
     public event Action<bool> IsConnectedChanged;
-   
+
     public bool IsConnected
     {
         get => _isConnected;
@@ -34,6 +34,7 @@ public class ChatHub
     public ChatHub(IApiClient apiClient)
     {
         _apiClient = apiClient;
+
         connection = new HubConnectionBuilder()
           .WithUrl($"{ApiClient.BaseAddress}/Hubs/Chat", options =>
           {
@@ -42,23 +43,29 @@ public class ChatHub
           .WithAutomaticReconnect()
           .Build();
 
+        connection.On<string, string>("ReceiveMessage", (u, n) => ReceiveMessage?.Invoke(u, n));
+        connection.On<NotificationMessage>("Notification", (msg) => Notification?.Invoke(msg));
+        connection.On<ChatMessageDto>("PrivateChat", (msg) => PrivateChat?.Invoke(msg));
+
         connection.Closed += async (error) =>
         {
             IsConnected = false;
+            _isConnecting = false;
             await Task.Delay(new Random().Next(0, 5) * 1000);
-            await connection.StartAsync();
-
+            await Connect();
         };
 
         connection.Reconnecting += (msg) =>
         {
             IsConnected = false;
+            _isConnecting = true;
             return Task.CompletedTask;
         };
 
         connection.Reconnected += (msg) =>
         {
             IsConnected = true;
+            _isConnecting = false;
             return Task.CompletedTask;
         };
     }
@@ -67,12 +74,9 @@ public class ChatHub
 
     public async Task Connect()
     {
-        if (IsConnected) return;
+        if (IsConnected || _isConnecting || string.IsNullOrWhiteSpace(_apiClient.AccessToken)) return;
 
-        connection.On<string, string>("ReceiveMessage", (u, n) => ReceiveMessage?.Invoke(u, n));
-        connection.On<NotificationMessage>("Notification", (msg) => Notification?.Invoke(msg));
-        connection.On<ChatMessageDto>("PrivateChat", (msg) => PrivateChat?.Invoke(msg));
-
+        _isConnecting = true;
         try
         {
             await connection.StartAsync();
@@ -81,7 +85,10 @@ public class ChatHub
         {
             await Toast.Make(ex.Message).Show();
         }
-
+        finally
+        {
+            _isConnecting = false;
+        }
         IsConnected = true;
     }
 }
