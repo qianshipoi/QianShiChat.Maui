@@ -59,6 +59,7 @@ public static class MauiProgram
         services.AddTransientWithShellRoute<QueryPage, QueryViewModel>(nameof(QueryPage));
         services.AddTransientWithShellRoute<AddFriendPage, AddFriendViewModel>(nameof(AddFriendPage));
         services.AddTransientWithShellRoute<NewFriendPage, NewFriendViewModel>(nameof(NewFriendPage));
+        services.AddTransientWithShellRoute<NewFriendDetailPage, NewFriendDetailViewModel>(nameof(NewFriendDetailPage));
 
         return services;
     }

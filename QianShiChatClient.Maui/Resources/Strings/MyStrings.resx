@@ -168,4 +168,16 @@
   <data name="VerificationInfoCanNotEmpty" xml:space="preserve">
     <value>Verification info can not empty.</value>
   </data>
+  <data name="Pass" xml:space="preserve">
+    <value>Pass</value>
+  </data>
+  <data name="Reject" xml:space="preserve">
+    <value>Reject</value>
+  </data>
+  <data name="NewFriend" xml:space="preserve">
+    <value>New Friend</value>
+  </data>
+  <data name="FriendApply" xml:space="preserve">
+    <value>Friend Apply</value>
+  </data>
 </root>

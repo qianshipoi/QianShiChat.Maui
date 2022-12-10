@@ -97,6 +97,15 @@ namespace QianShiChatClient.Maui.Resources.Strings {
         }
         
         /// <summary>
+        ///   查找类似 Friend Apply 的本地化字符串。
+        /// </summary>
+        public static string FriendApply {
+            get {
+                return ResourceManager.GetString("FriendApply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Home 的本地化字符串。
         /// </summary>
         public static string Home {
@@ -133,6 +142,24 @@ namespace QianShiChatClient.Maui.Resources.Strings {
         }
         
         /// <summary>
+        ///   查找类似 New Friend 的本地化字符串。
+        /// </summary>
+        public static string NewFriend {
+            get {
+                return ResourceManager.GetString("NewFriend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Pass 的本地化字符串。
+        /// </summary>
+        public static string Pass {
+            get {
+                return ResourceManager.GetString("Pass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Please enter your password. 的本地化字符串。
         /// </summary>
         public static string PasswordHit {
@@ -147,6 +174,15 @@ namespace QianShiChatClient.Maui.Resources.Strings {
         public static string QueryFriend {
             get {
                 return ResourceManager.GetString("QueryFriend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Reject 的本地化字符串。
+        /// </summary>
+        public static string Reject {
+            get {
+                return ResourceManager.GetString("Reject", resourceCulture);
             }
         }
         

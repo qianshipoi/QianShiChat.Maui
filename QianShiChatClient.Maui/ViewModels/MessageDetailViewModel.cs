@@ -1,12 +1,12 @@
-﻿using System.Linq.Expressions;
-
-namespace QianShiChatClient.Maui.ViewModels;
+﻿namespace QianShiChatClient.Maui.ViewModels;
 
 public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttributable
 {
     readonly IApiClient _apiClient;
     readonly ChatDatabase _database;
     readonly DataCenter _dataCenter;
+
+    bool _isNewSession;
 
     public int SessionId { get; private set; }
 
@@ -48,6 +48,10 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
 
             await _database.SaveChatMessageAsnyc(message);
             Message = string.Empty;
+            if(_isNewSession)
+            {
+                _dataCenter.Sessions.Add(Session);
+            }
         }
         finally
         {
@@ -71,6 +75,7 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
             {
                 var message = await _database.GetChatMessageAsync(user.Id);
                 Session = new Session(user, message);
+                _isNewSession = true;
             }
         }
     }

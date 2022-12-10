@@ -12,7 +12,9 @@ public sealed partial class DataCenter : ObservableObject
 
     public SortableObservableCollection<Session> Sessions { get; }
 
-    public SortableObservableCollection<ApplyPending> Pendings { get; }
+    public ObservableCollection<ApplyPending> Pendings { get; }
+
+    public ObservableCollection<UserInfo> Friends { get; }
 
     public DataCenter(IApiClient apiClient, ChatDatabase database, ChatHub chatHub, IDispatcher dispatcher)
     {
@@ -20,10 +22,12 @@ public sealed partial class DataCenter : ObservableObject
         _database = database;
         _chatHub = chatHub;
         _dispatcher = dispatcher;
-        Pendings = new SortableObservableCollection<ApplyPending>();
+        Friends = new ObservableCollection<UserInfo>();
+        Pendings = new ObservableCollection<ApplyPending>();
         Sessions = new SortableObservableCollection<Session>();
         Sessions.Descending = true;
         Sessions.SortingSelector = (t) => t.LastMessageTime;
+        Sessions.CollectionChanged += Sessions_CollectionChanged;
 
         _chatHub.PrivateChat += ChatHubPrivateChat;
         _chatHub.IsConnectedChanged += (val) => IsConnected = val;
@@ -31,6 +35,15 @@ public sealed partial class DataCenter : ObservableObject
 
         _ = GetSessionsAsync();
         _ = GetApplyPendingsAsync();
+        _ = GetAllFriendAsync();
+    }
+
+    async void Sessions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        foreach (var session in Sessions)
+        {
+            await _database.SaveSessionAsync(session.ToSessionModel());
+        }
     }
 
     void ChatHubPrivateChat(ChatMessageDto obj)
@@ -67,16 +80,39 @@ public sealed partial class DataCenter : ObservableObject
         {
             if (model.Type == ChatMessageSendType.Personal)
             {
-                var user = await _database.GetUserByIdAsync(model.ToId);
-                if (user != null)
+                var session = Sessions.FirstOrDefault(x => x.User.Id == model.ToId);
+                if (session == null)
                 {
-                    var messages = await _database.GetChatMessageAsync(user.Id);
-                    var session = new Session(user, messages);
-                    _dispatcher.Dispatch(() => Sessions.Add(session));
+                    var user = await _database.GetUserByIdAsync(model.ToId);
+                    if (user != null)
+                    {
+                        var messages = await _database.GetChatMessageAsync(user.Id);
+                        session = new Session(user, messages);
+                        _dispatcher.Dispatch(() => Sessions.Add(session));
+                    }
                 }
             }
         }
-        //_ = GetUnreadMessageAsync();
+    }
+
+    Session AddSessions(UserInfo user, IEnumerable<ChatMessage> messages)
+    {
+        var session = Sessions.FirstOrDefault(x => x.User.Id == user.Id);
+        _dispatcher.Dispatch(() =>
+        {
+            if (session != null)
+            {
+                session.User.Avatar = user.Avatar;
+                session.User.NickName = user.NickName;
+                session.AddMessages(messages);
+            }
+            else
+            {
+                session = new Session(user, messages);
+                Sessions.Add(session);
+            }
+        });
+        return session;
     }
 
     public async Task GetUnreadMessageAsync()
@@ -92,22 +128,7 @@ public sealed partial class DataCenter : ObservableObject
                 message.IsSelfSend = message.FromId == App.Current.User.Id;
             }
 
-            var session = Sessions.FirstOrDefault(x => x.User.Id == userDto.Id);
-            _dispatcher.Dispatch(() =>
-            {
-                if (session != null)
-                {
-
-                    session.User.Avatar = user.Avatar;
-                    session.User.NickName = user.NickName;
-                    session.AddMessages(messages);
-                }
-                else
-                {
-                    session = new Session(user, messages);
-                    Sessions.Add(session);
-                }
-            });
+            var session = AddSessions(user, messages);
 
             await _database.SaveUserAsync(user);
             if (messages.Count() > 0)
@@ -121,15 +142,39 @@ public sealed partial class DataCenter : ObservableObject
     public async Task GetApplyPendingsAsync()
     {
         var paged = await _apiClient.FriendApplyPendingAsync(new FriendApplyPendingRequest(20));
-        if(paged != null && paged.Items.Count > 0)
+        if (paged != null && paged.Items.Count > 0)
         {
-            foreach (var item in paged.Items) 
+            foreach (var item in paged.Items)
             {
                 var apply = item.ToApplyPending();
                 apply.User.Avatar = _apiClient.FormatFile(apply.User.Avatar);
                 apply.Friend.Avatar = _apiClient.FormatFile(apply.Friend.Avatar);
                 Pendings.Add(apply);
             }
+        }
+    }
+
+    public async Task GetAllFriendAsync()
+    {
+        var userdtos = await _apiClient.AllFriendAsync();
+        foreach (var userDto in userdtos)
+        {
+            var user = userDto.ToUserInfo();
+            user.Avatar = _apiClient.FormatFile(userDto.Avatar);
+
+            var friend = Friends.FirstOrDefault(x => x.Id == user.Id);
+
+            if (friend == null)
+            {
+                Friends.Add(user);
+            }
+            else
+            {
+                friend.Avatar = user.Avatar;
+                friend.NickName = user.NickName;
+                friend.Content = user.Content;
+            }
+            await _database.SaveUserAsync(user);
         }
     }
 }

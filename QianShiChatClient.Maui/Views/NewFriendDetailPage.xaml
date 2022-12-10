@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.Maui.Views.NewFriendDetailPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    Title="{local:Localize FriendApply}"
+    x:DataType="{x:Type viewmodels:NewFriendDetailViewModel}"
+    Shell.TabBarIsVisible="False">
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="16">
+        <toolkit:AvatarView
+            Margin="40,60,40,10"
+            CornerRadius="80"
+            HeightRequest="160"
+            ImageSource="{Binding Pending.Friend.Avatar}"
+            WidthRequest="160" />
+        <Label
+            Grid.Row="1"
+            Margin="40,0"
+            FontAttributes="Bold"
+            FontSize="24"
+            HorizontalOptions="Center"
+            LineBreakMode="TailTruncation"
+            Text="{Binding Pending.Friend.NickName}" />
+        <Label
+            Grid.Row="2"
+            Margin="40,0"
+            HorizontalOptions="Center"
+            LineBreakMode="TailTruncation"
+            Text="{Binding Pending.Friend.Content}" />
+        <Frame
+            Grid.Row="3"
+            Margin="20,0"
+            Padding="16"
+            BackgroundColor="{StaticResource Gray100}"
+            VerticalOptions="Start">
+            <Label Text="{Binding Pending.Remark}" />
+        </Frame>
+        <Grid
+            Grid.Row="4"
+            Margin="20,0"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="8">
+            <Button Text="{local:Localize Pass}" />
+            <Button
+                Grid.Column="1"
+                BackgroundColor="Red"
+                Text="{local:Localize Reject}" />
+        </Grid>
+    </Grid>
+</ContentPage>

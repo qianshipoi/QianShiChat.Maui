@@ -8,11 +8,11 @@ public class NavigationService : INavigationService
     public Task GoBack() => Shell.Current.GoToAsync("..");
     public Task GoToSearchPage() => Shell.Current.GoToAsync(nameof(SearchPage));
     public Task GoToQueryPage() => Shell.Current.GoToAsync(nameof(QueryPage));
-    public Task GoToMessageDetailPage(Session sesion)
+    public Task GoToMessageDetailPage(int sessionId)
     {
         var navigationParameter = new Dictionary<string, object>
         {
-            { nameof(MessageDetailViewModel.SessionId), sesion.User.Id }
+            { nameof(MessageDetailViewModel.SessionId), sessionId }
         };
         return Shell.Current.GoToAsync(nameof(MessageDetailPage), true, navigationParameter);
     }
@@ -32,5 +32,16 @@ public class NavigationService : INavigationService
         Settings.CurrentUser = null;
         return Task.CompletedTask;
     }
-    public Task GoToNewFriendPage() => Shell.Current.GoToAsync(nameof(GoToNewFriendPage), true);
+
+    public Task GoToNewFriendPage() => Shell.Current.GoToAsync(nameof(NewFriendPage), true);
+
+    public Task GoToNewFriendDetailPage(ApplyPending pending)
+    {
+        var navigationParameter = new Dictionary<string, object>
+        {
+            { nameof(NewFriendDetailViewModel.Pending), pending }
+        };
+        return Shell.Current.GoToAsync(nameof(NewFriendDetailPage), true, navigationParameter);
+    }
+
 }

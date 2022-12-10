@@ -7,35 +7,69 @@
     xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:QianShiChatClient.Maui.ViewModels"
-    Title="New Friend"
+    Title="{local:Localize NewFriend}"
     x:DataType="{x:Type viewmodels:NewFriendViewModel}"
     Shell.TabBarIsVisible="False">
-    <VerticalStackLayout BindableLayout.ItemsSource="{Binding DataCenter.Pendings}">
-        <BindableLayout.ItemTemplate>
-            <DataTemplate x:DataType="{x:Type models:ApplyPending}">
-                <Grid
-                    Padding="20,10"
-                    ColumnDefinitions="Auto,*,Auto"
-                    RowDefinitions="*,*">
-                    <toolkit:AvatarView Grid.RowSpan="2" ImageSource="{Binding User.Avatar}" />
-                    <Label
-                        Grid.Column="1"
-                        FontAttributes="Bold"
-                        Text="{Binding User.NickName}"
-                        VerticalOptions="End" />
-                    <Label
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Text="{Binding Remark}" />
-                    <Button
-                        Grid.RowSpan="2"
-                        Grid.Column="2"
-                        Padding="12,8"
-                        CommandParameter="{Binding}"
-                        Text="Pass"
-                        VerticalOptions="Center" />
-                </Grid>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ListView
+        ItemsSource="{Binding DataCenter.Pendings}"
+        RowHeight="80"
+        SelectionMode="None">
+        <ListView.Behaviors>
+            <toolkit:EventToCommandBehavior
+                Command="{Binding JoinNewFriendDetailPageCommand}"
+                EventArgsConverter="{StaticResource ItemTappedEventArgsConverter}"
+                EventName="ItemTapped" />
+        </ListView.Behaviors>
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell x:DataType="{x:Type models:ApplyPending}">
+                    <Grid
+                        Padding="20,10"
+                        ColumnDefinitions="Auto,*,Auto,Auto"
+                        RowDefinitions="Auto,*">
+                        <toolkit:AvatarView
+                            Grid.RowSpan="2"
+                            Margin="0,0,12,0"
+                            ImageSource="{Binding Friend.Avatar}" />
+                        <Label
+                            Grid.Column="1"
+                            Margin="0,4,0,0"
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="{Binding Friend.NickName}"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            LineBreakMode="TailTruncation"
+                            Text="{Binding Remark}"
+                            VerticalOptions="Center" />
+                        <Button
+                            Grid.RowSpan="2"
+                            Grid.Column="2"
+                            Margin="8,0"
+                            Padding="8"
+                            CommandParameter="{Binding}"
+                            MinimumHeightRequest="22"
+                            Text="{local:Localize Pass}"
+                            VerticalOptions="Center" />
+                        <Button
+                            Grid.RowSpan="2"
+                            Grid.Column="3"
+                            Padding="8"
+                            BackgroundColor="Red"
+                            CommandParameter="{Binding}"
+                            MinimumHeightRequest="22"
+                            Text="{local:Localize Reject}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </ViewCell>
             </DataTemplate>
-        </BindableLayout.ItemTemplate>
-    </VerticalStackLayout>
+        </ListView.ItemTemplate>
+    </ListView>
 </ContentPage>

@@ -24,4 +24,8 @@ public sealed partial class NewFriendViewModel : ViewModelBase
     {
         return Task.CompletedTask;
     }
+
+    [RelayCommand]
+    Task JoinNewFriendDetailPage(ApplyPending apply) => _navigationService.GoToNewFriendDetailPage(apply);
+
 }

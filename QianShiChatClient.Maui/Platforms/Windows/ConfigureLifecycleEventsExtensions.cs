@@ -24,8 +24,11 @@
             {
                 windows.OnResumed(window =>
                 {
-                    _ = ServiceHelper.Current.GetRequiredService<ChatHub>().Connect();
-                    _ = ServiceHelper.Current.GetRequiredService<DataCenter>().GetUnreadMessageAsync();
+                    if (App.Current.User != null && !string.IsNullOrWhiteSpace(Settings.AccessToken))
+                    {
+                        _ = ServiceHelper.Current.GetRequiredService<ChatHub>().Connect();
+                        _ = ServiceHelper.Current.GetRequiredService<DataCenter>().GetUnreadMessageAsync();
+                    }
                 });
             });
             return builder;

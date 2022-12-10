@@ -96,6 +96,9 @@
 	  <MauiXaml Update="Views\MessagePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\NewFriendDetailPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\NewFriendPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -168,4 +168,16 @@
   <data name="VerificationInfoCanNotEmpty" xml:space="preserve">
     <value>验证信息不能为空。</value>
   </data>
+  <data name="Pass" xml:space="preserve">
+    <value>同意</value>
+  </data>
+  <data name="Reject" xml:space="preserve">
+    <value>驳回</value>
+  </data>
+  <data name="NewFriend" xml:space="preserve">
+    <value>新朋友</value>
+  </data>
+  <data name="FriendApply" xml:space="preserve">
+    <value>好友申请</value>
+  </data>
 </root>

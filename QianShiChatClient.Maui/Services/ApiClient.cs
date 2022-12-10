@@ -8,14 +8,10 @@ public class ApiClient : IApiClient
     readonly INavigationService _navigationService;
     JsonSerializerOptions _serializerOptions;
 
-    bool _isLogin;
-
     public static string BaseAddress =
         DeviceInfo.Platform == DevicePlatform.Android
         ? "https://chat.kuriyama.top"
         : "https://chat.kuriyama.top";
-
-    public event Action<bool> IsLoginChanged;
 
     public ApiClient(HttpClient client, INavigationService navigationService)
     {
@@ -99,6 +95,11 @@ public class ApiClient : IApiClient
     public async Task<PagedList<ApplyPendingDto>> FriendApplyPendingAsync(FriendApplyPendingRequest request, CancellationToken cancellationToken = default)
     {
         return await _client.GetFromJsonAsync<PagedList<ApplyPendingDto>>(FormatParam($"/api/FriendApply/Pending", request), _serializerOptions, cancellationToken);
+    }
+
+    public async Task<List<UserDto>> AllFriendAsync(CancellationToken cancellationToken = default)
+    {
+        return await _client.GetFromJsonAsync<List<UserDto>>("/api/Friend", cancellationToken);
     }
 
     string FormatParam(string url, object obj, bool ignoreNull = true)
