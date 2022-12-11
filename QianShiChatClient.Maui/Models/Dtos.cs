@@ -10,6 +10,16 @@ public record FriendApplyPendingRequest(int Size, long? BeforeLastTime = null);
 
 public record UserDto(int Id, string Account, string NickName, string Avatar, long CreateTime);
 
+public class QrAuthResponse
+{
+    /// <summary>
+    /// 800 二维码不存在或已过期 801 等待扫码 802 授权中 803 授权成功
+    /// </summary>
+    public int Code { get; set; }
+
+    public string Message { get; set; }
+}
+
 public class ApplyPendingDto
 {
     public int Id { get; set; }

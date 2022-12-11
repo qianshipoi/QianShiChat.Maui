@@ -20,4 +20,6 @@ public interface IApiClient
 
     Task<PagedList<ApplyPendingDto>> FriendApplyPendingAsync(FriendApplyPendingRequest request, CancellationToken cancellationToken = default);
     Task<List<UserDto>> AllFriendAsync(CancellationToken cancellationToken = default);
+    Task<QrAuthResponse> QrPreAuthAsync(string key, CancellationToken cancellationToken = default);
+    Task<QrAuthResponse> QrAuthAsync(string key, CancellationToken cancellationToken = default);
 }

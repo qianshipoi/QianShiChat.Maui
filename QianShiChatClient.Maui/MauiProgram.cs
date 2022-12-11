@@ -1,4 +1,5 @@
-﻿
+﻿using ZXing.Net.Maui;
+using CommunityToolkit.Maui;
 #if ANDROID
 using QianShiChatClient.Maui.Platforms.Android;
 #elif WINDOWS
@@ -14,6 +15,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseBarcodeReader() 
             .UseMauiCommunityToolkit()
             .ConfigureLifecycleEvents(events =>
             {
@@ -60,6 +62,8 @@ public static class MauiProgram
         services.AddTransientWithShellRoute<AddFriendPage, AddFriendViewModel>(nameof(AddFriendPage));
         services.AddTransientWithShellRoute<NewFriendPage, NewFriendViewModel>(nameof(NewFriendPage));
         services.AddTransientWithShellRoute<NewFriendDetailPage, NewFriendDetailViewModel>(nameof(NewFriendDetailPage));
+
+        services.AddTransientWithShellRoute<ScanningPage, ScanningViewModel>(nameof(ScanningPage));
 
         return services;
     }

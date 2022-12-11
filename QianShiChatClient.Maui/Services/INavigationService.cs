@@ -9,6 +9,7 @@ public interface INavigationService
     Task GoToNewFriendDetailPage(ApplyPending pending);
     Task GoToNewFriendPage();
     Task GoToQueryPage();
+    Task GoToScanningPage();
     Task GoToSearchPage();
     Task GoToSettingsPage();
 }

@@ -102,6 +102,22 @@ public class ApiClient : IApiClient
         return await _client.GetFromJsonAsync<List<UserDto>>("/api/Friend", cancellationToken);
     }
 
+    public string FormatFile(string url) => BaseAddress + url;
+
+    public async Task<QrAuthResponse> QrPreAuthAsync(string key, CancellationToken cancellationToken = default)
+    {
+        var response = await _client.PostAsync($"/api/Auth/qr/preauth?key={key}", null, cancellationToken: cancellationToken);
+        await HandleUnauthorizedResponse(response);
+        return JsonSerializer.Deserialize<QrAuthResponse>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+    }
+
+    public async Task<QrAuthResponse> QrAuthAsync(string key, CancellationToken cancellationToken = default)
+    {
+        var response = await _client.PostAsync($"/api/Auth/qr/auth?key={key}", null, cancellationToken: cancellationToken);
+        await HandleUnauthorizedResponse(response);
+        return JsonSerializer.Deserialize<QrAuthResponse>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+    }
+
     string FormatParam(string url, object obj, bool ignoreNull = true)
     {
         var properties = obj.GetType().GetProperties();
@@ -132,6 +148,4 @@ public class ApiClient : IApiClient
         }
         response.EnsureSuccessStatusCode();
     }
-
-    public string FormatFile(string url) => BaseAddress + url;
 }

@@ -24,7 +24,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     Task JoinSearchPage() => _navigationService.GoToSearchPage();
 
     [RelayCommand]
-    Task JoinQueryPage() => _navigationService.GoToQueryPage();
+    Task JoinQueryPage() => _navigationService.GoToScanningPage();
 
     [RelayCommand]
     async Task UpdateMessage()

@@ -139,9 +139,9 @@
                     EventName="ItemTapped" />
             </ListView.Behaviors>
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="{x:Type models:Session}">
-                    <ViewCell>
-                        <SwipeView>
+                <DataTemplate>
+                    <ViewCell x:DataType="{x:Type models:Session}">
+                        <SwipeView xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls" android:SwipeView.SwipeTransitionMode="Drag">
                             <SwipeView.RightItems>
                                 <SwipeItems>
                                     <SwipeItem BackgroundColor="LightPink" IconImageSource="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily}, Glyph={x:Static models:IconFontIcons.Delete}, Size=22}" />
@@ -187,8 +187,6 @@
                                     VerticalOptions="Center" />
                             </Grid>
                         </SwipeView>
-
-
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>

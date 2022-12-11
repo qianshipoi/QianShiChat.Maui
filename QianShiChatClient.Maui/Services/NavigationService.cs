@@ -44,4 +44,5 @@ public class NavigationService : INavigationService
         return Shell.Current.GoToAsync(nameof(NewFriendDetailPage), true, navigationParameter);
     }
 
+    public Task GoToScanningPage() => Shell.Current.GoToAsync(nameof(ScanningPage));
 }

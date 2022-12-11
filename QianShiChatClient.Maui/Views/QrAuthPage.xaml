@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.Maui.Views.QrAuthPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    Title="QrAuthPage"
+    Shell.PresentationMode="ModalAnimated">
+    <VerticalStackLayout>
+        <Label
+            x:Name="AuthPathControl"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
+        <Label
+            x:Name="KeyControl"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+            <Button Clicked="Button_Clicked" Text="{local:Localize Pass}" />
+            <Button
+                Grid.Column="1"
+                Clicked="Button_Clicked_1"
+                Text="{local:Localize Reject}" />
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>
