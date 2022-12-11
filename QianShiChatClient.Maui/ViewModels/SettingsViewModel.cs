@@ -9,9 +9,13 @@ public sealed partial class SettingsViewModel : ViewModelBase
     string _currentLang;
     [ObservableProperty]
     AppTheme _currentAppTheme;
+    [ObservableProperty]
+    CultureInfo _currentLanguage;
 
-    public ObservableCollection<string> Langs { get; }
-    public ObservableCollection<AppTheme> AppThemes { get; }
+    public List<string> Langs { get; }
+
+    public List<CultureInfo> Languages { get; }
+    public List<AppTheme> AppThemes { get; }
 
     public SettingsViewModel(
         IStringLocalizer<MyStrings> stringLocalizer,
@@ -21,29 +25,38 @@ public sealed partial class SettingsViewModel : ViewModelBase
         : base(navigationService, stringLocalizer)
     {
         Title = "设置";
-        AppThemes = new ObservableCollection<AppTheme> { AppTheme.Unspecified, AppTheme.Light, AppTheme.Dark };
-        CurrentAppTheme = App.Current.RequestedTheme;
-
-        Langs = new ObservableCollection<string>() { "English", "简体中文" };
         _chatHub = chatHub;
         _serviceProvider = serviceProvider;
-        //_currentLang = string.Compare(Settings.Culture.Name, "zh-CN", true) == 0 ? "简体中文" : "English";
+
+        AppThemes = new List<AppTheme> { AppTheme.Unspecified, AppTheme.Light, AppTheme.Dark };
+        CurrentAppTheme = Settings.Theme;
+
+        Languages = new List<CultureInfo>()
+        {
+            new CultureInfo("zh-CN"),
+            new CultureInfo("en-US"),
+        };
+        CurrentLanguage = Languages.FirstOrDefault(x => string.Compare(x.Name, Settings.Language, true) == 0);
     }
 
     partial void OnCurrentAppThemeChanged(AppTheme value)
     {
         App.Current.UserAppTheme = value;
+        Settings.Theme = value;
     }
 
-    partial void OnCurrentLangChanged(string value)
+    partial void OnCurrentLanguageChanged(CultureInfo value)
     {
-        var culture = new CultureInfo(value == "English" ? "en-US" : "zh-CN");
+        if (value == null || string.Compare(Settings.Language, value.Name, true) == 0)
+        {
+            return;
+        }
 
-        Thread.CurrentThread.CurrentCulture = culture;
-        Thread.CurrentThread.CurrentUICulture = culture;
-        CultureInfo.DefaultThreadCurrentCulture = culture;
-        CultureInfo.DefaultThreadCurrentUICulture = culture;
-        Settings.Culture = culture;
+        Thread.CurrentThread.CurrentCulture = value;
+        Thread.CurrentThread.CurrentUICulture = value;
+        CultureInfo.DefaultThreadCurrentCulture = value;
+        CultureInfo.DefaultThreadCurrentUICulture = value;
+        Settings.Language = value.Name;
 
         App.Current.MainPage = _serviceProvider.GetRequiredService<AppShell>();
         _navigationService.GoToSettingsPage();

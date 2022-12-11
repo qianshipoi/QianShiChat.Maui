@@ -5,7 +5,6 @@ public sealed partial class LoginViewModel : ViewModelBase
     readonly IApiClient _apiClient;
     readonly IDispatcher _dispatcher;
     readonly IServiceProvider _serviceProvider;
-    readonly ChatHub _chatHub;
 
     [ObservableProperty]
     string _account = "qianshi";
@@ -18,13 +17,11 @@ public sealed partial class LoginViewModel : ViewModelBase
         INavigationService navigationService,
         IDispatcher dispatcher,
         IApiClient apiClient,
-        ChatHub chatHub,
         IServiceProvider serviceProvider)
         : base(navigationService, stringLocalizer)
     {
         _apiClient = apiClient;
         _dispatcher = dispatcher;
-        _chatHub = chatHub;
         Task.Run(CheckAccessToken);
         _serviceProvider = serviceProvider;
     }
@@ -36,7 +33,6 @@ public sealed partial class LoginViewModel : ViewModelBase
         {
             App.Current.User = user;
             Settings.CurrentUser = App.Current.User;
-            _ = _chatHub.Connect();
             App.Current.MainPage = _serviceProvider.GetRequiredService<AppShell>();
         });
     }

@@ -3,9 +3,11 @@
 public sealed partial class AppShellViewModel : ViewModelBase
 {
     public AppShellViewModel(
-        INavigationService navigationService, 
-        IStringLocalizer<MyStrings> stringLocalizer) 
+        ChatHub chatHub,
+        INavigationService navigationService,
+        IStringLocalizer<MyStrings> stringLocalizer)
         : base(navigationService, stringLocalizer)
     {
+        _ = chatHub.Connect();
     }
 }

@@ -21,7 +21,7 @@
                 Grid.Column="1"
                 Command="{Binding SearchCommand}"
                 FontFamily="{x:Static models:IconFontIcons.FontFamily}"
-                Text="{x:Static models:IconFontIcons.Filter}" />
+                Text="{x:Static models:IconFontIcons.Search}" />
         </Grid>
         <ListView
             Grid.Row="1"

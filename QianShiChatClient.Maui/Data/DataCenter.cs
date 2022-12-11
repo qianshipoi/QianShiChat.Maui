@@ -86,7 +86,7 @@ public sealed partial class DataCenter : ObservableObject
                     var user = await _database.GetUserByIdAsync(model.ToId);
                     if (user != null)
                     {
-                        var messages = await _database.GetChatMessageAsync(user.Id);
+                        var messages = await _database.GetChatMessageAsync(user.Id, 0, 20);
                         session = new Session(user, messages);
                         _dispatcher.Dispatch(() => Sessions.Add(session));
                     }

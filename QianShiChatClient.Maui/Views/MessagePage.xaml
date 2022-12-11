@@ -42,7 +42,7 @@
                 FontAttributes="Bold"
                 FontSize="22"
                 Style="{DynamicResource IconLabel}"
-                Text="{x:Static models:IconFontIcons.Information_add}"
+                Text="{x:Static models:IconFontIcons.Adduser}"
                 VerticalOptions="Center">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding JoinQueryPageCommand}" />
@@ -69,7 +69,7 @@
         </toolkit:DockLayout>
         <StackLayout Grid.Row="1">
             <Frame
-                Margin="20,0"
+                Margin="12,0"
                 Padding="0"
                 BackgroundColor="Transparent"
                 CornerRadius="4"
@@ -88,11 +88,15 @@
                         Orientation="Horizontal"
                         VerticalOptions="Center">
                         <Label
-                            FontAttributes="Bold"
-                            FontSize="20"
+                            Margin="0,0,4,0"
+                            FontSize="18"
                             Style="{DynamicResource IconLabel}"
-                            Text="{x:Static models:IconFontIcons.Filter}" />
-                        <Label Text="{local:Localize Search}" />
+                            Text="{x:Static models:IconFontIcons.Search}"
+                            TextColor="{StaticResource Gray500}" />
+                        <Label
+                            FontAttributes="Bold"
+                            Text="{local:Localize Search}"
+                            TextColor="{StaticResource Gray500}" />
                     </StackLayout>
                 </Grid>
             </Frame>
@@ -140,23 +144,16 @@
                         <SwipeView>
                             <SwipeView.RightItems>
                                 <SwipeItems>
-                                    <SwipeItem
-                                        BackgroundColor="LightPink"
-                                        IconImageSource="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
-                                                                    Glyph={x:Static models:IconFontIcons.Dashboard}}"
-                                        Text="Delete" />
-                                    <SwipeItem
-                                        BackgroundColor="SkyBlue"
-                                        IconImageSource="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
-                                                                    Glyph={x:Static models:IconFontIcons.Dashboard}}"
-                                        Text="Top" />
+                                    <SwipeItem BackgroundColor="LightPink" IconImageSource="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily}, Glyph={x:Static models:IconFontIcons.Delete}, Size=22}" />
+                                    <SwipeItem BackgroundColor="SkyBlue" IconImageSource="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily}, Glyph={x:Static models:IconFontIcons.Top}, Size=22}" />
                                 </SwipeItems>
                             </SwipeView.RightItems>
                             <!--  Content  -->
                             <Grid
                                 Padding="20,0"
                                 x:DataType="{x:Type models:Session}"
-                                BackgroundColor="White"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource White},
+                                                                  Dark={StaticResource Black}}"
                                 ColumnDefinitions="60,*,80"
                                 RowDefinitions="*,*">
                                 <toolkit:AvatarView

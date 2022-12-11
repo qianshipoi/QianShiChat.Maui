@@ -13,6 +13,15 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
     [ObservableProperty]
     Session _session;
 
+    [ObservableProperty]
+    ChatMessage _toMessage;
+
+    [ObservableProperty]
+    bool _scrollAnimated; 
+
+    [ObservableProperty]
+    string _message;
+
     public MessageDetailViewModel(
         IStringLocalizer<MyStrings> stringLocalizer,
         INavigationService navigationService,
@@ -25,9 +34,6 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
         _database = database;
         _dataCenter = dataCenter;
     }
-
-    [ObservableProperty]
-    string _message;
 
     [RelayCommand]
     async Task Send()
@@ -45,8 +51,9 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
             chatDto.IsSelfSend = true;
             var message = chatDto.ToChatMessage();
             Session.AddMessage(message);
-
             await _database.SaveChatMessageAsnyc(message);
+            ScrollAnimated = true;
+            ToMessage = message;
             Message = string.Empty;
             if(_isNewSession)
             {

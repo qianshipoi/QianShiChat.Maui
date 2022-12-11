@@ -15,7 +15,10 @@ public partial class App : Application
         ServiceProvider = serviceProvider;
         InitializeComponent();
 
-        var culture = Settings.Culture;
+
+        UserAppTheme = Settings.Theme;
+
+        var culture = new CultureInfo(Settings.Language);
         Thread.CurrentThread.CurrentCulture = culture;
         Thread.CurrentThread.CurrentUICulture = culture;
         CultureInfo.DefaultThreadCurrentCulture = culture;

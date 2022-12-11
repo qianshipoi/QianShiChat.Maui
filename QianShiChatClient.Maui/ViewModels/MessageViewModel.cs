@@ -14,6 +14,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     {
         DataCenter = dataCenter;
         _chatHub = chatHub;
+        _ = UpdateMessage();
     }
 
     [RelayCommand]

@@ -1,5 +1,8 @@
 ﻿namespace QianShiChatClient.Maui.Models;
 
+/// <summary>
+/// https://andreinitescu.github.io/IconFont2Code/
+/// </summary>
 public static class IconFontIcons
 {
     public const string FontFamily = "IconFont";
@@ -31,4 +34,25 @@ public static class IconFontIcons
     public const string ArrowDown = "\ue665";
     public const string TASK = "\uea42";
     public const string Message = "\ue617";
+
+    public const string Delete = "\ue6b4";
+    public const string EtMore = "\ue615";
+    public const string Xitong = "\ue60e";
+    public const string Top = "\ue669";
+    public const string ThemeLightDark = "\ue8e3";
+    public const string Search = "\ue668";
+    public const string MoonFullMoon = "\ue66a";
+    public const string MonitorSystem = "\ue9bc";
+    public const string LightOn = "\ue971";
+    public const string Adduser = "\ue7ec";
+    public const string Direction_down = "\ue619";
+    public const string Direction_Left = "\ue61b";
+    public const string Direction_right = "\ue61d";
+    public const string Direction_up = "\ue61f";
+    public const string Reject = "\ue620";
+    public const string Moon = "\ue867";
+    public const string Sending = "\ueb5b";
+    public const string Light = "\ue64b";
+    public const string Passed = "\ue6ac";
+    public const string Theme = "\ue7af";
 }

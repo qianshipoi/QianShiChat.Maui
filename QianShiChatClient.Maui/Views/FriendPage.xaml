@@ -36,7 +36,7 @@
                 FontAttributes="Bold"
                 FontSize="22"
                 Style="{DynamicResource IconLabel}"
-                Text="{x:Static models:IconFontIcons.Information_add}"
+                Text="{x:Static models:IconFontIcons.Adduser}"
                 VerticalOptions="Center">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding JoinQueryPageCommand}" />
@@ -50,7 +50,7 @@
         </toolkit:DockLayout>
         <Frame
             Grid.Row="1"
-            Margin="20,0,20,10"
+            Margin="12,0,12,10"
             Padding="0"
             BackgroundColor="Transparent"
             CornerRadius="4"
@@ -69,11 +69,15 @@
                     Orientation="Horizontal"
                     VerticalOptions="Center">
                     <Label
-                        FontAttributes="Bold"
-                        FontSize="20"
+                        Margin="0,0,4,0"
+                        FontSize="18"
                         Style="{DynamicResource IconLabel}"
-                        Text="{x:Static models:IconFontIcons.Filter}" />
-                    <Label Text="{local:Localize Search}" />
+                        Text="{x:Static models:IconFontIcons.Search}"
+                        TextColor="{StaticResource Gray500}" />
+                    <Label
+                        FontAttributes="Bold"
+                        Text="{local:Localize Search}"
+                        TextColor="{StaticResource Gray500}" />
                 </StackLayout>
             </Grid>
         </Frame>
@@ -94,7 +98,7 @@
                 <DataTemplate>
                     <ViewCell x:DataType="{x:Type viewmodels:OperationItem}">
                         <Grid
-                            Padding="10,0"
+                            Padding="12,0"
                             ColumnDefinitions="*,Auto"
                             ColumnSpacing="8">
                             <Label
@@ -105,7 +109,7 @@
                                 Grid.Column="1"
                                 FontSize="22"
                                 Style="{StaticResource IconLabel}"
-                                Text="{x:Static models:IconFontIcons.Exit}"
+                                Text="{x:Static models:IconFontIcons.Direction_right}"
                                 VerticalOptions="Center" />
                         </Grid>
                     </ViewCell>

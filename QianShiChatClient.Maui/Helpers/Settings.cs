@@ -7,23 +7,30 @@ public static class Settings
         get
         {
             if (!Preferences.ContainsKey(nameof(Theme)))
-                return AppTheme.Light;
+                return AppTheme.Unspecified;
 
-            return Enum.Parse<AppTheme>(Preferences.Get(nameof(Theme), Enum.GetName(AppTheme.Light)));
+            return Enum.Parse<AppTheme>(Preferences.Get(nameof(Theme), Enum.GetName(AppTheme.Unspecified)));
         }
         set => Preferences.Set(nameof(Theme), value.ToString());
     }
 
-    public static CultureInfo Culture
+    public static string Language
     {
         get
         {
-            if (!Preferences.ContainsKey(nameof(Culture)))
-                return Thread.CurrentThread.CurrentCulture;
-
-            return new CultureInfo(Preferences.Get(nameof(Culture), Thread.CurrentThread.CurrentCulture.Name));
+            if (!Preferences.ContainsKey(nameof(Language)))
+                return Thread.CurrentThread.CurrentCulture.Name;
+            return Preferences.Get(nameof(Language), Thread.CurrentThread.CurrentCulture.Name);
         }
-        set => Preferences.Set(nameof(Culture), value.Name);
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                Preferences.Remove(nameof(Language));
+                return;
+            }
+            Preferences.Set(nameof(Language), value);
+        }
     }
 
     public static string AccessToken
