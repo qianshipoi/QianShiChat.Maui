@@ -79,7 +79,7 @@ public sealed partial class LoginViewModel : ViewModelBase
 
         if (string.IsNullOrEmpty(Account) || string.IsNullOrEmpty(Password))
         {
-            await Toast.Make("请完善信息！").Show();
+            await Toast.Make(LocalizationResourceManager.Instance["AccountOrPasswordCanNotEmpty"].ToString()).Show();
             return;
         }
 
@@ -87,7 +87,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         try
         {
             var user = await _apiClient.LoginAsync(new LoginReqiest(Account, Password.ToMd5()));
-            await Toast.Make("登录成功").Show();
+            await Toast.Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString()).Show();
             JoinMainPage(user.ToUserInfo());
         }
         finally

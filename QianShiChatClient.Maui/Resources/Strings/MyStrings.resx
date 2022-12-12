@@ -180,4 +180,13 @@
   <data name="FriendApply" xml:space="preserve">
     <value>Friend Apply</value>
   </data>
+  <data name="LoginSuccessed" xml:space="preserve">
+    <value>Login Successed!</value>
+  </data>
+  <data name="AccountOrPasswordCanNotEmpty" xml:space="preserve">
+    <value>Account or password can not empty!</value>
+  </data>
+  <data name="NoSessions" xml:space="preserve">
+    <value>No Sessions</value>
+  </data>
 </root>

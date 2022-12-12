@@ -70,6 +70,15 @@ namespace QianShiChatClient.Maui.Resources.Strings {
         }
         
         /// <summary>
+        ///   查找类似 Account or password can not empty! 的本地化字符串。
+        /// </summary>
+        public static string AccountOrPasswordCanNotEmpty {
+            get {
+                return ResourceManager.GetString("AccountOrPasswordCanNotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Add Friend 的本地化字符串。
         /// </summary>
         public static string AddFriend {
@@ -133,6 +142,15 @@ namespace QianShiChatClient.Maui.Resources.Strings {
         }
         
         /// <summary>
+        ///   查找类似 Login Successed! 的本地化字符串。
+        /// </summary>
+        public static string LoginSuccessed {
+            get {
+                return ResourceManager.GetString("LoginSuccessed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Message 的本地化字符串。
         /// </summary>
         public static string Message {
@@ -147,6 +165,15 @@ namespace QianShiChatClient.Maui.Resources.Strings {
         public static string NewFriend {
             get {
                 return ResourceManager.GetString("NewFriend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 No Sessions 的本地化字符串。
+        /// </summary>
+        public static string NoSessions {
+            get {
+                return ResourceManager.GetString("NoSessions", resourceCulture);
             }
         }
         
