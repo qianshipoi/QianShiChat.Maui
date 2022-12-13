@@ -2,6 +2,7 @@
 
 public interface INavigationService
 {
+    Task GoToRoot();
     Task GoBack();
     Task GoToAddFriendPage(UserInfo user);
     Task GoToLoginPage();
@@ -12,4 +13,6 @@ public interface INavigationService
     Task GoToScanningPage();
     Task GoToSearchPage();
     Task GoToSettingsPage();
+    Task GoToMessagePage();
+    Task GoToQrAuthPage(string key);
 }

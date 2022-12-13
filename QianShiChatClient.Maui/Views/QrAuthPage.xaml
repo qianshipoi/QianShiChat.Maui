@@ -4,23 +4,24 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
     Title="QrAuthPage"
+    x:DataType="{x:Type vms:QrAuthViewModel}"
     Shell.PresentationMode="ModalAnimated">
-    <VerticalStackLayout>
+    <VerticalStackLayout Padding="40,0" VerticalOptions="CenterAndExpand">
         <Label
-            x:Name="AuthPathControl"
             HorizontalOptions="Center"
+            Text="{Binding Key}"
             VerticalOptions="Center" />
-        <Label
-            x:Name="KeyControl"
-            HorizontalOptions="Center"
-            VerticalOptions="Center" />
-        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-            <Button Clicked="Button_Clicked" Text="{local:Localize Pass}" />
-            <Button
-                Grid.Column="1"
-                Clicked="Button_Clicked_1"
-                Text="{local:Localize Reject}" />
-        </Grid>
+        <Button
+            Margin="0,40"
+            Command="{Binding PassCommand}"
+            IsEnabled="{Binding PreAuthSuccessed}"
+            IsVisible="{Binding PreAuthSuccessed}"
+            Text="{local:Localize Pass}" />
+        <Button
+            Grid.Column="1"
+            Command="{Binding RejectCommand}"
+            Text="{local:Localize Reject}" />
     </VerticalStackLayout>
 </ContentPage>
