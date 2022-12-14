@@ -22,4 +22,7 @@ public interface IApiClient
     Task<List<UserDto>> AllFriendAsync(CancellationToken cancellationToken = default);
     Task<QrAuthResponse> QrPreAuthAsync(string key, CancellationToken cancellationToken = default);
     Task<QrAuthResponse> QrAuthAsync(string key, CancellationToken cancellationToken = default);
+    Task<CreateQrAuthKeyResponse> CreateQrKeyAsync(CancellationToken cancellationToken = default);
+    Task<CreateQrCodeResponse> CreateQrCodeAsync(CreateQrCodeRequest request, CancellationToken cancellationToken = default);
+    Task<CheckQrAuthKeyResponse> CheckQrKeyAsync(string key, CancellationToken cancellationToken = default);
 }

@@ -6,11 +6,24 @@ public sealed partial class LoginViewModel : ViewModelBase
     readonly IDispatcher _dispatcher;
     readonly IServiceProvider _serviceProvider;
 
+    Timer _updateQrCodeTimer;
+    Timer _checkTimer;
+    string _key;
+
+    [ObservableProperty]
+    bool _isAccountAuthMode = true;
+
     [ObservableProperty]
     string _account = "qianshi";
 
     [ObservableProperty]
     string _password = "123456";
+
+    [ObservableProperty]
+    ImageSource _authQrCodeImage;
+
+    [ObservableProperty]
+    UserInfo _user;
 
     public LoginViewModel(
         IStringLocalizer<MyStrings> stringLocalizer,
@@ -93,6 +106,93 @@ public sealed partial class LoginViewModel : ViewModelBase
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    async Task GenerateQrCodeImage()
+    {
+        _updateQrCodeTimer?.Dispose();
+
+        // create auth key.
+        var qrKeyResponse = await _apiClient.CreateQrKeyAsync();
+        _key = qrKeyResponse.Key;
+
+        // create auth qrcode.
+        var qrcodeResponse = await _apiClient.CreateQrCodeAsync(new CreateQrCodeRequest
+        {
+            Key = _key,
+            Qrimg = true
+        });
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            AuthQrCodeImage = ImageSource.FromStream(() =>
+            {
+                qrcodeResponse.Image = qrcodeResponse.Image.Replace("data:image/png;base64,", "");
+                var bytes = Convert.FromBase64String(qrcodeResponse.Image);
+                return new MemoryStream(bytes);
+            });
+        });
+
+        _updateQrCodeTimer = new Timer(state => _ = GenerateQrCodeImage(), null, 60000, 60000);
+    }
+
+    void ClearAuthTimer()
+    {
+        _checkTimer?.Dispose();
+        _updateQrCodeTimer?.Dispose();
+        User = null;
+    }
+
+    [RelayCommand]
+    async Task SwitchAuthMode()
+    {
+        if (IsBusy) return;
+        IsBusy = true;
+        try
+        {
+            if (IsAccountAuthMode)
+            {
+                await GenerateQrCodeImage();
+                // start check timer.
+                _checkTimer = new Timer(state => _ = CheckAuthStatus(), null, 2000, 2000);
+            }
+            else
+            {
+                ClearAuthTimer();
+            }
+            IsAccountAuthMode = !IsAccountAuthMode;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    async Task CheckAuthStatus()
+    {
+        var checkResponse = await _apiClient.CheckQrKeyAsync(_key);
+
+        if (checkResponse.Code == 800)
+        {
+            // qrcode expired.
+            ClearAuthTimer();
+            await GenerateQrCodeImage();
+            _checkTimer = new Timer(state => _ = CheckAuthStatus(), null, 2000, 2000);
+        }
+        else if (checkResponse.Code == 802)
+        {
+            // authorizing.
+            var user = checkResponse.User.ToUserInfo();
+            user.Avatar = _apiClient.FormatFile(user.Avatar);
+            User = user;
+        }
+        else if (checkResponse.Code == 803)
+        {
+            // auth successed.
+            ClearAuthTimer();
+            Settings.AccessToken = checkResponse.AccessToken;
+            await Toast.Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString()).Show();
+            JoinMainPage(checkResponse.User.ToUserInfo());
         }
     }
 }

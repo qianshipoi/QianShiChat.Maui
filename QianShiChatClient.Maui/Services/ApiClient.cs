@@ -118,6 +118,27 @@ public class ApiClient : IApiClient
         return JsonSerializer.Deserialize<QrAuthResponse>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
     }
 
+    public async Task<CreateQrAuthKeyResponse> CreateQrKeyAsync(CancellationToken cancellationToken = default)
+    {
+        var response = await _client.GetAsync("/api/Auth/qr/key", cancellationToken);
+        await HandleUnauthorizedResponse(response);
+        return JsonSerializer.Deserialize<CreateQrAuthKeyResponse>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+    }
+
+    public async Task<CreateQrCodeResponse> CreateQrCodeAsync(CreateQrCodeRequest request, CancellationToken cancellationToken = default)
+    {
+        var response = await _client.PostAsJsonAsync("/api/Auth/qr/create", request, cancellationToken);
+        await HandleUnauthorizedResponse(response);
+        return JsonSerializer.Deserialize<CreateQrCodeResponse>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+    }
+
+    public async Task<CheckQrAuthKeyResponse> CheckQrKeyAsync(string key,CancellationToken cancellationToken = default)
+    {
+        var response = await _client.GetAsync($"/api/Auth/qr/check?key={key}", cancellationToken);
+        await HandleUnauthorizedResponse(response);
+        return JsonSerializer.Deserialize<CheckQrAuthKeyResponse>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+    }
+
     string FormatParam(string url, object obj, bool ignoreNull = true)
     {
         var properties = obj.GetType().GetProperties();

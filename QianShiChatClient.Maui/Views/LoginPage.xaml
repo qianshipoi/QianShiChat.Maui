@@ -11,10 +11,11 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    <VerticalStackLayout VerticalOptions="Center">
-        <Grid Padding="20,0" RowDefinitions="*,*,Auto">
+    <VerticalStackLayout Padding="40,20" VerticalOptions="Center">
+        <StackLayout IsVisible="{Binding IsAccountAuthMode}">
             <Entry
                 Grid.Column="1"
                 Placeholder="{local:Localize AccountHit}"
@@ -22,15 +23,48 @@
             <Entry
                 Grid.Row="1"
                 Grid.Column="1"
+                Margin="0,10"
                 IsPassword="True"
                 Placeholder="{local:Localize PasswordHit}"
                 Text="{Binding Password}" />
             <Button
                 Grid.Row="2"
-                Margin="20"
+                Margin="0,20,0,0"
                 Command="{Binding SubmitCommand}"
                 IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                 Text="{local:Localize Login}" />
-        </Grid>
+        </StackLayout>
+        <StackLayout IsVisible="{Binding IsAccountAuthMode, Converter={StaticResource InvertedBoolConverter}}">
+            <Grid>
+                <Image
+                    HeightRequest="240"
+                    Source="{Binding AuthQrCodeImage}"
+                    WidthRequest="240" />
+                <toolkit:AvatarView
+                    CornerRadius="30"
+                    HeightRequest="60"
+                    ImageSource="{Binding User.Avatar}"
+                    IsVisible="{Binding User, Converter={StaticResource IsNotNullConverter}}"
+                    WidthRequest="60" />
+            </Grid>
+            <Label
+                Margin="20,0,20,0"
+                HorizontalOptions="Center"
+                IsVisible="{Binding User, Converter={StaticResource IsNotNullConverter}}"
+                Text="{Binding User.NickName}" />
+        </StackLayout>
+        <Button
+            Margin="0,20"
+            Command="{Binding SwitchAuthModeCommand}"
+            Text="二维码登录">
+            <Button.Triggers>
+                <DataTrigger
+                    Binding="{Binding IsAccountAuthMode}"
+                    TargetType="Button"
+                    Value="False">
+                    <Setter Property="Text" Value="账号登录" />
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
     </VerticalStackLayout>
 </ContentPage>

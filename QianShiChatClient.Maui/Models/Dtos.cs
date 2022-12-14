@@ -12,12 +12,39 @@ public record UserDto(int Id, string Account, string NickName, string Avatar, lo
 
 public class QrAuthResponse
 {
+    public int Code { get; set; }
+
+    public string Message { get; set; }
+}
+
+public class CheckQrAuthKeyResponse
+{
     /// <summary>
     /// 800 二维码不存在或已过期 801 等待扫码 802 授权中 803 授权成功
     /// </summary>
     public int Code { get; set; }
-
     public string Message { get; set; }
+    public UserDto User { get; set; }   
+    public string AccessToken { get; set; }
+}
+
+public class CreateQrAuthKeyResponse
+{
+    public int Code { get; set; }
+
+    public string Key { get; set; }
+}
+public class CreateQrCodeRequest
+{
+    public string Key { get; set; }
+
+    public bool Qrimg { get; set; }
+}
+public class CreateQrCodeResponse
+{
+    public string Url { get; set; }
+
+    public string Image { get; set; }
 }
 
 public class ApplyPendingDto
