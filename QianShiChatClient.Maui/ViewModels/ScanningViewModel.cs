@@ -19,7 +19,9 @@ public sealed partial class ScanningViewModel : ViewModelBase
     {
         if (!IsDetecting) return;
         IsDetecting = false;
-        var uri = new Uri(results.First().Value);
+
+        var result = results.First().Value;
+        var uri = new Uri(result);
 
         if (uri.Host == "chat.kuriyama.top" && uri.AbsolutePath == "/api/auth/qr/auth")
         {
@@ -39,6 +41,26 @@ public sealed partial class ScanningViewModel : ViewModelBase
             }
 
         }
-        await Snackbar.Make(results.First().Value).Show();
+
+        using var cancellationTokenSource = new CancellationTokenSource();
+
+        await Snackbar.Make(result, async () =>
+        {
+            await Clipboard.Default.SetTextAsync(result);
+            cancellationTokenSource.Cancel();
+        }, "Copy", TimeSpan.FromSeconds(10)).Show();
+
+        try
+        {
+            await Task.Delay(10000, cancellationTokenSource.Token);
+        }
+        catch(TaskCanceledException)
+        {
+
+        }
+        finally
+        {
+            IsDetecting = true;
+        }
     }
 }
