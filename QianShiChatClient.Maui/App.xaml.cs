@@ -22,20 +22,20 @@ public partial class App : Application
         MainPage = serviceProvider.GetRequiredService<LoginPage>();
     }
 
-    protected override Window CreateWindow(IActivationState activationState)
-    {
-        var window = base.CreateWindow(activationState);
+    //protected override Window CreateWindow(IActivationState activationState)
+    //{
+    //    var window = base.CreateWindow(activationState);
 
-        const double width = 400;
-        const double height = 720;
+    //    const double width = 400;
+    //    const double height = 720;
 
-        window.Width = width;
-        window.Height = height;
-        window.MaximumWidth = width;
-        window.MaximumHeight = height;
-        window.MinimumHeight = height;
-        window.MinimumWidth = width;
+    //    window.Width = width;
+    //    window.Height = height;
+    //    window.MaximumWidth = width;
+    //    window.MaximumHeight = height;
+    //    window.MinimumHeight = height;
+    //    window.MinimumWidth = width;
 
-        return window;
-    }
+    //    return window;
+    //}
 }

@@ -9,19 +9,21 @@ public class SortableObservableCollection<T> : ObservableCollection<T>
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
         base.OnCollectionChanged(e);
-        if (SortingSelector == null
+        if (
+            SortingSelector == null
             || e.Action == NotifyCollectionChangedAction.Remove
-            || e.Action == NotifyCollectionChangedAction.Reset)
+            || e.Action == NotifyCollectionChangedAction.Reset
+        )
             return;
 
-        var query = this
-          .Select((item, index) => (Item: item, Index: index));
+        var query = this.Select((item, index) => (Item: item, Index: index));
         query = Descending
-          ? query.OrderBy(tuple => SortingSelector(tuple.Item))
-          : query.OrderByDescending(tuple => SortingSelector(tuple.Item));
+            ? query.OrderBy(tuple => SortingSelector(tuple.Item))
+            : query.OrderByDescending(tuple => SortingSelector(tuple.Item));
 
-        var map = query.Select((tuple, index) => (OldIndex: tuple.Index, NewIndex: index))
-         .Where(o => o.OldIndex != o.NewIndex);
+        var map = query
+            .Select((tuple, index) => (OldIndex: tuple.Index, NewIndex: index))
+            .Where(o => o.OldIndex != o.NewIndex);
 
         using (var enumerator = map.GetEnumerator())
             if (enumerator.MoveNext())

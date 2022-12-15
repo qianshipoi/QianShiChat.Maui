@@ -9,7 +9,8 @@
     xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
     Title="{local:Localize Search}"
     x:DataType="{x:Type vms:SearchViewModel}"
-    Shell.FlyoutBehavior="Disabled"
+    Shell.FlyoutBehavior="{OnPlatform Default=Disabled,
+                                      WinUI=Locked}"
     Shell.TabBarIsVisible="False">
     <Grid RowDefinitions="Auto,*">
         <Grid Margin="10" ColumnDefinitions="*,Auto">

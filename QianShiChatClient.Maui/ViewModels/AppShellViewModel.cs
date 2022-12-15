@@ -3,14 +3,17 @@
 public sealed partial class AppShellViewModel : ViewModelBase
 {
     readonly ChatHub _chatHub;
+    readonly IDialogService _dialogService;
     public AppShellViewModel(
         ChatHub chatHub,
         INavigationService navigationService,
-        IStringLocalizer<MyStrings> stringLocalizer)
+        IStringLocalizer<MyStrings> stringLocalizer,
+        IDialogService dialogService)
         : base(navigationService, stringLocalizer)
     {
         _ = chatHub.Connect();
         _chatHub = chatHub;
+        _dialogService = dialogService;
     }
 
     [RelayCommand]
@@ -22,4 +25,7 @@ public sealed partial class AppShellViewModel : ViewModelBase
         await _chatHub.Deconnect();
         await _navigationService.GoToLoginPage();
     }
+
+    [RelayCommand]
+    Task MessageDialog() => _dialogService.PushMessageDialog();
 }

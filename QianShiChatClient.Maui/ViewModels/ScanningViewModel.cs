@@ -1,6 +1,4 @@
-﻿using ZXing.Net.Maui;
-
-namespace QianShiChatClient.Maui.ViewModels;
+﻿namespace QianShiChatClient.Maui.ViewModels;
 
 public sealed partial class ScanningViewModel : ViewModelBase
 {

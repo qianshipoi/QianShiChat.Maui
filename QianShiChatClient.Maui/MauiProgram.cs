@@ -1,6 +1,4 @@
-﻿using ZXing.Net.Maui;
-using ZXing.Net.Maui.Controls;
-#if ANDROID
+﻿#if ANDROID
 using QianShiChatClient.Maui.Platforms.Android;
 #elif WINDOWS
 using QianShiChatClient.Maui.Platforms.Windows;
@@ -31,6 +29,10 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("iconfont.ttf", IconFontIcons.FontFamily);
             })
+            .ConfigureMopups(() =>
+            {
+
+            })
             .Services.ConfigureService(); ;
 
 #if DEBUG
@@ -49,6 +51,7 @@ public static class MauiProgram
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<ChatDatabase>();
         services.AddSingleton<DataCenter>();
+        services.AddSingleton<IDialogService, DialogService>();
 
         services.AddTransient<AppShell, AppShellViewModel>();
         services.AddTransient<LoginPage, LoginViewModel>();

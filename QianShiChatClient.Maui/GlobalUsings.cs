@@ -2,12 +2,17 @@
 
 global using CommunityToolkit.Maui;
 global using CommunityToolkit.Maui.Alerts;
+global using CommunityToolkit.Maui.Core;
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
 
 global using Microsoft.Extensions.Localization;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Maui.LifecycleEvents;
+
+global using Mopups.Hosting;
+global using Mopups.Interfaces;
+global using Mopups.Services;
 
 global using QianShiChatClient.Maui.Data;
 global using QianShiChatClient.Maui.Extensions;
@@ -17,6 +22,7 @@ global using QianShiChatClient.Maui.Resources.Strings;
 global using QianShiChatClient.Maui.Services;
 global using QianShiChatClient.Maui.ViewModels;
 global using QianShiChatClient.Maui.Views;
+global using QianShiChatClient.Maui.Views.Popups;
 
 global using SQLite;
 
@@ -34,3 +40,6 @@ global using System.Security.Cryptography;
 global using System.Text;
 global using System.Text.Json;
 global using System.Threading.Tasks;
+
+global using ZXing.Net.Maui;
+global using ZXing.Net.Maui.Controls;

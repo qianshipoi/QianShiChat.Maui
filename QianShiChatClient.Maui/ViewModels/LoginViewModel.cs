@@ -30,8 +30,8 @@ public sealed partial class LoginViewModel : ViewModelBase
         INavigationService navigationService,
         IDispatcher dispatcher,
         IApiClient apiClient,
-        IServiceProvider serviceProvider)
-        : base(navigationService, stringLocalizer)
+        IServiceProvider serviceProvider
+    ) : base(navigationService, stringLocalizer)
     {
         _apiClient = apiClient;
         _dispatcher = dispatcher;
@@ -61,18 +61,18 @@ public sealed partial class LoginViewModel : ViewModelBase
                 JoinMainPage(user);
                 // update user info.
                 _ = Task.Run(async () =>
-                 {
-                     var (isSuccessed, userDto) = await _apiClient.CheckAccessToken(accessToken);
-                     if (isSuccessed)
-                     {
-                         _dispatcher.Dispatch(() =>
-                         {
-                             App.Current.User.Avatar = _apiClient.FormatFile(userDto.Avatar);
-                             App.Current.User.NickName = userDto.NickName;
-                             Settings.CurrentUser = App.Current.User;
-                         });
-                     }
-                 });
+                {
+                    var (isSuccessed, userDto) = await _apiClient.CheckAccessToken(accessToken);
+                    if (isSuccessed)
+                    {
+                        _dispatcher.Dispatch(() =>
+                        {
+                            App.Current.User.Avatar = _apiClient.FormatFile(userDto.Avatar);
+                            App.Current.User.NickName = userDto.NickName;
+                            Settings.CurrentUser = App.Current.User;
+                        });
+                    }
+                });
             }
             else
             {
@@ -88,11 +88,16 @@ public sealed partial class LoginViewModel : ViewModelBase
     [RelayCommand]
     async Task Submit()
     {
-        if (IsBusy) return;
+        if (IsBusy)
+            return;
 
         if (string.IsNullOrEmpty(Account) || string.IsNullOrEmpty(Password))
         {
-            await Toast.Make(LocalizationResourceManager.Instance["AccountOrPasswordCanNotEmpty"].ToString()).Show();
+            await Toast
+                .Make(
+                    LocalizationResourceManager.Instance["AccountOrPasswordCanNotEmpty"].ToString()
+                )
+                .Show();
             return;
         }
 
@@ -100,7 +105,9 @@ public sealed partial class LoginViewModel : ViewModelBase
         try
         {
             var user = await _apiClient.LoginAsync(new LoginReqiest(Account, Password.ToMd5()));
-            await Toast.Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString()).Show();
+            await Toast
+                .Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString())
+                .Show();
             JoinMainPage(user.ToUserInfo());
         }
         finally
@@ -118,11 +125,9 @@ public sealed partial class LoginViewModel : ViewModelBase
         _key = qrKeyResponse.Key;
 
         // create auth qrcode.
-        var qrcodeResponse = await _apiClient.CreateQrCodeAsync(new CreateQrCodeRequest
-        {
-            Key = _key,
-            Qrimg = true
-        });
+        var qrcodeResponse = await _apiClient.CreateQrCodeAsync(
+            new CreateQrCodeRequest { Key = _key, Qrimg = true }
+        );
         MainThread.BeginInvokeOnMainThread(() =>
         {
             AuthQrCodeImage = ImageSource.FromStream(() =>
@@ -146,7 +151,8 @@ public sealed partial class LoginViewModel : ViewModelBase
     [RelayCommand]
     async Task SwitchAuthMode()
     {
-        if (IsBusy) return;
+        if (IsBusy)
+            return;
         IsBusy = true;
         try
         {
@@ -192,9 +198,11 @@ public sealed partial class LoginViewModel : ViewModelBase
             ClearAuthTimer();
             Settings.AccessToken = checkResponse.AccessToken;
             await MainThread.InvokeOnMainThreadAsync(async () =>
-             {
-                 await Toast.Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString()).Show();
-             });
+            {
+                await Toast
+                    .Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString())
+                    .Show();
+            });
             JoinMainPage(checkResponse.User.ToUserInfo());
         }
     }

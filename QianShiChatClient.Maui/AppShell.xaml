@@ -10,7 +10,8 @@
     xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
     Title="QianShiChatClient.Maui"
     x:DataType="{x:Type vms:AppShellViewModel}"
-    Shell.FlyoutBehavior="Flyout"
+    Shell.FlyoutBehavior="{OnPlatform Default=Flyout,
+                                      WinUI=Locked}"
     Shell.TabBarIsVisible="True">
 
     <Shell.FlyoutHeader>
@@ -50,6 +51,7 @@
             Text="Logout" />
     </Shell.FlyoutFooter>
 
+
     <FlyoutItem
         Title="{local:Localize Home}"
         Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
@@ -78,5 +80,7 @@
                          Glyph={x:Static models:IconFontIcons.Settings},
                          Color={StaticResource Gray200}}"
         Route="SettingsPage" />
+
+    <MenuItem Command="{Binding MessageDialogCommand}" Text="MessageDailog" />
 
 </Shell>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:PopupPage
+    x:Class="QianShiChatClient.Maui.Views.Popups.MessageDialog"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+    Title="MessageDialog">
+    <Frame
+        Margin="40"
+        BackgroundColor="{StaticResource Gray100}"
+        CornerRadius="12"
+        MinimumHeightRequest="400"
+        VerticalOptions="CenterAndExpand">
+        <VerticalStackLayout>
+            <Label
+                HorizontalOptions="Center"
+                Text="Message Dialog!"
+                VerticalOptions="Center" />
+        </VerticalStackLayout>
+    </Frame>
+</mopups:PopupPage>

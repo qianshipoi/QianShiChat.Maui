@@ -105,6 +105,9 @@
 	  <MauiXaml Update="Views\NewFriendPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Popups\MessageDialog.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\QrAuthPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

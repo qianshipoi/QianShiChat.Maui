@@ -10,7 +10,8 @@
     xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
     Title="{Binding Session.User.NickName}"
     x:DataType="{x:Type vms:MessageDetailViewModel}"
-    Shell.FlyoutBehavior="Disabled"
+    Shell.FlyoutBehavior="{OnPlatform Default=Disabled,
+                                      WinUI=Locked}"
     Shell.TabBarIsVisible="False">
     <ContentPage.Resources>
         <ResourceDictionary>
