@@ -1,4 +1,5 @@
 ﻿using ZXing.Net.Maui;
+using ZXing.Net.Maui.Controls;
 #if ANDROID
 using QianShiChatClient.Maui.Platforms.Android;
 #elif WINDOWS

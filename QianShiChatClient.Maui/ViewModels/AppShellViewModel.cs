@@ -2,6 +2,7 @@
 
 public sealed partial class AppShellViewModel : ViewModelBase
 {
+    readonly ChatHub _chatHub;
     public AppShellViewModel(
         ChatHub chatHub,
         INavigationService navigationService,
@@ -9,5 +10,16 @@ public sealed partial class AppShellViewModel : ViewModelBase
         : base(navigationService, stringLocalizer)
     {
         _ = chatHub.Connect();
+        _chatHub = chatHub;
+    }
+
+    [RelayCommand]
+    async Task Logout()
+    {
+        Settings.CurrentUser = null;
+        Settings.AccessToken = null;
+        App.Current.User = null;
+        await _chatHub.Deconnect();
+        await _navigationService.GoToLoginPage();
     }
 }

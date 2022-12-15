@@ -6,7 +6,7 @@
     xmlns:helpers="clr-namespace:QianShiChatClient.Maui.Helpers"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
-    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
     Title="ScanningPage"
     x:DataType="{x:Type vms:ScanningViewModel}"
     Shell.NavBarIsVisible="False"
@@ -16,7 +16,10 @@
             <helpers:BarcodeDetectionEventArgsConverter x:Key="BarcodeDetectionEventArgsConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    <zxing:CameraBarcodeReaderView x:Name="cameraBarcodeReaderView" IsDetecting="True">
+    <zxing:CameraBarcodeReaderView
+        x:Name="cameraBarcodeReaderView"
+        IsDetecting="{Binding IsDetecting}"
+        Options="{Binding BarcodeReaderOptions}">
         <zxing:CameraBarcodeReaderView.Behaviors>
             <toolkit:EventToCommandBehavior
                 Command="{Binding BarcodeDetectionCommand}"

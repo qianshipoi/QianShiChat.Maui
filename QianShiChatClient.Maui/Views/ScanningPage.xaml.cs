@@ -8,10 +8,5 @@ public partial class ScanningPage : ContentPage
     {
         InitializeComponent();
         this.BindingContext = viewModel;
-        cameraBarcodeReaderView.Options = new BarcodeReaderOptions()
-        {
-            Formats = BarcodeFormat.QrCode,
-            Multiple = false,
-        };
     }
 }

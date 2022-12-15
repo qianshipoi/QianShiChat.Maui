@@ -191,7 +191,10 @@ public sealed partial class LoginViewModel : ViewModelBase
             // auth successed.
             ClearAuthTimer();
             Settings.AccessToken = checkResponse.AccessToken;
-            await Toast.Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString()).Show();
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+             {
+                 await Toast.Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString()).Show();
+             });
             JoinMainPage(checkResponse.User.ToUserInfo());
         }
     }

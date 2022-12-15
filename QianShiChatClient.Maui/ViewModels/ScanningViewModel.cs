@@ -7,6 +7,13 @@ public sealed partial class ScanningViewModel : ViewModelBase
     [ObservableProperty]
     bool _isDetecting = true;
 
+    [ObservableProperty]
+    BarcodeReaderOptions _barcodeReaderOptions = new BarcodeReaderOptions
+    {
+        Formats = BarcodeFormat.QrCode,
+        Multiple = false,
+    };
+
     public ScanningViewModel(
         INavigationService navigationService,
         IStringLocalizer<MyStrings> stringLocalizer)

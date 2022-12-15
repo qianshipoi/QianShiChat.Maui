@@ -91,4 +91,11 @@ public class ChatHub
         }
         IsConnected = true;
     }
+
+    public async Task Deconnect()
+    {
+        if (!IsConnected) return;
+        await connection.StopAsync();
+        IsConnected = false;
+    }
 }
