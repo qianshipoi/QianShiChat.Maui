@@ -33,7 +33,7 @@ public sealed partial class QueryViewModel : ViewModelBase
             foreach (var user in paged.Items)
             {
                 var friend = user.ToUserInfo();
-                friend.Avatar = _apiClient.FormatFile(friend.Avatar);
+                //friend.Avatar = _apiClient.FormatFile(friend.Avatar);
                 Result.Add(friend);
             }
         }

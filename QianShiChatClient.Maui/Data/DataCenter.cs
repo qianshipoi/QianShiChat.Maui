@@ -31,7 +31,7 @@ public sealed partial class DataCenter : ObservableObject
 
         _chatHub.PrivateChat += ChatHubPrivateChat;
         _chatHub.IsConnectedChanged += (val) => IsConnected = val;
-        _isConnected = _chatHub.IsConnected;
+        IsConnected = _chatHub.IsConnected;
 
         _ = GetSessionsAsync();
         _ = GetApplyPendingsAsync();
@@ -122,7 +122,7 @@ public sealed partial class DataCenter : ObservableObject
         {
             var messages = userDto.Messages.ToChatMessages();
             var user = userDto.ToUserInfo();
-            user.Avatar = _apiClient.FormatFile(user.Avatar);
+            //user.Avatar = _apiClient.FormatFile(user.Avatar);
             foreach (var message in messages)
             {
                 message.IsSelfSend = message.FromId == App.Current.User.Id;
@@ -147,8 +147,8 @@ public sealed partial class DataCenter : ObservableObject
             foreach (var item in paged.Items)
             {
                 var apply = item.ToApplyPending();
-                apply.User.Avatar = _apiClient.FormatFile(apply.User.Avatar);
-                apply.Friend.Avatar = _apiClient.FormatFile(apply.Friend.Avatar);
+                //apply.User.Avatar = _apiClient.FormatFile(apply.User.Avatar);
+                //apply.Friend.Avatar = _apiClient.FormatFile(apply.Friend.Avatar);
                 Pendings.Add(apply);
             }
         }
@@ -160,7 +160,7 @@ public sealed partial class DataCenter : ObservableObject
         foreach (var userDto in userdtos)
         {
             var user = userDto.ToUserInfo();
-            user.Avatar = _apiClient.FormatFile(userDto.Avatar);
+            //user.Avatar = _apiClient.FormatFile(userDto.Avatar);
 
             var friend = Friends.FirstOrDefault(x => x.Id == user.Id);
 

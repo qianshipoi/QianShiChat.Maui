@@ -39,6 +39,7 @@ public class ChatHub
           .WithUrl($"{ApiClient.BaseAddress}/Hubs/Chat", options =>
           {
               options.AccessTokenProvider = () => GetAccessToken();
+              options.Headers.Add("Client-Type", _apiClient.ClientType);
           })
           .WithAutomaticReconnect()
           .Build();

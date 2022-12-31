@@ -13,6 +13,8 @@ public class ApiClient : IApiClient
         ? "https://chat.kuriyama.top"
         : "https://chat.kuriyama.top";
 
+    public static string CurrentClientType = $"MauiClient{DeviceInfo.Platform}{DeviceInfo.Idiom}";
+
     public ApiClient(HttpClient client, INavigationService navigationService)
     {
         _navigationService = navigationService;
@@ -20,6 +22,7 @@ public class ApiClient : IApiClient
         _client.BaseAddress = new Uri(BaseAddress);
         _client.DefaultRequestHeaders.Add("Accept", "application/json");
         _client.DefaultRequestHeaders.Add("User-Agent", "QianShiChatClient-Maui");
+        _client.DefaultRequestHeaders.Add("Client-Type", ClientType);
         if (!string.IsNullOrEmpty(AccessToken))
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
@@ -37,6 +40,8 @@ public class ApiClient : IApiClient
         private set => Settings.AccessToken = value;
     }
 
+    public string ClientType => CurrentClientType;
+
     public async Task<UserDto> LoginAsync(LoginReqiest request, CancellationToken cancellationToken = default)
     {
         using var response = await _client.PostAsJsonAsync("/api/Auth", request, cancellationToken);
@@ -45,7 +50,8 @@ public class ApiClient : IApiClient
         AccessToken = accessToken;
         var body = await response.Content.ReadAsStringAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-        return JsonSerializer.Deserialize<UserDto>(body, _serializerOptions);
+        var result = JsonSerializer.Deserialize<GlobalResult<UserDto>>(body, _serializerOptions);
+        return result.Data;
     }
 
     public async Task<(bool, UserDto)> CheckAccessToken(string token, CancellationToken cancellationToken = default)
@@ -59,8 +65,8 @@ public class ApiClient : IApiClient
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
             AccessToken = accessToken;
             var body = await response.Content.ReadAsStringAsync();
-            var user = JsonSerializer.Deserialize<UserDto>(body, _serializerOptions);
-            return (true, user);
+            var user = JsonSerializer.Deserialize<GlobalResult<UserDto>>(body, _serializerOptions);
+            return (true, user.Data);
         }
         catch (Exception ex)
         {
@@ -71,19 +77,22 @@ public class ApiClient : IApiClient
 
     public async Task<List<UserWithMessageDto>> GetUnreadMessageFriendsAsync(CancellationToken cancellationToken = default)
     {
-        return await _client.GetFromJsonAsync<List<UserWithMessageDto>>("/api/Friend/Unread", _serializerOptions, cancellationToken);
+        var result = await _client.GetFromJsonAsync<GlobalResult<List<UserWithMessageDto>>>("/api/Friend/Unread", _serializerOptions, cancellationToken);
+        return result.Data;
     }
 
     public async Task<ChatMessageDto> SendTextAsync(PrivateChatMessageRequest request, CancellationToken cancellationToken = default)
     {
         var response = await _client.PostAsJsonAsync($"/api/chat/text", request, _serializerOptions, cancellationToken);
         await HandleUnauthorizedResponse(response);
-        return await response.Content.ReadFromJsonAsync<ChatMessageDto>();
+        var result = await response.Content.ReadFromJsonAsync<GlobalResult<ChatMessageDto>>();
+        return result.Data;
     }
 
     public async Task<PagedList<UserDto>> SearchNickNameAsync(string searchContent, uint page = 1, uint size = 20, CancellationToken cancellationToken = default)
     {
-        return await _client.GetFromJsonAsync<PagedList<UserDto>>($"/api/User/{page}/{size}?NickName={searchContent}", _serializerOptions, cancellationToken);
+        var result = await _client.GetFromJsonAsync<GlobalResult<PagedList<UserDto>>>($"/api/User/{page}/{size}?NickName={searchContent}", _serializerOptions, cancellationToken);
+        return result.Data;
     }
 
     public async Task FriendApplyAsync(FriendApplyRequest request, CancellationToken cancellationToken = default)
@@ -94,12 +103,14 @@ public class ApiClient : IApiClient
 
     public async Task<PagedList<ApplyPendingDto>> FriendApplyPendingAsync(FriendApplyPendingRequest request, CancellationToken cancellationToken = default)
     {
-        return await _client.GetFromJsonAsync<PagedList<ApplyPendingDto>>(FormatParam($"/api/FriendApply/Pending", request), _serializerOptions, cancellationToken);
+        var result = await _client.GetFromJsonAsync<GlobalResult<PagedList<ApplyPendingDto>>>(FormatParam($"/api/FriendApply/Pending", request), _serializerOptions, cancellationToken);
+        return result.Data;
     }
 
     public async Task<List<UserDto>> AllFriendAsync(CancellationToken cancellationToken = default)
     {
-        return await _client.GetFromJsonAsync<List<UserDto>>("/api/Friend", cancellationToken);
+        var result = await _client.GetFromJsonAsync<GlobalResult<List<UserDto>>>("/api/Friend", cancellationToken);
+        return result.Data;
     }
 
     public string FormatFile(string url) => BaseAddress + url;
@@ -108,35 +119,40 @@ public class ApiClient : IApiClient
     {
         var response = await _client.PostAsync($"/api/Auth/qr/preauth?key={key}", null, cancellationToken: cancellationToken);
         await HandleUnauthorizedResponse(response);
-        return JsonSerializer.Deserialize<QrAuthResponse>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        var result = JsonSerializer.Deserialize<GlobalResult<QrAuthResponse>>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        return result.Data;
     }
 
     public async Task<QrAuthResponse> QrAuthAsync(string key, CancellationToken cancellationToken = default)
     {
         var response = await _client.PostAsync($"/api/Auth/qr/auth?key={key}", null, cancellationToken: cancellationToken);
         await HandleUnauthorizedResponse(response);
-        return JsonSerializer.Deserialize<QrAuthResponse>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        var result = JsonSerializer.Deserialize < GlobalResult<QrAuthResponse>>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        return result.Data;
     }
 
     public async Task<CreateQrAuthKeyResponse> CreateQrKeyAsync(CancellationToken cancellationToken = default)
     {
         var response = await _client.GetAsync("/api/Auth/qr/key", cancellationToken);
         await HandleUnauthorizedResponse(response);
-        return JsonSerializer.Deserialize<CreateQrAuthKeyResponse>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        var result = JsonSerializer.Deserialize<GlobalResult<CreateQrAuthKeyResponse>>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        return result.Data;
     }
 
     public async Task<CreateQrCodeResponse> CreateQrCodeAsync(CreateQrCodeRequest request, CancellationToken cancellationToken = default)
     {
         var response = await _client.PostAsJsonAsync("/api/Auth/qr/create", request, cancellationToken);
         await HandleUnauthorizedResponse(response);
-        return JsonSerializer.Deserialize<CreateQrCodeResponse>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        var result = JsonSerializer.Deserialize<GlobalResult<CreateQrCodeResponse>>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        return result.Data;
     }
 
-    public async Task<CheckQrAuthKeyResponse> CheckQrKeyAsync(string key,CancellationToken cancellationToken = default)
+    public async Task<CheckQrAuthKeyResponse> CheckQrKeyAsync(string key, CancellationToken cancellationToken = default)
     {
         var response = await _client.GetAsync($"/api/Auth/qr/check?key={key}", cancellationToken);
         await HandleUnauthorizedResponse(response);
-        return JsonSerializer.Deserialize<CheckQrAuthKeyResponse>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        var result =  JsonSerializer.Deserialize<GlobalResult<CheckQrAuthKeyResponse>>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        return result.Data;
     }
 
     string FormatParam(string url, object obj, bool ignoreNull = true)

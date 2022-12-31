@@ -41,7 +41,6 @@ public sealed partial class LoginViewModel : ViewModelBase
 
     void JoinMainPage(UserInfo user)
     {
-        user.Avatar = _apiClient.FormatFile(user.Avatar);
         _dispatcher.Dispatch(() =>
         {
             App.Current.User = user;
@@ -67,7 +66,7 @@ public sealed partial class LoginViewModel : ViewModelBase
                     {
                         _dispatcher.Dispatch(() =>
                         {
-                            App.Current.User.Avatar = _apiClient.FormatFile(userDto.Avatar);
+                            //App.Current.User.Avatar = _apiClient.FormatFile(userDto.Avatar);
                             App.Current.User.NickName = userDto.NickName;
                             Settings.CurrentUser = App.Current.User;
                         });
@@ -189,7 +188,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         {
             // authorizing.
             var user = checkResponse.User.ToUserInfo();
-            user.Avatar = _apiClient.FormatFile(user.Avatar);
+            //user.Avatar = _apiClient.FormatFile(user.Avatar);
             User = user;
         }
         else if (checkResponse.Code == 803)

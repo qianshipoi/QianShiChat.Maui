@@ -3,6 +3,7 @@
 public interface IApiClient
 {
     string AccessToken { get; }
+    string ClientType { get; }
 
     Task<UserDto> LoginAsync(LoginReqiest request, CancellationToken cancellationToken = default);
 
@@ -16,7 +17,7 @@ public interface IApiClient
 
     Task FriendApplyAsync(FriendApplyRequest request, CancellationToken cancellationToken = default);
 
-    string FormatFile(string url);
+    //string FormatFile(string url);
 
     Task<PagedList<ApplyPendingDto>> FriendApplyPendingAsync(FriendApplyPendingRequest request, CancellationToken cancellationToken = default);
     Task<List<UserDto>> AllFriendAsync(CancellationToken cancellationToken = default);
