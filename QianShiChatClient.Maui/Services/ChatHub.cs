@@ -4,8 +4,6 @@ namespace QianShiChatClient.Maui.Services;
 
 public class ChatHub
 {
-    readonly IApiClient _apiClient;
-
     HubConnection connection;
     bool _isConnected;
     bool _isConnecting;
@@ -31,51 +29,46 @@ public class ChatHub
         }
     }
 
-    public ChatHub(IApiClient apiClient)
+    public ChatHub()
     {
-        _apiClient = apiClient;
-
         connection = new HubConnectionBuilder()
-          .WithUrl($"{ApiClient.BaseAddress}/Hubs/Chat", options =>
-          {
+          .WithUrl($"{AppConsts.API_BASE_URL}/Hubs/Chat", options => {
               options.AccessTokenProvider = () => GetAccessToken();
-              options.Headers.Add("Client-Type", _apiClient.ClientType);
+              options.Headers.Add("User-Agent", "QianShiChatClient-Maui");
+              options.Headers.Add("Client-Type", AppConsts.CLIENT_TYPE);
           })
           .WithAutomaticReconnect()
           .Build();
 
-        connection.On<string, string>("ReceiveMessage", (u, n) => ReceiveMessage?.Invoke(u, n));
-        connection.On<NotificationMessage>("Notification", (msg) => Notification?.Invoke(msg));
-        connection.On<ChatMessageDto>("PrivateChat", (msg) => PrivateChat?.Invoke(msg));
+        connection.On<string, string>(nameof(ReceiveMessage), (u, n) => ReceiveMessage?.Invoke(u, n));
+        connection.On<NotificationMessage>(nameof(Notification), (msg) => Notification?.Invoke(msg));
+        connection.On<ChatMessageDto>(nameof(PrivateChat), (msg) => PrivateChat?.Invoke(msg));
 
-        connection.Closed += async (error) =>
-        {
+        connection.Closed += async (error) => {
             IsConnected = false;
             _isConnecting = false;
             await Task.Delay(new Random().Next(0, 5) * 1000);
             await Connect();
         };
 
-        connection.Reconnecting += (msg) =>
-        {
+        connection.Reconnecting += (msg) => {
             IsConnected = false;
             _isConnecting = true;
             return Task.CompletedTask;
         };
 
-        connection.Reconnected += (msg) =>
-        {
+        connection.Reconnected += (msg) => {
             IsConnected = true;
             _isConnecting = false;
             return Task.CompletedTask;
         };
     }
 
-    Task<string> GetAccessToken() => Task.FromResult(_apiClient.AccessToken);
+    Task<string> GetAccessToken() => Task.FromResult(Settings.AccessToken);
 
     public async Task Connect()
     {
-        if (IsConnected || _isConnecting || string.IsNullOrWhiteSpace(_apiClient.AccessToken)) return;
+        if (IsConnected || _isConnecting || string.IsNullOrWhiteSpace(await GetAccessToken())) return;
 
         _isConnecting = true;
         try

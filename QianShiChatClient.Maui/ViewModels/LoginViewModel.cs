@@ -41,8 +41,7 @@ public sealed partial class LoginViewModel : ViewModelBase
 
     void JoinMainPage(UserInfo user)
     {
-        _dispatcher.Dispatch(() =>
-        {
+        _dispatcher.Dispatch(() => {
             App.Current.User = user;
             Settings.CurrentUser = App.Current.User;
             App.Current.MainPage = _serviceProvider.GetRequiredService<AppShell>();
@@ -59,13 +58,11 @@ public sealed partial class LoginViewModel : ViewModelBase
             {
                 JoinMainPage(user);
                 // update user info.
-                _ = Task.Run(async () =>
-                {
+                _ = Task.Run(async () => {
                     var (isSuccessed, userDto) = await _apiClient.CheckAccessToken(accessToken);
                     if (isSuccessed)
                     {
-                        _dispatcher.Dispatch(() =>
-                        {
+                        _dispatcher.Dispatch(() => {
                             //App.Current.User.Avatar = _apiClient.FormatFile(userDto.Avatar);
                             App.Current.User.NickName = userDto.NickName;
                             Settings.CurrentUser = App.Current.User;
@@ -103,7 +100,12 @@ public sealed partial class LoginViewModel : ViewModelBase
         IsBusy = true;
         try
         {
-            var user = await _apiClient.LoginAsync(new LoginReqiest(Account, Password.ToMd5()));
+            var (succeeded, user, message) = await _apiClient.LoginAsync(new LoginReqiest(Account, Password.ToMd5()));
+            if (!succeeded)
+            {
+                await Toast.Make(message).Show();
+                return;
+            }
             await Toast
                 .Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString())
                 .Show();
@@ -127,10 +129,8 @@ public sealed partial class LoginViewModel : ViewModelBase
         var qrcodeResponse = await _apiClient.CreateQrCodeAsync(
             new CreateQrCodeRequest { Key = _key, Qrimg = true }
         );
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            AuthQrCodeImage = ImageSource.FromStream(() =>
-            {
+        MainThread.BeginInvokeOnMainThread(() => {
+            AuthQrCodeImage = ImageSource.FromStream(() => {
                 qrcodeResponse.Image = qrcodeResponse.Image.Replace("data:image/png;base64,", "");
                 var bytes = Convert.FromBase64String(qrcodeResponse.Image);
                 return new MemoryStream(bytes);
@@ -196,8 +196,7 @@ public sealed partial class LoginViewModel : ViewModelBase
             // auth successed.
             ClearAuthTimer();
             Settings.AccessToken = checkResponse.AccessToken;
-            await MainThread.InvokeOnMainThreadAsync(async () =>
-            {
+            await MainThread.InvokeOnMainThreadAsync(async () => {
                 await Toast
                     .Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString())
                     .Show();
