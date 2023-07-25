@@ -4,8 +4,7 @@ public class DialogService : IDialogService
 {
     public Task Toast(
         string message,
-        CommunityToolkit.Maui.Core.ToastDuration duration =
-            CommunityToolkit.Maui.Core.ToastDuration.Short,
+        ToastDuration duration = ToastDuration.Short,
         double textSize = 14
     ) => CommunityToolkit.Maui.Alerts.Toast.Make(message, duration, textSize).Show();
 
@@ -21,7 +20,7 @@ public class DialogService : IDialogService
             .Make(message, action, actionButtonText, duration, visualOptions, anchor)
             .Show();
 
-    IPopupNavigation Service => MopupService.Instance;
+    private IPopupNavigation Service => MopupService.Instance;
 
     public Task PushMessageDialog(bool animate = true) =>
         Service.PushAsync(new MessageDialog(), animate);

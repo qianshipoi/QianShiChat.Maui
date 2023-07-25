@@ -51,8 +51,9 @@ public class CheckQrAuthKeyResponse
     /// 800 二维码不存在或已过期 801 等待扫码 802 授权中 803 授权成功
     /// </summary>
     public int Code { get; set; }
+
     public string Message { get; set; }
-    public UserDto User { get; set; }   
+    public UserDto User { get; set; }
     public string AccessToken { get; set; }
 }
 
@@ -62,12 +63,14 @@ public class CreateQrAuthKeyResponse
 
     public string Key { get; set; }
 }
+
 public class CreateQrCodeRequest
 {
     public string Key { get; set; }
 
     public bool Qrimg { get; set; }
 }
+
 public class CreateQrCodeResponse
 {
     public string Url { get; set; }

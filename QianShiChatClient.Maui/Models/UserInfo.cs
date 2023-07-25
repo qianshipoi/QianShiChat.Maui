@@ -8,16 +8,16 @@ public partial class UserInfo : ObservableObject
     public string Account { get; set; }
 
     [ObservableProperty]
-    string _nickName;
+    private string _nickName;
 
     [ObservableProperty]
-    string _avatar = "default_avatar.png";
+    private string _avatar = "default_avatar.png";
 
     [ObservableProperty]
-    string _content = "个性签名";
+    private string _content = "个性签名";
 
     [ObservableProperty]
-    bool _isUnknown = false;
+    private bool _isUnknown = false;
 
     public static UserInfo Unknown = new UserInfo() { IsUnknown = true };
 }

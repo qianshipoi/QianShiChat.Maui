@@ -17,9 +17,6 @@ public sealed partial class MessageViewModel : ViewModelBase
     public DataCenter DataCenter { get; }
 
     [ObservableProperty]
-    private string _searchText;
-
-    [ObservableProperty]
     private Session _currentSelectedSession;
 
     partial void OnCurrentSelectedSessionChanged(Session value)
@@ -50,7 +47,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     [ObservableProperty]
     private string _message;
 
-    public List<string> Strings { get; } = new List<string> { "111", "222", "333" };  
+    public List<string> Strings { get; } = new List<string> { "111", "222", "333" };
 
     public MessageViewModel(
         IStringLocalizer<MyStrings> stringLocalizer,
@@ -107,9 +104,9 @@ public sealed partial class MessageViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private Task Search()
+    private Task Search(string searchText)
     {
-        Toast.Make("Search:" + SearchText).Show();
+        Toast.Make("Search:" + searchText).Show();
         return Task.CompletedTask;
     }
 

@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-
-namespace QianShiChatClient.Maui.ViewModels;
+﻿namespace QianShiChatClient.Maui.ViewModels;
 
 public class OperationItem
 {
@@ -25,12 +23,14 @@ public sealed partial class FriendViewModel : ViewModelBase
     {
         DataCenter = dataCenter;
         Friends = new ObservableCollection<FriendItem>();
-        Operations = new List<OperationItem>();
-        Operations.Add(new OperationItem
+        Operations = new List<OperationItem>
         {
-             Name = _stringLocalizer["NewFriend"],
-             Command = JoinNewFriendPageCommand
-        });
+            new OperationItem
+            {
+                Name = _stringLocalizer["NewFriend"],
+                Command = JoinNewFriendPageCommand
+            }
+        };
         foreach (var friend in FakerFriend.GetFriends(20))
         {
             Friends.Add(friend);
@@ -38,7 +38,7 @@ public sealed partial class FriendViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    void OpenMenu()
+    private void OpenMenu()
     {
         Shell.Current.FlyoutBehavior = FlyoutBehavior.Locked;
         Shell.Current.FlyoutBehavior = FlyoutBehavior.Flyout;
@@ -46,19 +46,19 @@ public sealed partial class FriendViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    Task JoinSearchPage() => _navigationService.GoToSearchPage();
+    private Task JoinSearchPage() => _navigationService.GoToSearchPage();
 
     [RelayCommand]
-    Task JoinQueryPage() => _navigationService.GoToQueryPage();
+    private Task JoinQueryPage() => _navigationService.GoToQueryPage();
 
     [RelayCommand]
-    Task JoinNewFriendPage() => _navigationService.GoToNewFriendPage();
+    private Task JoinNewFriendPage() => _navigationService.GoToNewFriendPage();
 
     [RelayCommand]
-    Task JoinDetail(UserInfo user) => _navigationService.GoToMessageDetailPage(user.Id);
+    private Task JoinDetail(UserInfo user) => _navigationService.GoToMessageDetailPage(user.Id);
 
     [RelayCommand]
-    void OperationExecute(OperationItem item)
+    private void OperationExecute(OperationItem item)
     {
         if (item.Command.CanExecute(null))
         {
@@ -67,7 +67,7 @@ public sealed partial class FriendViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    async Task UpdateFriends()
+    private async Task UpdateFriends()
     {
         try
         {
@@ -77,6 +77,5 @@ public sealed partial class FriendViewModel : ViewModelBase
         {
             IsBusy = false;
         }
-
     }
 }

@@ -3,11 +3,13 @@
 public sealed partial class SettingsViewModel : ViewModelBase
 {
     [ObservableProperty]
-    string _currentLang;
+    private string _currentLang;
+
     [ObservableProperty]
-    AppTheme _currentAppTheme;
+    private AppTheme _currentAppTheme;
+
     [ObservableProperty]
-    CultureInfo _currentLanguage;
+    private CultureInfo _currentLanguage;
 
     public List<string> Langs { get; }
 

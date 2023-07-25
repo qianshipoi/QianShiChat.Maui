@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-
-namespace QianShiChatClient.Maui.Services;
+﻿namespace QianShiChatClient.Maui.Services;
 
 public class UserService : IUserService
 {
@@ -21,7 +19,7 @@ public class UserService : IUserService
     {
         var userInfo = _memoryCache.Get<UserInfo>(nameof(GetUserInfoByIdAsync));
 
-        if(userInfo is not null)
+        if (userInfo is not null)
         {
             return userInfo;
         }
@@ -29,15 +27,23 @@ public class UserService : IUserService
         userInfo = await _chatDatabase.GetUserByIdAsync(id);
         if (userInfo is null)
         {
-            var serverUser = await _client.FindUserAsync(id, cancellationToken);
-            if (serverUser is not null)
+            try
             {
-                userInfo = serverUser.ToUserInfo();
-                await _chatDatabase.SaveUserAsync(userInfo);
+                var serverUser = await _client.FindUserAsync(id, cancellationToken);
+                if (serverUser is not null)
+                {
+                    userInfo = serverUser.ToUserInfo();
+                    await _chatDatabase.SaveUserAsync(userInfo);
+                }
+                else
+                {
+                    userInfo = UserInfo.Unknown;
+                }
             }
-            else
+            catch (Exception ex)
             {
                 userInfo = UserInfo.Unknown;
+                _logger.LogError(ex, "查询用户异常: id - {0}", id);
             }
         }
 

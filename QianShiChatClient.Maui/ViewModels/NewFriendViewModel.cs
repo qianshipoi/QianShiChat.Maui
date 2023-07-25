@@ -14,18 +14,17 @@ public sealed partial class NewFriendViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    Task Reject(ApplyPending apply)
+    private Task Reject(ApplyPending apply)
     {
         return Task.CompletedTask;
     }
 
     [RelayCommand]
-    Task Pass(ApplyPending apply)
+    private Task Pass(ApplyPending apply)
     {
         return Task.CompletedTask;
     }
 
     [RelayCommand]
-    Task JoinNewFriendDetailPage(ApplyPending apply) => _navigationService.GoToNewFriendDetailPage(apply);
-
+    private Task JoinNewFriendDetailPage(ApplyPending apply) => _navigationService.GoToNewFriendDetailPage(apply);
 }

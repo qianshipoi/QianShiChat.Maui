@@ -3,10 +3,10 @@
 public sealed partial class ScanningViewModel : ViewModelBase
 {
     [ObservableProperty]
-    bool _isDetecting = true;
+    private bool _isDetecting = true;
 
     [ObservableProperty]
-    BarcodeReaderOptions _barcodeReaderOptions = new BarcodeReaderOptions
+    private BarcodeReaderOptions _barcodeReaderOptions = new BarcodeReaderOptions
     {
         Formats = BarcodeFormat.QrCode,
         Multiple = false,
@@ -20,7 +20,7 @@ public sealed partial class ScanningViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    async Task BarcodeDetection(BarcodeResult[] results)
+    private async Task BarcodeDetection(BarcodeResult[] results)
     {
         if (!IsDetecting) return;
         IsDetecting = false;
@@ -37,20 +37,17 @@ public sealed partial class ScanningViewModel : ViewModelBase
                 var keyVal = item.Split('=');
                 if (keyVal.Length == 2 && keyVal[0] == "key")
                 {
-                    await MainThread.InvokeOnMainThreadAsync(async () =>
-                    {
+                    await MainThread.InvokeOnMainThreadAsync(async () => {
                         await _navigationService.GoToQrAuthPage(keyVal[1]);
                     });
                     return;
                 }
             }
-
         }
 
         using var cancellationTokenSource = new CancellationTokenSource();
 
-        await Snackbar.Make(result, async () =>
-        {
+        await Snackbar.Make(result, async () => {
             await Clipboard.Default.SetTextAsync(result);
             cancellationTokenSource.Cancel();
         }, "Copy", TimeSpan.FromSeconds(10)).Show();
@@ -59,9 +56,8 @@ public sealed partial class ScanningViewModel : ViewModelBase
         {
             await Task.Delay(10000, cancellationTokenSource.Token);
         }
-        catch(TaskCanceledException)
+        catch (TaskCanceledException)
         {
-
         }
         finally
         {

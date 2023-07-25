@@ -51,7 +51,6 @@
             Text="Logout" />
     </Shell.FlyoutFooter>
 
-
     <FlyoutItem
         Title="{local:Localize Home}"
         Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
@@ -82,5 +81,4 @@
         Route="SettingsPage" />
 
     <MenuItem Command="{Binding MessageDialogCommand}" Text="MessageDailog" />
-
 </Shell>

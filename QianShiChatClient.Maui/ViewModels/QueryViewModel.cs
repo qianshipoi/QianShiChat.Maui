@@ -2,10 +2,10 @@
 
 public sealed partial class QueryViewModel : ViewModelBase
 {
-    readonly IApiClient _apiClient;
+    private readonly IApiClient _apiClient;
 
     [ObservableProperty]
-    string _searchContent;
+    private string _searchContent;
 
     public ObservableCollection<UserInfo> Result { get; }
 
@@ -20,7 +20,7 @@ public sealed partial class QueryViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    async Task Search()
+    private async Task Search()
     {
         if (IsBusy || string.IsNullOrWhiteSpace(SearchContent))
             return;
@@ -44,5 +44,5 @@ public sealed partial class QueryViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    Task AddFriend(UserInfo user) => _navigationService.GoToAddFriendPage(user);
+    private Task AddFriend(UserInfo user) => _navigationService.GoToAddFriendPage(user);
 }

@@ -3,14 +3,15 @@
 public partial class Session : ObservableObject
 {
     private readonly IUserService _userService;
-    [ObservableProperty]
-    int _unreadCount;
 
     [ObservableProperty]
-    long _lastMessageTime;
+    private int _unreadCount;
 
     [ObservableProperty]
-    string _lastMessageContent;
+    private long _lastMessageTime;
+
+    [ObservableProperty]
+    private string _lastMessageContent;
 
     public UserInfo User { get; }
 

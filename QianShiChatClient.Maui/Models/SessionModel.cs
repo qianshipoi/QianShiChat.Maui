@@ -4,8 +4,10 @@ public class SessionModel
 {
     [PrimaryKey]
     public int Id { get; set; }
+
     [Required]
     public ChatMessageSendType Type { get; set; }
+
     [Required]
     public int ToId { get; set; }
 

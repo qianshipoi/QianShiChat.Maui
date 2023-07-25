@@ -1,6 +1,4 @@
-﻿using System.Web;
-
-namespace QianShiChatClient.Maui.Services;
+﻿namespace QianShiChatClient.Maui.Services;
 
 public class ApiClient : IApiClient
 {
@@ -31,7 +29,7 @@ public class ApiClient : IApiClient
 
     public string ClientType => AppConsts.CLIENT_TYPE;
 
-    public async Task<(bool succeeded, UserDto data, string message)> LoginAsync(LoginReqiest request, CancellationToken cancellationToken = default)
+    public async Task<(bool succeeded, UserDto data, string message)> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
         using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
         using var response = await client.PostAsJsonAsync("/api/Auth", request, cancellationToken);
@@ -87,7 +85,6 @@ public class ApiClient : IApiClient
             return (false, default, "Response is empty.");
         }
 
-
         var result = JsonSerializer.Deserialize<GlobalResult<T>>(content, _serializerOptions);
 
         if (!result.Succeeded)
@@ -115,7 +112,6 @@ public class ApiClient : IApiClient
         {
             return (false, default, "Response is empty.");
         }
-
 
         var result = JsonSerializer.Deserialize<GlobalResult<TResponse>>(content, _serializerOptions);
 
@@ -242,21 +238,9 @@ public class ApiClient : IApiClient
         return sb.ToString();
     }
 
-    private async Task HandleUnauthorizedResponse(HttpResponseMessage response)
-    {
-        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-        {
-            await _navigationService.GoToLoginPage();
-            return;
-        }
-        response.EnsureSuccessStatusCode();
-    }
-
     public async Task<UserDto> FindUserAsync(int id, CancellationToken cancellationToken = default)
     {
-        var response = await _client.GetAsync($"/api/users/{id}", cancellationToken);
-        await HandleUnauthorizedResponse(response);
-        var result = JsonSerializer.Deserialize<GlobalResult<UserDto>>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
-        return result.Data;
+        var (succeeded, data, message) = await GetJsonAsync<UserDto>($"/api/user/{id}", cancellationToken);
+        return data;
     }
 }

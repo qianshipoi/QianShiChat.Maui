@@ -12,15 +12,6 @@ public class ChatDatabase
         await Database.CreateTablesAsync<UserInfo, ChatMessage, SessionModel>();
     }
 
-    //private async Task Init()
-    //{
-    //    if (Database is not null)
-    //        return;
-
-    //    Database = new SQLiteAsyncConnection(AppConsts.DatabasePath, AppConsts.Flags);
-    //    await Database.CreateTablesAsync<UserInfo, ChatMessage, SessionModel>();
-    //}
-
     public async Task SaveSessionAsync(SessionModel session)
     {
         await Database.InsertOrReplaceAsync(session);

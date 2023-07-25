@@ -3,10 +3,10 @@
 [QueryProperty(nameof(UserInfo), nameof(UserInfo))]
 public sealed partial class AddFriendViewModel : ViewModelBase
 {
-    readonly IApiClient _apiClient;
+    private readonly IApiClient _apiClient;
 
     [ObservableProperty]
-    UserInfo _userInfo;
+    private UserInfo _userInfo;
 
     public AddFriendViewModel(
         IStringLocalizer<MyStrings> stringLocalizer,
@@ -18,7 +18,7 @@ public sealed partial class AddFriendViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    async Task Send(string msg)
+    private async Task Send(string msg)
     {
         if (string.IsNullOrWhiteSpace(msg))
         {

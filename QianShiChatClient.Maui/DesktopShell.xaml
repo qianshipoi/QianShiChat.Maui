@@ -50,8 +50,8 @@
         <ImageButton Source="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily}, Glyph={x:Static models:IconFontIcons.Settings}, Color={StaticResource Gray200}}">
             <FlyoutBase.ContextFlyout>
                 <MenuFlyout>
-                    <MenuFlyoutItem Command="{Binding LogoutCommand}" Text="Logout" />
-                    <MenuFlyoutItem Text="测试" />
+                    <MenuFlyoutItem Command="{Binding LogoutCommand}" Text="登出" />
+                    <MenuFlyoutItem Command="{Binding GotoSettingsCommand}" Text="设置" />
                 </MenuFlyout>
             </FlyoutBase.ContextFlyout>
         </ImageButton>
@@ -71,14 +71,13 @@
                          Glyph={x:Static models:IconFontIcons.Members}}"
         Route="FriendPage" />
 
-    <ShellContent
+    <!--<ShellContent
         Title="{local:Localize Settings}"
         ContentTemplate="{DataTemplate views:SettingsPage}"
         Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
                          Glyph={x:Static models:IconFontIcons.Settings},
                          Color={StaticResource Gray200}}"
-        Route="SettingsPage" />
+        Route="SettingsPage" />-->
 
     <MenuItem Command="{Binding MessageDialogCommand}" Text="MessageDailog" />
-
 </Shell>

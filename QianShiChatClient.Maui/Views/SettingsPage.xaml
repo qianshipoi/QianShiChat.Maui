@@ -72,7 +72,6 @@
                                         <Setter TargetName="Check" Property="Opacity" Value="0" />
                                     </VisualState.Setters>
                                 </VisualState>
-
                             </VisualStateGroup>
                         </VisualStateGroupList>
                     </VisualStateManager.VisualStateGroups>

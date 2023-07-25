@@ -8,7 +8,7 @@ public partial class MessageDetailPage : ContentPage
         this.BindingContext = viewModel;
     }
 
-    protected async override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
         await Task.Delay(200);

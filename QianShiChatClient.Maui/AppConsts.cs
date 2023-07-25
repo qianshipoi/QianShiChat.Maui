@@ -22,4 +22,6 @@ public sealed class AppConsts
     public static string API_BASE_URL = DeviceInfo.Platform == DevicePlatform.Android ?
             "https://chat.kuriyama.top" :
             "https://chat.kuriyama.top";
+
+    public static bool IsDesktop => DeviceInfo.Idiom == DeviceIdiom.Desktop;
 }

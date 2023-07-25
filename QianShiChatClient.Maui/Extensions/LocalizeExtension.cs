@@ -20,7 +20,6 @@ public class LocalizeExtension : IMarkupExtension<BindingBase>
     object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider) => ProvideValue(serviceProvider);
 }
 
-
 //[ContentProperty(nameof(Key))]
 //public class LocalizeExtension : IMarkupExtension
 //{

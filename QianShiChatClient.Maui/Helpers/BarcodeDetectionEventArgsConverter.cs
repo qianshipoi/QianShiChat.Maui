@@ -1,20 +1,13 @@
-﻿using CommunityToolkit.Maui.Converters;
+﻿namespace QianShiChatClient.Maui.Helpers;
 
-using System.Diagnostics.CodeAnalysis;
-
-using ZXing.Net.Maui;
-
-namespace QianShiChatClient.Maui.Helpers
+public class BarcodeDetectionEventArgsConverter : BaseConverterOneWay<BarcodeDetectionEventArgs, object>
 {
-    public class BarcodeDetectionEventArgsConverter : BaseConverterOneWay<BarcodeDetectionEventArgs, object>
-    {
-        public override object DefaultConvertReturnValue { get; set; } = null;
+    public override object DefaultConvertReturnValue { get; set; } = null;
 
-        [return: NotNullIfNotNull(nameof(value))]
-        public override object ConvertFrom(BarcodeDetectionEventArgs value, CultureInfo culture) => value switch
-        {
-            null => null,
-            _ => value.Results
-        };
-    }
+    [return: NotNullIfNotNull(nameof(value))]
+    public override object ConvertFrom(BarcodeDetectionEventArgs value, CultureInfo culture) => value switch
+    {
+        null => null,
+        _ => value.Results
+    };
 }

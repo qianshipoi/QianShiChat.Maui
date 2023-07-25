@@ -1,6 +1,4 @@
-﻿using QianShiChatClient.Maui.Views.Desktop;
-
-namespace QianShiChatClient.Maui.ViewModels;
+﻿namespace QianShiChatClient.Maui.ViewModels;
 
 public sealed partial class LoginViewModel : ViewModelBase
 {
@@ -46,7 +44,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         _dispatcher.Dispatch(() => {
             App.Current.User = user;
             Settings.CurrentUser = App.Current.User;
-            App.Current.MainPage = DeviceInfo.Idiom == DeviceIdiom.Desktop ?
+            App.Current.MainPage = AppConsts.IsDesktop ? 
                 _serviceProvider.GetRequiredService<DesktopShell>() : 
                 _serviceProvider.GetRequiredService<AppShell>();
         });
@@ -66,11 +64,7 @@ public sealed partial class LoginViewModel : ViewModelBase
                     var (isSuccessed, userDto) = await _apiClient.CheckAccessToken(accessToken);
                     if (isSuccessed)
                     {
-                        _dispatcher.Dispatch(() => {
-                            //App.Current.User.Avatar = _apiClient.FormatFile(userDto.Avatar);
-                            App.Current.User.NickName = userDto.NickName;
-                            Settings.CurrentUser = App.Current.User;
-                        });
+                        JoinMainPage(userDto.ToUserInfo());
                     }
                 });
             }
@@ -104,7 +98,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         IsBusy = true;
         try
         {
-            var (succeeded, user, message) = await _apiClient.LoginAsync(new LoginReqiest(Account, Password.ToMd5()));
+            var (succeeded, user, message) = await _apiClient.LoginAsync(new LoginRequest(Account, Password.ToMd5()));
             if (!succeeded)
             {
                 await Toast.Make(message).Show();

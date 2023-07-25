@@ -2,13 +2,13 @@
 
 public sealed partial class QrAuthViewModel : ViewModelBase, IQueryAttributable
 {
-    readonly IApiClient _apiClient;
+    private readonly IApiClient _apiClient;
 
     [ObservableProperty]
-    bool _preAuthSuccessed;
+    private bool _preAuthSuccessed;
 
     [ObservableProperty]
-    string _key;
+    private string _key;
 
     public QrAuthViewModel(
         INavigationService navigationService,
@@ -25,7 +25,7 @@ public sealed partial class QrAuthViewModel : ViewModelBase, IQueryAttributable
         await PreAuth();
     }
 
-    async Task PreAuth()
+    private async Task PreAuth()
     {
         try
         {
@@ -45,7 +45,7 @@ public sealed partial class QrAuthViewModel : ViewModelBase, IQueryAttributable
     }
 
     [RelayCommand]
-    async Task Pass()
+    private async Task Pass()
     {
         try
         {
@@ -65,5 +65,5 @@ public sealed partial class QrAuthViewModel : ViewModelBase, IQueryAttributable
     }
 
     [RelayCommand]
-    Task Reject() => _navigationService.GoToMessagePage();
+    private Task Reject() => _navigationService.GoToMessagePage();
 }

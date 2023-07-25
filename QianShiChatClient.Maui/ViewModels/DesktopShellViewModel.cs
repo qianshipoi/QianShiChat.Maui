@@ -4,6 +4,7 @@ public sealed partial class DesktopShellViewModel : ViewModelBase
 {
     private readonly ChatHub _chatHub;
     private readonly IDialogService _dialogService;
+
     public DesktopShellViewModel(
         ChatHub chatHub,
         INavigationService navigationService,
@@ -28,4 +29,7 @@ public sealed partial class DesktopShellViewModel : ViewModelBase
 
     [RelayCommand]
     private Task MessageDialog() => _dialogService.PushMessageDialog();
+    
+    [RelayCommand]
+    private Task GotoSettings() => _navigationService.GoToSettingsPage();
 }

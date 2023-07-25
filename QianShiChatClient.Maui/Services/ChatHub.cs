@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
-
-namespace QianShiChatClient.Maui.Services;
+﻿namespace QianShiChatClient.Maui.Services;
 
 public class ChatHub
 {
-    HubConnection connection;
-    bool _isConnected;
-    bool _isConnecting;
+    private HubConnection connection;
+    private bool _isConnected;
+    private bool _isConnecting;
 
     public event Action<string, string> ReceiveMessage;
 
@@ -64,7 +62,7 @@ public class ChatHub
         };
     }
 
-    Task<string> GetAccessToken() => Task.FromResult(Settings.AccessToken);
+    private Task<string> GetAccessToken() => Task.FromResult(Settings.AccessToken);
 
     public async Task Connect()
     {

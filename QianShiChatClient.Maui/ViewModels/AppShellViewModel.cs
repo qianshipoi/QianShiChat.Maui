@@ -4,6 +4,7 @@ public sealed partial class AppShellViewModel : ViewModelBase
 {
     private readonly ChatHub _chatHub;
     private readonly IDialogService _dialogService;
+
     public AppShellViewModel(
         ChatHub chatHub,
         INavigationService navigationService,
@@ -17,7 +18,7 @@ public sealed partial class AppShellViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    async Task Logout()
+    private async Task Logout()
     {
         Settings.CurrentUser = null;
         Settings.AccessToken = null;
@@ -27,5 +28,5 @@ public sealed partial class AppShellViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    Task MessageDialog() => _dialogService.PushMessageDialog();
+    private Task MessageDialog() => _dialogService.PushMessageDialog();
 }

@@ -3,7 +3,9 @@
 public interface IDialogService
 {
     Task PopAllAsync(bool animate = true);
+
     Task PushMessageDialog(bool animate = true);
+
     Task Snackbar(
         string message,
         Action action = null,
@@ -12,6 +14,7 @@ public interface IDialogService
         SnackbarOptions visualOptions = null,
         IView anchor = null
     );
+
     Task Toast(
         string message,
         ToastDuration duration = ToastDuration.Short,

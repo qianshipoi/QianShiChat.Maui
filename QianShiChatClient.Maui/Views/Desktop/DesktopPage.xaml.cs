@@ -1,10 +1,13 @@
 #if WINDOWS
 using Microsoft.Maui.Platform;
+
 using PInvoke;
+
 using static PInvoke.User32;
+
+using Microsoftui = Microsoft.UI;
 using MicrosoftuiWindowing = Microsoft.UI.Windowing;
 using MicrosoftuiXaml = Microsoft.UI.Xaml;
-using Microsoftui = Microsoft.UI;
 using MicrosoftuixmlMedia = Microsoft.UI.Xaml.Media;
 #endif
 
@@ -12,12 +15,11 @@ namespace QianShiChatClient.Maui.Views.Desktop;
 
 public partial class DesktopPage : ContentPage
 {
-	public DesktopPage(DesktopShellViewModel viewModel)
-	{
-		InitializeComponent();
-		this.BindingContext = viewModel;
+    public DesktopPage(DesktopShellViewModel viewModel)
+    {
+        InitializeComponent();
+        this.BindingContext = viewModel;
     }
-
 
     private void Button_Clicked(object sender, EventArgs e)
     {
@@ -158,8 +160,7 @@ public partial class DesktopPage : ContentPage
 #endif
     }
 
-
-    bool TriggertTitleBarRepaint()
+    private bool TriggertTitleBarRepaint()
     {
 #if WINDOWS
         var winuiWindow = Window.Handler?.PlatformView as Microsoft.UI.Xaml.Window;

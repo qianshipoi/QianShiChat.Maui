@@ -4,7 +4,7 @@ public partial class App : Application
 {
     public readonly IServiceProvider ServiceProvider;
 
-    public static new App Current => (App)Application.Current;
+    public new static App Current => (App)Application.Current;
 
     public UserInfo User { get; set; }
 
@@ -32,9 +32,9 @@ public partial class App : Application
         window.Height = height;
         window.MinimumWidth = minWidth;
         window.MinimumHeight = minHeight;
-        var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
-        window.X = (displayInfo.Width / displayInfo.Density - window.Width) / 2;
-        window.Y = (displayInfo.Height / displayInfo.Density - window.Height) / 2;
+        //var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
+        //window.X = (displayInfo.Width / displayInfo.Density - window.Width) / 2;
+        //window.Y = (displayInfo.Height / displayInfo.Density - window.Height) / 2;
 
         return window;
     }

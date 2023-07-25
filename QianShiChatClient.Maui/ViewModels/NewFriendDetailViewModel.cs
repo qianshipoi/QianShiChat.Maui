@@ -1,14 +1,14 @@
 namespace QianShiChatClient.Maui.ViewModels;
 
-[QueryProperty(nameof(Pending),nameof(Pending))]
+[QueryProperty(nameof(Pending), nameof(Pending))]
 public sealed partial class NewFriendDetailViewModel : ViewModelBase
 {
     [ObservableProperty]
-    ApplyPending _pending;
+    private ApplyPending _pending;
 
     public NewFriendDetailViewModel(
-        INavigationService navigationService, 
-        IStringLocalizer<MyStrings> stringLocalizer) 
+        INavigationService navigationService,
+        IStringLocalizer<MyStrings> stringLocalizer)
         : base(navigationService, stringLocalizer)
     {
     }

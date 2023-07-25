@@ -3,20 +3,20 @@
 public sealed partial class SearchViewModel : ViewModelBase
 {
     [ObservableProperty]
-    string _searchContent;
+    private string _searchContent;
 
     public ObservableCollection<FriendItem> Result { get; set; }
 
     public SearchViewModel(
         IStringLocalizer<MyStrings> stringLocalizer,
-        INavigationService navigationService) 
-        : base(navigationService,stringLocalizer)
+        INavigationService navigationService)
+        : base(navigationService, stringLocalizer)
     {
         Result = new ObservableCollection<FriendItem>();
     }
 
     [RelayCommand]
-    async Task Search()
+    private async Task Search()
     {
         if (IsBusy || string.IsNullOrWhiteSpace(SearchContent))
             return;
@@ -36,6 +36,5 @@ public sealed partial class SearchViewModel : ViewModelBase
         {
             IsBusy = false;
         }
-
     }
 }

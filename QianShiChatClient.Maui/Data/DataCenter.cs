@@ -40,7 +40,7 @@ public sealed partial class DataCenter : ObservableObject
         _ = GetAllFriendAsync();
     }
 
-    private async void Sessions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    private void Sessions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
         //foreach (var session in Sessions)
         //{

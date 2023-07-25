@@ -21,7 +21,7 @@ public static class ScrollViewHelper
             typeof(ScrollViewHelper),
             ScrollToPosition.MakeVisible);
 
-    #endregion
+    #endregion ScrollToPosition
 
     #region ScrollAnimated
 
@@ -42,7 +42,7 @@ public static class ScrollViewHelper
             typeof(ScrollViewHelper),
             true);
 
-    #endregion
+    #endregion ScrollAnimated
 
     #region ScrollCurrentItem
 
@@ -64,7 +64,7 @@ public static class ScrollViewHelper
             null,
              propertyChanged: OnScrollItemChanged);
 
-    static void OnScrollItemChanged(BindableObject bindable, object oldValue, object newValue)
+    private static void OnScrollItemChanged(BindableObject bindable, object oldValue, object newValue)
     {
         if (newValue == null ||
             bindable is not ScrollView scrollView ||
@@ -78,12 +78,12 @@ public static class ScrollViewHelper
             if (child is Element element)
             {
                 scrollView.ScrollToAsync(
-                    element, 
+                    element,
                     GetScrollToPosition(bindable),
                     GetScrollAnimated(bindable));
             }
         }
     }
 
-    #endregion
+    #endregion ScrollCurrentItem
 }

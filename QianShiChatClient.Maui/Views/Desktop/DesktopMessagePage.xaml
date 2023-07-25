@@ -25,20 +25,11 @@
                 Margin="8,0"
                 ColumnDefinitions="*, Auto"
                 ColumnSpacing="8">
-                <SearchBar VerticalOptions="Center" />
-                <!--<Entry Text="{Binding SearchText}" VerticalOptions="Center" />
-                <Label
-                    Grid.Column="1"
-                    toolkit:DockLayout.DockPosition="Right"
-                    FontAttributes="Bold"
-                    FontSize="22"
-                    Style="{DynamicResource IconLabel}"
-                    Text="{x:Static models:IconFontIcons.Adduser}"
-                    VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding SearchCommand}" />
-                    </Label.GestureRecognizers>
-                </Label>-->
+                <SearchBar
+                    x:Name="searchBar"
+                    SearchCommand="{Binding SearchCommand}"
+                    SearchCommandParameter="{Binding Source={Reference searchBar}, Path=Text}"
+                    VerticalOptions="Center" />
             </Grid>
             <ListView
                 Grid.Row="1"
@@ -110,28 +101,22 @@
                                         Text="99"
                                         TextColor="White" />
                                 </Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroupList>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="Normal" />
+                                            <VisualState x:Name="PointerOver">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BackgroundColor" Value="LightBlue" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateGroupList>
+                                </VisualStateManager.VisualStateGroups>
                             </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                <!--<ListView.Behaviors>
-                    <toolkit:EventToCommandBehavior
-                        Command="{Binding JoinDetailCommand}"
-                        EventArgsConverter="{StaticResource ItemTappedEventArgsConverter}"
-                        EventName="ItemTapped" />
-                </ListView.Behaviors>-->
-                <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroupList>
-                        <VisualStateGroup x:Name="CommonStates">
-                            <VisualState x:Name="Normal" />
-                            <VisualState x:Name="PointerOver">
-                                <VisualState.Setters>
-                                    <Setter Property="BackgroundColor" Value="LightBlue" />
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateGroupList>
-                </VisualStateManager.VisualStateGroups>
             </ListView>
         </Grid>
         <ContentView
