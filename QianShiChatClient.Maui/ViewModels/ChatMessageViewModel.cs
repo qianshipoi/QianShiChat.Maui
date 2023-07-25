@@ -19,12 +19,9 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
     private bool _scrollAnimated;
 
     public ChatMessageViewModel(
-        INavigationService navigationService,
-        IStringLocalizer<MyStrings> stringLocalizer,
         IApiClient apiClient,
         IUserService userService,
         ChatDatabase database)
-        : base(navigationService, stringLocalizer)
     {
         _apiClient = apiClient;
         _userService = userService;

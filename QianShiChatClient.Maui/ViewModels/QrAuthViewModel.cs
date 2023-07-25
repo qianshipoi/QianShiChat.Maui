@@ -10,11 +10,7 @@ public sealed partial class QrAuthViewModel : ViewModelBase, IQueryAttributable
     [ObservableProperty]
     private string _key;
 
-    public QrAuthViewModel(
-        INavigationService navigationService,
-        IStringLocalizer<MyStrings> stringLocalizer,
-        IApiClient apiClient)
-        : base(navigationService, stringLocalizer)
+    public QrAuthViewModel(IApiClient apiClient)
     {
         _apiClient = apiClient;
     }

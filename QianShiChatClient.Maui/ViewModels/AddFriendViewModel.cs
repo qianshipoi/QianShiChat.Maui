@@ -8,11 +8,7 @@ public sealed partial class AddFriendViewModel : ViewModelBase
     [ObservableProperty]
     private UserInfo _userInfo;
 
-    public AddFriendViewModel(
-        IStringLocalizer<MyStrings> stringLocalizer,
-        INavigationService navigationService,
-        IApiClient apiClient)
-        : base(navigationService, stringLocalizer)
+    public AddFriendViewModel(IApiClient apiClient)
     {
         _apiClient = apiClient;
     }

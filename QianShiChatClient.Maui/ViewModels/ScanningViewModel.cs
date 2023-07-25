@@ -12,13 +12,6 @@ public sealed partial class ScanningViewModel : ViewModelBase
         Multiple = false,
     };
 
-    public ScanningViewModel(
-        INavigationService navigationService,
-        IStringLocalizer<MyStrings> stringLocalizer)
-        : base(navigationService, stringLocalizer)
-    {
-    }
-
     [RelayCommand]
     private async Task BarcodeDetection(BarcodeResult[] results)
     {

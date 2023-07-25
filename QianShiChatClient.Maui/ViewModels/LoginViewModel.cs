@@ -26,12 +26,10 @@ public sealed partial class LoginViewModel : ViewModelBase
     private UserInfo _user;
 
     public LoginViewModel(
-        IStringLocalizer<MyStrings> stringLocalizer,
-        INavigationService navigationService,
         IDispatcher dispatcher,
         IApiClient apiClient,
         IServiceProvider serviceProvider
-    ) : base(navigationService, stringLocalizer)
+    )
     {
         _apiClient = apiClient;
         _dispatcher = dispatcher;

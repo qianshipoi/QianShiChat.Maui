@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="QianShiChatClient.Maui.Views.NewFriendView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    x:DataType="{x:Type viewmodels:NewFriendViewModel}">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <toolkit:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <Grid RowDefinitions="58,*" RowSpacing="16">
+        <Grid Margin="16,0" ColumnDefinitions="*,Auto">
+            <Label Text="好友通知" VerticalOptions="Center" />
+            <StackLayout
+                Grid.Column="1"
+                Orientation="Horizontal"
+                Spacing="8">
+                <Button
+                    Padding="8,4"
+                    FontSize="12"
+                    MinimumHeightRequest="20"
+                    Text="过滤"
+                    VerticalOptions="Center" />
+                <Button
+                    Padding="8,4"
+                    FontSize="12"
+                    MinimumHeightRequest="20"
+                    Text="删除"
+                    VerticalOptions="Center" />
+            </StackLayout>
+        </Grid>
+        <ListView
+            Grid.Row="1"
+            Margin="16,0"
+            ItemsSource="{Binding DataCenter.Pendings}"
+            RowHeight="80"
+            SelectionMode="None">
+            <!--<ListView.Behaviors>
+                <toolkit:EventToCommandBehavior
+                    Command="{Binding JoinNewFriendDetailPageCommand}"
+                    EventArgsConverter="{StaticResource ItemTappedEventArgsConverter}"
+                    EventName="ItemTapped" />
+            </ListView.Behaviors>-->
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell x:DataType="{x:Type models:ApplyPending}">
+                        <Grid
+                            Padding="20,10"
+                            ColumnDefinitions="Auto,*,Auto,Auto"
+                            RowDefinitions="Auto,*">
+                            <toolkit:AvatarView
+                                Grid.RowSpan="2"
+                                Margin="0,0,12,0"
+                                ImageSource="{Binding Friend.Avatar}" />
+                            <Label
+                                Grid.Column="1"
+                                Margin="0,4,0,0"
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="{Binding Friend.NickName}"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                LineBreakMode="TailTruncation"
+                                Text="{Binding Remark}"
+                                VerticalOptions="Center" />
+                            <Button
+                                Grid.RowSpan="2"
+                                Grid.Column="2"
+                                Margin="8,0"
+                                Padding="8"
+                                CommandParameter="{Binding}"
+                                MinimumHeightRequest="22"
+                                Text="{local:Localize Pass}"
+                                VerticalOptions="Center" />
+                            <Button
+                                Grid.RowSpan="2"
+                                Grid.Column="3"
+                                Padding="8"
+                                BackgroundColor="Red"
+                                CommandParameter="{Binding}"
+                                MinimumHeightRequest="22"
+                                Text="{local:Localize Reject}"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</ContentView>

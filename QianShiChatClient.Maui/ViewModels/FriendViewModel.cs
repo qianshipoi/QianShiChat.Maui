@@ -18,11 +18,7 @@ public sealed partial class FriendViewModel : ViewModelBase
     [ObservableProperty]
     private View _content;
 
-    public FriendViewModel(
-        DataCenter dataCenter,
-        IStringLocalizer<MyStrings> stringLocalizer,
-        INavigationService navigationService)
-        : base(navigationService, stringLocalizer)
+    public FriendViewModel(DataCenter dataCenter)
     {
         DataCenter = dataCenter;
         Friends = new ObservableCollection<FriendItem>();
@@ -60,10 +56,34 @@ public sealed partial class FriendViewModel : ViewModelBase
     private Task JoinQueryPage() => _navigationService.GoToQueryPage();
 
     [RelayCommand]
-    private Task JoinNewFriendPage() => _navigationService.GoToNewFriendPage();
+    private Task JoinNewFriendPage()
+    {
+        if (AppConsts.IsDesktop)
+        {
+            Content = ServiceHelper.GetService<NewFriendView>();
+            return Task.CompletedTask;
+        }
+        else
+        {
+            return _navigationService.GoToNewFriendPage();
+        }
+    }
 
     [RelayCommand]
-    private Task JoinDetail(UserInfo user) => _navigationService.GoToMessageDetailPage(user.Id);
+    private Task JoinDetail(UserInfo user)
+    {
+        if (AppConsts.IsDesktop)
+        {
+            var view = ServiceHelper.GetService<UserInfoView>();
+            (view.BindingContext as UserInfoViewModel).Info = user;
+            Content = view;
+            return Task.CompletedTask;
+        }
+        else
+        {
+            return _navigationService.GoToMessageDetailPage(user.Id);
+        }
+    }
 
     [RelayCommand]
     private void OperationExecute(OperationItem item)

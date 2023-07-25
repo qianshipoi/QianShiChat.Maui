@@ -5,11 +5,4 @@ public sealed partial class NewFriendDetailViewModel : ViewModelBase
 {
     [ObservableProperty]
     private ApplyPending _pending;
-
-    public NewFriendDetailViewModel(
-        INavigationService navigationService,
-        IStringLocalizer<MyStrings> stringLocalizer)
-        : base(navigationService, stringLocalizer)
-    {
-    }
 }

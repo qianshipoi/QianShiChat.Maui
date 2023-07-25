@@ -4,11 +4,7 @@ public sealed partial class NewFriendViewModel : ViewModelBase
 {
     public DataCenter DataCenter { get; }
 
-    public NewFriendViewModel(
-        INavigationService navigationService,
-        IStringLocalizer<MyStrings> stringLocalizer,
-        DataCenter dataCenter)
-        : base(navigationService, stringLocalizer)
+    public NewFriendViewModel(DataCenter dataCenter)
     {
         DataCenter = dataCenter;
     }

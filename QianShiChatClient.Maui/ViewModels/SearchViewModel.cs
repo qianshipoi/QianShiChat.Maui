@@ -5,12 +5,9 @@ public sealed partial class SearchViewModel : ViewModelBase
     [ObservableProperty]
     private string _searchContent;
 
-    public ObservableCollection<FriendItem> Result { get; set; }
+    public ObservableCollection<FriendItem> Result { get; }
 
-    public SearchViewModel(
-        IStringLocalizer<MyStrings> stringLocalizer,
-        INavigationService navigationService)
-        : base(navigationService, stringLocalizer)
+    public SearchViewModel()
     {
         Result = new ObservableCollection<FriendItem>();
     }

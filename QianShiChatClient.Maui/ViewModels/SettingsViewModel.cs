@@ -16,10 +16,7 @@ public sealed partial class SettingsViewModel : ViewModelBase
     public List<CultureInfo> Languages { get; }
     public List<AppTheme> AppThemes { get; }
 
-    public SettingsViewModel(
-        IStringLocalizer<MyStrings> stringLocalizer,
-        INavigationService navigationService)
-        : base(navigationService, stringLocalizer)
+    public SettingsViewModel()
     {
         AppThemes = new List<AppTheme> { AppTheme.Unspecified, AppTheme.Light, AppTheme.Dark };
         CurrentAppTheme = Settings.Theme;

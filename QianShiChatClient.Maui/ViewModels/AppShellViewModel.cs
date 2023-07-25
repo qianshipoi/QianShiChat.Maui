@@ -5,12 +5,7 @@ public sealed partial class AppShellViewModel : ViewModelBase
     private readonly ChatHub _chatHub;
     private readonly IDialogService _dialogService;
 
-    public AppShellViewModel(
-        ChatHub chatHub,
-        INavigationService navigationService,
-        IStringLocalizer<MyStrings> stringLocalizer,
-        IDialogService dialogService)
-        : base(navigationService, stringLocalizer)
+    public AppShellViewModel(ChatHub chatHub, IDialogService dialogService)
     {
         _ = chatHub.Connect();
         _chatHub = chatHub;

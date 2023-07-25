@@ -5,12 +5,10 @@ public partial class ViewModelBase : ObservableObject
     protected readonly INavigationService _navigationService;
     protected readonly IStringLocalizer<MyStrings> _stringLocalizer;
 
-    public ViewModelBase(
-        INavigationService navigationService,
-        IStringLocalizer<MyStrings> stringLocalizer)
+    public ViewModelBase()
     {
-        _navigationService = navigationService;
-        _stringLocalizer = stringLocalizer;
+        _navigationService = ServiceHelper.GetService<INavigationService>();
+        _stringLocalizer = ServiceHelper.GetService<IStringLocalizer<MyStrings>>();
     }
 
     [ObservableProperty]

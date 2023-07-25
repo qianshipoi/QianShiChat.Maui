@@ -7,10 +7,7 @@ public sealed partial class DesktopShellViewModel : ViewModelBase
 
     public DesktopShellViewModel(
         ChatHub chatHub,
-        INavigationService navigationService,
-        IStringLocalizer<MyStrings> stringLocalizer,
         IDialogService dialogService)
-        : base(navigationService, stringLocalizer)
     {
         _ = chatHub.Connect();
         _chatHub = chatHub;

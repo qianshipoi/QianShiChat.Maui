@@ -73,6 +73,10 @@ public static class MauiProgram
             services.AddTransient<DesktopShell, DesktopShellViewModel>();
             services.AddTransientWithShellRoute<SettingsPage, SettingsViewModel>(nameof(SettingsPage));
             services.AddTransient<DesktopFriendPage>();
+            services.AddTransient<ChatMessageViewModel>();
+            services.AddSingleton<NewFriendView>();
+            services.AddTransient<UserInfoViewModel>();
+            services.AddSingleton<UserInfoView>();
         }
         else
         {
@@ -81,7 +85,6 @@ public static class MauiProgram
             services.AddTransient<SettingsPage, SettingsViewModel>();
             services.AddTransient<FriendPage>();
         }
-        services.AddTransient<ChatMessageViewModel>();
 
         services.AddTransient<LoginPage, LoginViewModel>();
         services.AddTransient<FriendViewModel>();

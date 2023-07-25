@@ -9,11 +9,7 @@ public sealed partial class QueryViewModel : ViewModelBase
 
     public ObservableCollection<UserInfo> Result { get; }
 
-    public QueryViewModel(
-        IStringLocalizer<MyStrings> stringLocalizer,
-        INavigationService navigationService,
-        IApiClient apiClient)
-        : base(navigationService, stringLocalizer)
+    public QueryViewModel(IApiClient apiClient)
     {
         Result = new ObservableCollection<UserInfo>();
         _apiClient = apiClient;

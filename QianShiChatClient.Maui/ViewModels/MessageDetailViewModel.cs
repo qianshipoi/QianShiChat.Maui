@@ -24,13 +24,10 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
     private string _message;
 
     public MessageDetailViewModel(
-        IStringLocalizer<MyStrings> stringLocalizer,
-        INavigationService navigationService,
         IApiClient apiClient,
         ChatDatabase database,
         DataCenter dataCenter,
         IUserService userService)
-        : base(navigationService, stringLocalizer)
     {
         _apiClient = apiClient;
         _database = database;

@@ -48,15 +48,12 @@ public sealed partial class MessageViewModel : ViewModelBase
     public List<string> Strings { get; } = new List<string> { "111", "222", "333" };
 
     public MessageViewModel(
-        IStringLocalizer<MyStrings> stringLocalizer,
-        INavigationService navigationService,
         DataCenter dataCenter,
         ChatHub chatHub,
         IApiClient apiClient,
         ChatDatabase database,
         IUserService userService,
         IServiceProvider serviceProvider)
-        : base(navigationService, stringLocalizer)
     {
         DataCenter = dataCenter;
         _chatHub = chatHub;
