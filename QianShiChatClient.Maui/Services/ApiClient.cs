@@ -42,7 +42,7 @@ public class ApiClient : IApiClient
 
     public string ClientType => CurrentClientType;
 
-    public async Task<UserDto> LoginAsync(LoginReqiest request, CancellationToken cancellationToken = default)
+    public async Task<UserDto> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
         using var response = await _client.PostAsJsonAsync("/api/Auth", request, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -127,7 +127,7 @@ public class ApiClient : IApiClient
     {
         var response = await _client.PostAsync($"/api/Auth/qr/auth?key={key}", null, cancellationToken: cancellationToken);
         await HandleUnauthorizedResponse(response);
-        var result = JsonSerializer.Deserialize < GlobalResult<QrAuthResponse>>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        var result = JsonSerializer.Deserialize<GlobalResult<QrAuthResponse>>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
         return result.Data;
     }
 
@@ -151,11 +151,11 @@ public class ApiClient : IApiClient
     {
         var response = await _client.GetAsync($"/api/Auth/qr/check?key={key}", cancellationToken);
         await HandleUnauthorizedResponse(response);
-        var result =  JsonSerializer.Deserialize<GlobalResult<CheckQrAuthKeyResponse>>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        var result = JsonSerializer.Deserialize<GlobalResult<CheckQrAuthKeyResponse>>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
         return result.Data;
     }
 
-    string FormatParam(string url, object obj, bool ignoreNull = true)
+    private string FormatParam(string url, object obj, bool ignoreNull = true)
     {
         var properties = obj.GetType().GetProperties();
         var sb = new StringBuilder();
@@ -176,7 +176,7 @@ public class ApiClient : IApiClient
         return sb.ToString();
     }
 
-    async Task HandleUnauthorizedResponse(HttpResponseMessage response)
+    private async Task HandleUnauthorizedResponse(HttpResponseMessage response)
     {
         if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
         {
@@ -184,5 +184,13 @@ public class ApiClient : IApiClient
             return;
         }
         response.EnsureSuccessStatusCode();
+    }
+
+    public async Task<UserDto> FindUserAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var response = await _client.GetAsync($"/api/users/{id}", cancellationToken);
+        await HandleUnauthorizedResponse(response);
+        var result = JsonSerializer.Deserialize<GlobalResult<UserDto>>(await response.Content.ReadAsStringAsync(cancellationToken), _serializerOptions);
+        return result.Data;
     }
 }

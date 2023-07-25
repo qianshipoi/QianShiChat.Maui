@@ -4,11 +4,11 @@ namespace QianShiChatClient.Maui.Services;
 
 public class ChatHub
 {
-    readonly IApiClient _apiClient;
+    private readonly IApiClient _apiClient;
 
-    HubConnection connection;
-    bool _isConnected;
-    bool _isConnecting;
+    private HubConnection connection;
+    private bool _isConnected;
+    private bool _isConnecting;
 
     public event Action<string, string> ReceiveMessage;
 
@@ -36,8 +36,7 @@ public class ChatHub
         _apiClient = apiClient;
 
         connection = new HubConnectionBuilder()
-          .WithUrl($"{ApiClient.BaseAddress}/Hubs/Chat", options =>
-          {
+          .WithUrl($"{ApiClient.BaseAddress}/Hubs/Chat", options => {
               options.AccessTokenProvider = () => GetAccessToken();
               options.Headers.Add("Client-Type", _apiClient.ClientType);
           })
@@ -48,30 +47,27 @@ public class ChatHub
         connection.On<NotificationMessage>("Notification", (msg) => Notification?.Invoke(msg));
         connection.On<ChatMessageDto>("PrivateChat", (msg) => PrivateChat?.Invoke(msg));
 
-        connection.Closed += async (error) =>
-        {
+        connection.Closed += async (error) => {
             IsConnected = false;
             _isConnecting = false;
             await Task.Delay(new Random().Next(0, 5) * 1000);
             await Connect();
         };
 
-        connection.Reconnecting += (msg) =>
-        {
+        connection.Reconnecting += (msg) => {
             IsConnected = false;
             _isConnecting = true;
             return Task.CompletedTask;
         };
 
-        connection.Reconnected += (msg) =>
-        {
+        connection.Reconnected += (msg) => {
             IsConnected = true;
             _isConnecting = false;
             return Task.CompletedTask;
         };
     }
 
-    Task<string> GetAccessToken() => Task.FromResult(_apiClient.AccessToken);
+    private Task<string> GetAccessToken() => Task.FromResult(_apiClient.AccessToken);
 
     public async Task Connect()
     {

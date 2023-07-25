@@ -1,10 +1,10 @@
 ﻿namespace QianShiChatClient.Maui.ViewModels;
 
-public sealed partial class AppShellViewModel : ViewModelBase
+public sealed partial class DesktopShellViewModel : ViewModelBase
 {
     private readonly ChatHub _chatHub;
     private readonly IDialogService _dialogService;
-    public AppShellViewModel(
+    public DesktopShellViewModel(
         ChatHub chatHub,
         INavigationService navigationService,
         IStringLocalizer<MyStrings> stringLocalizer,
@@ -17,7 +17,7 @@ public sealed partial class AppShellViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    async Task Logout()
+    private async Task Logout()
     {
         Settings.CurrentUser = null;
         Settings.AccessToken = null;
@@ -27,5 +27,5 @@ public sealed partial class AppShellViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    Task MessageDialog() => _dialogService.PushMessageDialog();
+    private Task MessageDialog() => _dialogService.PushMessageDialog();
 }

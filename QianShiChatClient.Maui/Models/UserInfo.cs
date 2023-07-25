@@ -15,6 +15,11 @@ public partial class UserInfo : ObservableObject
 
     [ObservableProperty]
     string _content = "个性签名";
+
+    [ObservableProperty]
+    bool _isUnknown = false;
+
+    public static UserInfo Unknown = new UserInfo() { IsUnknown = true };
 }
 
 public static class UserInfoExtensions

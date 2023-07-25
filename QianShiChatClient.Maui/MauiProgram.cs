@@ -13,24 +13,21 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
-            .UseBarcodeReader() 
+            .UseBarcodeReader()
             .UseMauiCommunityToolkit()
-            .ConfigureLifecycleEvents(events =>
-            {
+            .ConfigureLifecycleEvents(events => {
 #if ANDROID
                 events.ConfigureAndroidLifecycleEvents();
 #elif WINDOWS
                 events.ConfigureWindowsLifecycleEvents();
 #endif
             })
-            .ConfigureFonts(fonts =>
-            {
+            .ConfigureFonts(fonts => {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("iconfont.ttf", IconFontIcons.FontFamily);
             })
-            .ConfigureMopups(() =>
-            {
+            .ConfigureMopups(() => {
 
             })
             .Services.ConfigureService(); ;
@@ -45,6 +42,7 @@ public static class MauiProgram
     public static IServiceCollection ConfigureService(this IServiceCollection services)
     {
         services.AddLocalization();
+        services.AddMemoryCache();
 
         services.AddHttpClient<IApiClient, ApiClient>();
         services.AddSingleton<ChatHub>();
@@ -53,9 +51,21 @@ public static class MauiProgram
         services.AddSingleton<DataCenter>();
         services.AddSingleton<IDialogService, DialogService>();
 
-        services.AddTransient<AppShell, AppShellViewModel>();
+        services.AddSingleton<IUserService, UserService>();
+
+        if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
+        {
+            services.AddTransient<DesktopMessagePage, MessageViewModel>();
+            services.AddTransient<DesktopShell, DesktopShellViewModel>();
+        }
+        else
+        {
+            services.AddTransient<AppShell, AppShellViewModel>();
+            services.AddTransient<MessagePage, MessageViewModel>();
+        }
+        services.AddTransient<ChatMessageViewModel>();
+
         services.AddTransient<LoginPage, LoginViewModel>();
-        services.AddTransient<MessagePage, MessageViewModel>();
         services.AddTransient<FriendPage, FriendViewModel>();
         services.AddTransient<SettingsPage, SettingsViewModel>();
 

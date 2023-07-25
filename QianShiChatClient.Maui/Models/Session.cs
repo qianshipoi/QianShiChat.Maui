@@ -2,6 +2,7 @@
 
 public partial class Session : ObservableObject
 {
+    private readonly IUserService _userService;
     [ObservableProperty]
     int _unreadCount;
 
@@ -15,10 +16,19 @@ public partial class Session : ObservableObject
 
     public ObservableCollection<ChatMessage> Messages { get; }
 
-    public Session(UserInfo user, IEnumerable<ChatMessage> messages)
+    public Session(UserInfo user, IEnumerable<ChatMessage> messages, IUserService userService)
     {
+        _userService = userService;
         User = user;
-        var orderMessages = messages.OrderBy(x => x.CreateTime);
+        var orderMessages = messages.OrderBy(x => x.CreateTime).Select(x => {
+            _userService.GetUserInfoByIdAsync(x.FromId).ContinueWith(item => {
+                x.FromAvatar = item.Result.Avatar;
+            });
+            _userService.GetUserInfoByIdAsync(x.ToId).ContinueWith(item => {
+                x.ToAvatar = item.Result.Avatar;
+            });
+            return x;
+        });
         Messages = new ObservableCollection<ChatMessage>(orderMessages);
         LastMessageTime = orderMessages.LastOrDefault()?.CreateTime ?? 0;
         UnreadCount += messages.Count();

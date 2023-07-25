@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.Maui.Views.Desktop.DesktopMessagePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:exts="clr-namespace:QianShiChatClient.Maui.Extensions"
+    xmlns:helpers="clr-namespace:QianShiChatClient.Maui.Helpers"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    Title="DesktopMessagePage"
+    x:DataType="{x:Type vms:MessageViewModel}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <exts:TimestampConverter x:Key="TimestampConverter" />
+            <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid ColumnDefinitions="220, *">
+        <Grid RowDefinitions="80, *">
+            <Grid
+                Margin="8,0"
+                ColumnDefinitions="*, Auto"
+                ColumnSpacing="8">
+                <SearchBar VerticalOptions="Center" />
+                <!--<Entry Text="{Binding SearchText}" VerticalOptions="Center" />
+                <Label
+                    Grid.Column="1"
+                    toolkit:DockLayout.DockPosition="Right"
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    Style="{DynamicResource IconLabel}"
+                    Text="{x:Static models:IconFontIcons.Adduser}"
+                    VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SearchCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>-->
+            </Grid>
+            <ListView
+                Grid.Row="1"
+                HasUnevenRows="False"
+                IsPullToRefreshEnabled="True"
+                IsRefreshing="{Binding IsBusy}"
+                ItemsSource="{Binding DataCenter.Sessions}"
+                RefreshCommand="{Binding UpdateMessageCommand}"
+                RowHeight="68"
+                SelectedItem="{Binding CurrentSelectedSession}"
+                SelectionMode="Single"
+                SeparatorVisibility="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell x:DataType="{x:Type models:Session}">
+                            <Grid
+                                Padding="8,0"
+                                ColumnDefinitions="Auto,*,Auto"
+                                ColumnSpacing="6"
+                                RowDefinitions="*,*">
+                                <toolkit:AvatarView
+                                    Grid.RowSpan="2"
+                                    BorderColor="{DynamicResource Gray300}"
+                                    BorderWidth="1"
+                                    CornerRadius="20"
+                                    HeightRequest="40"
+                                    HorizontalOptions="Start"
+                                    ImageSource="{Binding User.Avatar}"
+                                    Text="{Binding User.NickName}"
+                                    VerticalOptions="Center"
+                                    WidthRequest="40" />
+                                <Label
+                                    Grid.Column="1"
+                                    Padding="0"
+                                    FontSize="16"
+                                    LineBreakMode="TailTruncation"
+                                    Text="{Binding User.NickName}"
+                                    VerticalOptions="End" />
+                                <Label
+                                    Grid.Column="2"
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="{Binding LastMessageTime, Converter={StaticResource TimestampConverter}, StringFormat='{0:t}'}"
+                                    TextColor="{StaticResource Gray300}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Padding="0"
+                                    FontSize="14"
+                                    LineBreakMode="TailTruncation"
+                                    Text="{Binding LastMessageContent}"
+                                    TextColor="{StaticResource Gray300}"
+                                    VerticalOptions="Start" />
+                                <Border
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Padding="4,0"
+                                    BackgroundColor="{AppThemeBinding Default=#CCCCCC,
+                                                                      Light=#CCCCCC,
+                                                                      Dark=#575757}"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Start">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="40" />
+                                    </Border.StrokeShape>
+                                    <Label
+                                        FontSize="12"
+                                        Text="99"
+                                        TextColor="White" />
+                                </Border>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <!--<ListView.Behaviors>
+                    <toolkit:EventToCommandBehavior
+                        Command="{Binding JoinDetailCommand}"
+                        EventArgsConverter="{StaticResource ItemTappedEventArgsConverter}"
+                        EventName="ItemTapped" />
+                </ListView.Behaviors>-->
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="LightBlue" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+            </ListView>
+        </Grid>
+        <ContentView
+            Grid.Column="1"
+            BackgroundColor="#F2F2F2"
+            Content="{Binding Content}" />
+        <Border
+            Grid.ColumnSpan="2"
+            Margin="-1,0,0,0"
+            BackgroundColor="#CCCCCC"
+            HorizontalOptions="StartAndExpand"
+            StrokeThickness="0"
+            WidthRequest="2" />
+    </Grid>
+</ContentPage>

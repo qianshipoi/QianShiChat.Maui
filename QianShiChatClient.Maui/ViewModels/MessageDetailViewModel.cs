@@ -2,41 +2,44 @@
 
 public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttributable
 {
-    readonly IApiClient _apiClient;
-    readonly ChatDatabase _database;
-    readonly DataCenter _dataCenter;
+    private readonly IApiClient _apiClient;
+    private readonly ChatDatabase _database;
+    private readonly DataCenter _dataCenter;
+    private readonly IUserService _userService;
 
-    bool _isNewSession;
+    private bool _isNewSession;
 
     public int SessionId { get; private set; }
 
     [ObservableProperty]
-    Session _session;
+    private Session _session;
 
     [ObservableProperty]
-    ChatMessage _toMessage;
+    private ChatMessage _toMessage;
 
     [ObservableProperty]
-    bool _scrollAnimated; 
+    private bool _scrollAnimated;
 
     [ObservableProperty]
-    string _message;
+    private string _message;
 
     public MessageDetailViewModel(
         IStringLocalizer<MyStrings> stringLocalizer,
         INavigationService navigationService,
         IApiClient apiClient,
         ChatDatabase database,
-        DataCenter dataCenter)
+        DataCenter dataCenter,
+        IUserService userService)
         : base(navigationService, stringLocalizer)
     {
         _apiClient = apiClient;
         _database = database;
         _dataCenter = dataCenter;
+        _userService = userService;
     }
 
     [RelayCommand]
-    async Task Send()
+    private async Task Send()
     {
         if (IsBusy || string.IsNullOrEmpty(Message)) return;
 
@@ -55,7 +58,7 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
             ScrollAnimated = true;
             ToMessage = message;
             Message = string.Empty;
-            if(_isNewSession)
+            if (_isNewSession)
             {
                 _dataCenter.Sessions.Add(Session);
             }
@@ -78,10 +81,10 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
         else
         {
             var user = await _database.GetUserByIdAsync(SessionId);
-            if(user != null)
+            if (user != null)
             {
                 var message = await _database.GetChatMessageAsync(user.Id);
-                Session = new Session(user, message);
+                Session = new Session(user, message, _userService);
                 _isNewSession = true;
             }
         }

@@ -1,6 +1,6 @@
 ﻿namespace QianShiChatClient.Maui.Models;
 
-public record LoginReqiest(string Account, string Password);
+public record LoginRequest(string Account, string Password);
 
 public record PrivateChatMessageRequest(int ToId, string Message, ChatMessageSendType SendType);
 

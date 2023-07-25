@@ -7,7 +7,13 @@ public class ChatMessage
 
     public int FromId { get; set; }
 
+    [Ignore]
+    public string FromAvatar { get; set; }
+
     public int ToId { get; set; }
+
+    [Ignore]
+    public string ToAvatar { get; set; }
 
     public ChatMessageSendType SendType { get; set; }
 

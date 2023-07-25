@@ -1,29 +1,31 @@
-﻿namespace QianShiChatClient.Maui.ViewModels;
+﻿using QianShiChatClient.Maui.Views.Desktop;
+
+namespace QianShiChatClient.Maui.ViewModels;
 
 public sealed partial class LoginViewModel : ViewModelBase
 {
-    readonly IApiClient _apiClient;
-    readonly IDispatcher _dispatcher;
-    readonly IServiceProvider _serviceProvider;
+    private readonly IApiClient _apiClient;
+    private readonly IDispatcher _dispatcher;
+    private readonly IServiceProvider _serviceProvider;
 
-    Timer _updateQrCodeTimer;
-    Timer _checkTimer;
-    string _key;
-
-    [ObservableProperty]
-    bool _isAccountAuthMode = true;
+    private Timer _updateQrCodeTimer;
+    private Timer _checkTimer;
+    private string _key;
 
     [ObservableProperty]
-    string _account = "qianshi";
+    private bool _isAccountAuthMode = true;
 
     [ObservableProperty]
-    string _password = "123456";
+    private string _account = "qianshi";
 
     [ObservableProperty]
-    ImageSource _authQrCodeImage;
+    private string _password = "123456";
 
     [ObservableProperty]
-    UserInfo _user;
+    private ImageSource _authQrCodeImage;
+
+    [ObservableProperty]
+    private UserInfo _user;
 
     public LoginViewModel(
         IStringLocalizer<MyStrings> stringLocalizer,
@@ -39,17 +41,19 @@ public sealed partial class LoginViewModel : ViewModelBase
         _serviceProvider = serviceProvider;
     }
 
-    void JoinMainPage(UserInfo user)
+    private void JoinMainPage(UserInfo user)
     {
-        _dispatcher.Dispatch(() =>
-        {
+
+        _dispatcher.Dispatch(() => {
             App.Current.User = user;
             Settings.CurrentUser = App.Current.User;
-            App.Current.MainPage = _serviceProvider.GetRequiredService<AppShell>();
+            App.Current.MainPage = DeviceInfo.Idiom == DeviceIdiom.Desktop ?
+                _serviceProvider.GetRequiredService<DesktopShell>() : 
+                _serviceProvider.GetRequiredService<AppShell>();
         });
     }
 
-    async Task CheckAccessToken()
+    private async Task CheckAccessToken()
     {
         var accessToken = Settings.AccessToken;
         if (!string.IsNullOrWhiteSpace(Settings.AccessToken))
@@ -59,13 +63,11 @@ public sealed partial class LoginViewModel : ViewModelBase
             {
                 JoinMainPage(user);
                 // update user info.
-                _ = Task.Run(async () =>
-                {
+                _ = Task.Run(async () => {
                     var (isSuccessed, userDto) = await _apiClient.CheckAccessToken(accessToken);
                     if (isSuccessed)
                     {
-                        _dispatcher.Dispatch(() =>
-                        {
+                        _dispatcher.Dispatch(() => {
                             //App.Current.User.Avatar = _apiClient.FormatFile(userDto.Avatar);
                             App.Current.User.NickName = userDto.NickName;
                             Settings.CurrentUser = App.Current.User;
@@ -85,7 +87,7 @@ public sealed partial class LoginViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    async Task Submit()
+    private async Task Submit()
     {
         if (IsBusy)
             return;
@@ -103,7 +105,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         IsBusy = true;
         try
         {
-            var user = await _apiClient.LoginAsync(new LoginReqiest(Account, Password.ToMd5()));
+            var user = await _apiClient.LoginAsync(new LoginRequest(Account, Password.ToMd5()));
             await Toast
                 .Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString())
                 .Show();
@@ -115,7 +117,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         }
     }
 
-    async Task GenerateQrCodeImage()
+    private async Task GenerateQrCodeImage()
     {
         _updateQrCodeTimer?.Dispose();
 
@@ -127,10 +129,8 @@ public sealed partial class LoginViewModel : ViewModelBase
         var qrcodeResponse = await _apiClient.CreateQrCodeAsync(
             new CreateQrCodeRequest { Key = _key, Qrimg = true }
         );
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            AuthQrCodeImage = ImageSource.FromStream(() =>
-            {
+        MainThread.BeginInvokeOnMainThread(() => {
+            AuthQrCodeImage = ImageSource.FromStream(() => {
                 qrcodeResponse.Image = qrcodeResponse.Image.Replace("data:image/png;base64,", "");
                 var bytes = Convert.FromBase64String(qrcodeResponse.Image);
                 return new MemoryStream(bytes);
@@ -140,7 +140,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         _updateQrCodeTimer = new Timer(state => _ = GenerateQrCodeImage(), null, 60000, 60000);
     }
 
-    void ClearAuthTimer()
+    private void ClearAuthTimer()
     {
         _checkTimer?.Dispose();
         _updateQrCodeTimer?.Dispose();
@@ -148,7 +148,7 @@ public sealed partial class LoginViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    async Task SwitchAuthMode()
+    private async Task SwitchAuthMode()
     {
         if (IsBusy)
             return;
@@ -173,7 +173,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         }
     }
 
-    async Task CheckAuthStatus()
+    private async Task CheckAuthStatus()
     {
         var checkResponse = await _apiClient.CheckQrKeyAsync(_key);
 
@@ -196,8 +196,7 @@ public sealed partial class LoginViewModel : ViewModelBase
             // auth successed.
             ClearAuthTimer();
             Settings.AccessToken = checkResponse.AccessToken;
-            await MainThread.InvokeOnMainThreadAsync(async () =>
-            {
+            await MainThread.InvokeOnMainThreadAsync(async () => {
                 await Toast
                     .Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString())
                     .Show();

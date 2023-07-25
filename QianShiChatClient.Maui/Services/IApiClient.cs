@@ -5,7 +5,7 @@ public interface IApiClient
     string AccessToken { get; }
     string ClientType { get; }
 
-    Task<UserDto> LoginAsync(LoginReqiest request, CancellationToken cancellationToken = default);
+    Task<UserDto> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default);
 
     Task<(bool, UserDto)> CheckAccessToken(string token, CancellationToken cancellationToken = default);
 
@@ -14,6 +14,8 @@ public interface IApiClient
     Task<ChatMessageDto> SendTextAsync(PrivateChatMessageRequest request, CancellationToken cancellationToken = default);
 
     Task<PagedList<UserDto>> SearchNickNameAsync(string searchContent, uint page = 1, uint size = 20, CancellationToken cancellationToken = default);
+
+    Task<UserDto> FindUserAsync(int id, CancellationToken cancellationToken = default);
 
     Task FriendApplyAsync(FriendApplyRequest request, CancellationToken cancellationToken = default);
 

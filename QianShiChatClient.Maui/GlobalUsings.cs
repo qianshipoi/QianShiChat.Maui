@@ -23,6 +23,7 @@ global using QianShiChatClient.Maui.Services;
 global using QianShiChatClient.Maui.ViewModels;
 global using QianShiChatClient.Maui.Views;
 global using QianShiChatClient.Maui.Views.Popups;
+global using QianShiChatClient.Maui.Views.Desktop;
 
 global using SQLite;
 

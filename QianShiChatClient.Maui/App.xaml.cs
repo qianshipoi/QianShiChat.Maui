@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace QianShiChatClient.Maui;
+﻿namespace QianShiChatClient.Maui;
 
 public partial class App : Application
 {
@@ -11,31 +9,33 @@ public partial class App : Application
     public UserInfo User { get; set; }
 
     public App(IServiceProvider serviceProvider)
-	{
+    {
         ServiceProvider = serviceProvider;
         InitializeComponent();
 
         UserAppTheme = Settings.Theme;
         var culture = new CultureInfo(Settings.Language);
         LocalizationResourceManager.Instance.SetCulture(culture);
-
-        MainPage = serviceProvider.GetRequiredService<LoginPage>();
+        _ = ServiceProvider.GetRequiredService<ChatDatabase>().Init();
+        MainPage = ServiceProvider.GetRequiredService<LoginPage>();
     }
 
-    //protected override Window CreateWindow(IActivationState activationState)
-    //{
-    //    var window = base.CreateWindow(activationState);
+    protected override Window CreateWindow(IActivationState activationState)
+    {
+        var window = base.CreateWindow(activationState);
+        const double minWidth = 840;
+        const double minHeight = 540;
+        const double width = 980;
+        const double height = 560;
 
-    //    const double width = 400;
-    //    const double height = 720;
+        window.Width = width;
+        window.Height = height;
+        window.MinimumWidth = minWidth;
+        window.MinimumHeight = minHeight;
+        var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
+        window.X = (displayInfo.Width / displayInfo.Density - window.Width) / 2;
+        window.Y = (displayInfo.Height / displayInfo.Density - window.Height) / 2;
 
-    //    window.Width = width;
-    //    window.Height = height;
-    //    window.MaximumWidth = width;
-    //    window.MaximumHeight = height;
-    //    window.MinimumHeight = height;
-    //    window.MinimumWidth = width;
-
-    //    return window;
-    //}
+        return window;
+    }
 }
