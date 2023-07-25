@@ -43,7 +43,7 @@ public class UserService : IUserService
             catch (Exception ex)
             {
                 userInfo = UserInfo.Unknown;
-                _logger.LogError(ex, "查询用户异常: id - {0}", id);
+                _logger.LogError(ex, "查询用户异常: id - {id}", id);
             }
         }
 

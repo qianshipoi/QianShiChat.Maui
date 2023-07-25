@@ -5,7 +5,6 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
     private readonly IApiClient _apiClient;
     private readonly IUserService _userService;
     private readonly ChatDatabase _database;
-    private readonly DataCenter _dataCenter;
 
     [ObservableProperty]
     private Session _session;
@@ -16,8 +15,6 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
     [ObservableProperty]
     private string _message;
 
-    private bool _isNewSession;
-
     [ObservableProperty]
     private bool _scrollAnimated;
 
@@ -26,14 +23,12 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
         IStringLocalizer<MyStrings> stringLocalizer,
         IApiClient apiClient,
         IUserService userService,
-        ChatDatabase database,
-        DataCenter dataCenter)
+        ChatDatabase database)
         : base(navigationService, stringLocalizer)
     {
         _apiClient = apiClient;
         _userService = userService;
         _database = database;
-        _dataCenter = dataCenter;
     }
 
     [RelayCommand]
@@ -58,10 +53,6 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
             ScrollAnimated = true;
             ToMessage = message;
             Message = string.Empty;
-            if (_isNewSession)
-            {
-                _dataCenter.Sessions.Add(Session);
-            }
         }
         finally
         {

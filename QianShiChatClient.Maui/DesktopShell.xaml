@@ -66,18 +66,10 @@
 
     <ShellContent
         Title="{local:Localize Friend}"
-        ContentTemplate="{DataTemplate views:FriendPage}"
+        ContentTemplate="{DataTemplate desktopViews:DesktopFriendPage}"
         Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
                          Glyph={x:Static models:IconFontIcons.Members}}"
         Route="FriendPage" />
-
-    <!--<ShellContent
-        Title="{local:Localize Settings}"
-        ContentTemplate="{DataTemplate views:SettingsPage}"
-        Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
-                         Glyph={x:Static models:IconFontIcons.Settings},
-                         Color={StaticResource Gray200}}"
-        Route="SettingsPage" />-->
 
     <MenuItem Command="{Binding MessageDialogCommand}" Text="MessageDailog" />
 </Shell>

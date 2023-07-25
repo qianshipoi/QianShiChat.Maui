@@ -26,9 +26,11 @@ public sealed partial class DataCenter : ObservableObject
         _userService = userService;
         Friends = new ObservableCollection<UserInfo>();
         Pendings = new ObservableCollection<ApplyPending>();
-        Sessions = new SortableObservableCollection<Session>();
-        Sessions.Descending = true;
-        Sessions.SortingSelector = (t) => t.LastMessageTime;
+        Sessions = new SortableObservableCollection<Session>
+        {
+            Descending = true,
+            SortingSelector = (t) => t.LastMessageTime
+        };
         Sessions.CollectionChanged += Sessions_CollectionChanged;
 
         _chatHub.PrivateChat += ChatHubPrivateChat;
@@ -124,7 +126,7 @@ public sealed partial class DataCenter : ObservableObject
             var session = AddSessions(user, messages);
 
             await _database.SaveUserAsync(user);
-            if (messages.Count() > 0)
+            if (messages.Any())
             {
                 await _database.SaveChatMessagesAsnyc(messages);
             }

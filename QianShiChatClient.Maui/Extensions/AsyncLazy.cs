@@ -18,9 +18,4 @@ public class AsyncLazy<T>
     {
         return instance.Value.GetAwaiter();
     }
-
-    public void Start()
-    {
-        var resout = instance.Value;
-    }
 }

@@ -36,8 +36,8 @@ public class ApiClient : IApiClient
         response.EnsureSuccessStatusCode();
         var accessToken = response.Headers.GetValues(ACCESS_TOKEN_HEADER_KEY).FirstOrDefault();
         AccessToken = accessToken;
-        var body = await response.Content.ReadAsStringAsync();
-        _logger.LogInformation("login: request: {0}, response: {1}", JsonSerializer.Serialize(request), body);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        _logger.LogInformation("login: request: {request}, response: {response}", JsonSerializer.Serialize(request), body);
         var result = JsonSerializer.Deserialize<GlobalResult<UserDto>>(body, _serializerOptions);
         return (response.IsSuccessStatusCode, result.Data, result.Errors is string str ? str : JsonSerializer.Serialize(result.Errors));
     }
@@ -56,13 +56,13 @@ public class ApiClient : IApiClient
             response.EnsureSuccessStatusCode();
             var accessToken = response.Headers.GetValues(ACCESS_TOKEN_HEADER_KEY).FirstOrDefault();
             AccessToken = accessToken;
-            var body = await response.Content.ReadAsStringAsync();
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
             var user = JsonSerializer.Deserialize<GlobalResult<UserDto>>(body, _serializerOptions);
             return (true, user.Data);
         }
         catch (Exception ex)
         {
-            await Toast.Make(ex.Message).Show();
+            await Toast.Make(ex.Message).Show(cancellationToken);
             return (false, null);
         }
     }
@@ -77,8 +77,8 @@ public class ApiClient : IApiClient
             return (false, default, "Unauthorized！");
         }
         response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
-        _logger.LogInformation("http get: {0} - response content: {1}", url, content);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        _logger.LogInformation("http get: {url} - response content: {response}", url, content);
 
         if (string.IsNullOrWhiteSpace(content))
         {
@@ -105,8 +105,8 @@ public class ApiClient : IApiClient
             return (false, default, "Unauthorized！");
         }
         response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
-        _logger.LogInformation("http post: {0} - response content: {1}", url, content);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        _logger.LogInformation("http post: {url} - response content: {content}", url, content);
 
         if (string.IsNullOrWhiteSpace(content))
         {
@@ -134,8 +134,8 @@ public class ApiClient : IApiClient
             return (false, "Unauthorized！");
         }
         response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
-        _logger.LogInformation("http post: {0} - response content: {1}", url, content);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        _logger.LogInformation("http post: {url} - response content: {response}", url, content);
 
         if (string.IsNullOrWhiteSpace(content))
         {
@@ -177,7 +177,7 @@ public class ApiClient : IApiClient
 
     public async Task<PagedList<ApplyPendingDto>> FriendApplyPendingAsync(FriendApplyPendingRequest request, CancellationToken cancellationToken = default)
     {
-        var (succeeded, data, message) = await GetJsonAsync<PagedList<ApplyPendingDto>>(FormatParam($"/api/FriendApply/Pending", request), cancellationToken);
+        var (succeeded, data, message) = await GetJsonAsync<PagedList<ApplyPendingDto>>(ApiClient.FormatParam($"/api/FriendApply/Pending", request), cancellationToken);
         return data;
     }
 
@@ -217,7 +217,7 @@ public class ApiClient : IApiClient
         return data;
     }
 
-    private string FormatParam(string url, object obj, bool ignoreNull = true)
+    private static string FormatParam(string url, object obj)
     {
         var properties = obj.GetType().GetProperties();
         var sb = new StringBuilder();
@@ -230,9 +230,9 @@ public class ApiClient : IApiClient
                 continue;
 
             sb.Append(property.Name);
-            sb.Append("=");
+            sb.Append('=');
             sb.Append(HttpUtility.UrlEncode(v.ToString()));
-            sb.Append("&");
+            sb.Append('&');
         }
         sb.Remove(sb.Length - 1, 1);
         return sb.ToString();

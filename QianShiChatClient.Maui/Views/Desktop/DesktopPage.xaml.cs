@@ -24,8 +24,7 @@ public partial class DesktopPage : ContentPage
     private void Button_Clicked(object sender, EventArgs e)
     {
 #if WINDOWS
-        var winuiWindow = Window.Handler?.PlatformView as MicrosoftuiXaml.Window;
-        if (winuiWindow is null)
+        if (Window.Handler?.PlatformView is not MicrosoftuiXaml.Window winuiWindow)
             return;
 
         var windowHanlde = winuiWindow.GetWindowHandle();
@@ -36,8 +35,7 @@ public partial class DesktopPage : ContentPage
     private void Button_Clicked_1(object sender, EventArgs e)
     {
 #if WINDOWS
-        var winuiWindow = Window.Handler?.PlatformView as MicrosoftuiXaml.Window;
-        if (winuiWindow is null)
+        if (Window.Handler?.PlatformView is not MicrosoftuiXaml.Window winuiWindow)
             return;
 
         var windowHanlde = winuiWindow.GetWindowHandle();
@@ -49,8 +47,7 @@ public partial class DesktopPage : ContentPage
     {
 #if WINDOWS
 
-        var winuiWindow = Window.Handler?.PlatformView as MicrosoftuiXaml.Window;
-        if (winuiWindow is null)
+        if (Window.Handler?.PlatformView is not MicrosoftuiXaml.Window winuiWindow)
             return;
         var appWindow = winuiWindow.GetAppWindow();
         if (appWindow is null)
@@ -72,8 +69,7 @@ public partial class DesktopPage : ContentPage
     private void Button_Clicked_3(object sender, EventArgs e)
     {
 #if WINDOWS
-        var winuiWindow = Window.Handler?.PlatformView as MicrosoftuiXaml.Window;
-        if (winuiWindow is null)
+        if (Window.Handler?.PlatformView is not MicrosoftuiXaml.Window winuiWindow)
             return;
         var appWindow = winuiWindow.GetAppWindow();
         if (appWindow is null)
@@ -90,8 +86,7 @@ public partial class DesktopPage : ContentPage
     private void Button_Clicked_4(object sender, EventArgs e)
     {
 #if WINDOWS
-        var winuiWindow = Window.Handler?.PlatformView as MicrosoftuiXaml.Window;
-        if (winuiWindow is null)
+        if (Window.Handler?.PlatformView is not MicrosoftuiXaml.Window winuiWindow)
             return;
         var appWindow = winuiWindow.GetAppWindow();
         if (appWindow is null)
@@ -113,8 +108,7 @@ public partial class DesktopPage : ContentPage
     private void Button_Clicked_5(object sender, EventArgs e)
     {
 #if WINDOWS
-        var winuiWindow = Window.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
-        if (winuiWindow is null)
+        if (Window.Handler?.PlatformView is not MicrosoftuiXaml.Window winuiWindow)
             return;
         var appWindow = winuiWindow.GetAppWindow();
         if (appWindow is null)
@@ -129,8 +123,7 @@ public partial class DesktopPage : ContentPage
     private void Button_Clicked_6(object sender, EventArgs e)
     {
 #if WINDOWS
-        var winuiWindow = Window.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
-        if (winuiWindow is null)
+        if (Window.Handler?.PlatformView is not MicrosoftuiXaml.Window winuiWindow)
             return;
         var appWindow = winuiWindow.GetAppWindow();
         if (appWindow is null)
@@ -145,15 +138,14 @@ public partial class DesktopPage : ContentPage
     private void Button_Clicked_7(object sender, EventArgs e)
     {
 #if WINDOWS
-        var winuiWindow = Window.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
-        if (winuiWindow is null)
+        if (Window.Handler?.PlatformView is not Microsoft.UI.Xaml.Window winuiWindow)
             return;
 
         var application = Microsoft.UI.Xaml.Application.Current;
         var res = application.Resources;
 
         //看到这里你一定会疑惑为什么是这样，如果你有兴趣，可以查阅Winui3的源码
-        res["WindowCaptionBackground"] = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
+        res["WindowCaptionBackground"] = new MicrosoftuixmlMedia.SolidColorBrush(Microsoft.UI.Colors.Red);
 
         //修改标题栏后需要主动刷新才会生效（否则需要你人为进行一次最小化处理）
         TriggertTitleBarRepaint();
@@ -163,8 +155,7 @@ public partial class DesktopPage : ContentPage
     private bool TriggertTitleBarRepaint()
     {
 #if WINDOWS
-        var winuiWindow = Window.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
-        if (winuiWindow is null)
+        if (Window.Handler?.PlatformView is not MicrosoftuiXaml.Window winuiWindow)
             return false;
 
         var windowHanlde = winuiWindow.GetWindowHandle();

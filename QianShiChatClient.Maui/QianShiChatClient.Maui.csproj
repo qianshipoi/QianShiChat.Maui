@@ -76,6 +76,9 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>MyStrings.resx</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\Desktop\DesktopFriendPage.xaml.cs">
+	    <DependentUpon>DesktopFriendPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -105,6 +108,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Desktop\DesktopPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Desktop\DesktopFriendPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\FriendPage.xaml">

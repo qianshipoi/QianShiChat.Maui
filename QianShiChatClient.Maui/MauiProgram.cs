@@ -69,20 +69,23 @@ public static class MauiProgram
 
         if (AppConsts.IsDesktop)
         {
-            services.AddTransient<DesktopMessagePage, MessageViewModel>();
+            services.AddTransient<DesktopMessagePage>();
             services.AddTransient<DesktopShell, DesktopShellViewModel>();
             services.AddTransientWithShellRoute<SettingsPage, SettingsViewModel>(nameof(SettingsPage));
+            services.AddTransient<DesktopFriendPage>();
         }
         else
         {
             services.AddTransient<AppShell, AppShellViewModel>();
-            services.AddTransient<MessagePage, MessageViewModel>();
+            services.AddTransient<MessagePage>();
             services.AddTransient<SettingsPage, SettingsViewModel>();
+            services.AddTransient<FriendPage>();
         }
         services.AddTransient<ChatMessageViewModel>();
 
         services.AddTransient<LoginPage, LoginViewModel>();
-        services.AddTransient<FriendPage, FriendViewModel>();
+        services.AddTransient<FriendViewModel>();
+        services.AddTransient<MessageViewModel>();
 
         services.AddTransientWithShellRoute<MessageDetailPage, MessageDetailViewModel>(nameof(MessageDetailPage));
         services.AddTransientWithShellRoute<SearchPage, SearchViewModel>(nameof(SearchPage));

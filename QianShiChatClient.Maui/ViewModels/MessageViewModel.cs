@@ -7,9 +7,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     private readonly ChatDatabase _database;
     private readonly IUserService _userService;
     private readonly IServiceProvider _serviceProvider;
-
-    private Dictionary<Session, View> _viewCache;
-    private bool _isNewSession;
+    private readonly Dictionary<Session, View> _viewCache;
 
     [ObservableProperty]
     private View _content;
@@ -92,10 +90,6 @@ public sealed partial class MessageViewModel : ViewModelBase
             ScrollAnimated = true;
             ToMessage = message;
             Message = string.Empty;
-            if (_isNewSession)
-            {
-                DataCenter.Sessions.Add(CurrentSelectedSession);
-            }
         }
         finally
         {

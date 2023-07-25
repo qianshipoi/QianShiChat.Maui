@@ -15,6 +15,9 @@ public sealed partial class FriendViewModel : ViewModelBase
 
     public List<OperationItem> Operations { get; private set; }
 
+    [ObservableProperty]
+    private View _content;
+
     public FriendViewModel(
         DataCenter dataCenter,
         IStringLocalizer<MyStrings> stringLocalizer,
@@ -27,7 +30,12 @@ public sealed partial class FriendViewModel : ViewModelBase
         {
             new OperationItem
             {
-                Name = _stringLocalizer["NewFriend"],
+                Name = "好友通知",
+                Command = JoinNewFriendPageCommand
+            },
+            new OperationItem
+            {
+                Name = "群通知",
                 Command = JoinNewFriendPageCommand
             }
         };

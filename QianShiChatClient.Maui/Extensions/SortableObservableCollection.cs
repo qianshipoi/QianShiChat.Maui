@@ -25,8 +25,8 @@ public class SortableObservableCollection<T> : ObservableCollection<T>
             .Select((tuple, index) => (OldIndex: tuple.Index, NewIndex: index))
             .Where(o => o.OldIndex != o.NewIndex);
 
-        using (var enumerator = map.GetEnumerator())
-            if (enumerator.MoveNext())
-                Move(enumerator.Current.OldIndex, enumerator.Current.NewIndex);
+        using var enumerator = map.GetEnumerator();
+        if (enumerator.MoveNext())
+            Move(enumerator.Current.OldIndex, enumerator.Current.NewIndex);
     }
 }

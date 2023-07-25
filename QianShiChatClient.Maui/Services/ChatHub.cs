@@ -2,7 +2,7 @@
 
 public class ChatHub
 {
-    private HubConnection connection;
+    private readonly HubConnection _connection;
     private bool _isConnected;
     private bool _isConnecting;
 
@@ -29,49 +29,49 @@ public class ChatHub
 
     public ChatHub()
     {
-        connection = new HubConnectionBuilder()
+        _connection = new HubConnectionBuilder()
           .WithUrl($"{AppConsts.API_BASE_URL}/Hubs/Chat", options => {
-              options.AccessTokenProvider = () => GetAccessToken();
+              options.AccessTokenProvider = () => ChatHub.GetAccessToken();
               options.Headers.Add("User-Agent", "QianShiChatClient-Maui");
               options.Headers.Add("Client-Type", AppConsts.CLIENT_TYPE);
           })
           .WithAutomaticReconnect()
           .Build();
 
-        connection.On<string, string>(nameof(ReceiveMessage), (u, n) => ReceiveMessage?.Invoke(u, n));
-        connection.On<NotificationMessage>(nameof(Notification), (msg) => Notification?.Invoke(msg));
-        connection.On<ChatMessageDto>(nameof(PrivateChat), (msg) => PrivateChat?.Invoke(msg));
+        _connection.On<string, string>(nameof(ReceiveMessage), (u, n) => ReceiveMessage?.Invoke(u, n));
+        _connection.On<NotificationMessage>(nameof(Notification), (msg) => Notification?.Invoke(msg));
+        _connection.On<ChatMessageDto>(nameof(PrivateChat), (msg) => PrivateChat?.Invoke(msg));
 
-        connection.Closed += async (error) => {
+        _connection.Closed += async (error) => {
             IsConnected = false;
             _isConnecting = false;
             await Task.Delay(new Random().Next(0, 5) * 1000);
             await Connect();
         };
 
-        connection.Reconnecting += (msg) => {
+        _connection.Reconnecting += (msg) => {
             IsConnected = false;
             _isConnecting = true;
             return Task.CompletedTask;
         };
 
-        connection.Reconnected += (msg) => {
+        _connection.Reconnected += (msg) => {
             IsConnected = true;
             _isConnecting = false;
             return Task.CompletedTask;
         };
     }
 
-    private Task<string> GetAccessToken() => Task.FromResult(Settings.AccessToken);
+    private static Task<string> GetAccessToken() => Task.FromResult(Settings.AccessToken);
 
     public async Task Connect()
     {
-        if (IsConnected || _isConnecting || string.IsNullOrWhiteSpace(await GetAccessToken())) return;
+        if (IsConnected || _isConnecting || string.IsNullOrWhiteSpace(await ChatHub.GetAccessToken())) return;
 
         _isConnecting = true;
         try
         {
-            await connection.StartAsync();
+            await _connection.StartAsync();
         }
         catch (Exception ex)
         {
@@ -87,7 +87,7 @@ public class ChatHub
     public async Task Deconnect()
     {
         if (!IsConnected) return;
-        await connection.StopAsync();
+        await _connection.StopAsync();
         IsConnected = false;
     }
 }

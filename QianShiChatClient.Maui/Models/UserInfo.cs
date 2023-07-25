@@ -19,7 +19,7 @@ public partial class UserInfo : ObservableObject
     [ObservableProperty]
     private bool _isUnknown = false;
 
-    public static UserInfo Unknown = new UserInfo() { IsUnknown = true };
+    public static readonly UserInfo Unknown = new() { IsUnknown = true };
 }
 
 public static class UserInfoExtensions
