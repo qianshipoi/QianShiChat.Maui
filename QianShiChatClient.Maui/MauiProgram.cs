@@ -30,7 +30,7 @@ public static class MauiProgram
             .ConfigureMopups(() => {
 
             })
-            .Services.ConfigureService(); ;
+            .Services.ConfigureService();
 
 #if DEBUG
         builder.Logging.AddDebug();
@@ -44,7 +44,18 @@ public static class MauiProgram
         services.AddLocalization();
         services.AddMemoryCache();
 
-        services.AddHttpClient<IApiClient, ApiClient>();
+        services.AddHttpClient(AppConsts.API_CLIENT_NAME, client => {
+            client.BaseAddress = new Uri(AppConsts.API_BASE_URL);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("User-Agent", "QianShiChatClient-Maui");
+            client.DefaultRequestHeaders.Add("Client-Type", AppConsts.CLIENT_TYPE);
+            if (!string.IsNullOrWhiteSpace(Settings.AccessToken))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Settings.AccessToken);
+            }
+        });
+
+        services.AddSingleton<IApiClient, ApiClient>();
         services.AddSingleton<ChatHub>();
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<ChatDatabase>();

@@ -43,7 +43,6 @@ public sealed partial class LoginViewModel : ViewModelBase
 
     private void JoinMainPage(UserInfo user)
     {
-
         _dispatcher.Dispatch(() => {
             App.Current.User = user;
             Settings.CurrentUser = App.Current.User;
@@ -105,7 +104,12 @@ public sealed partial class LoginViewModel : ViewModelBase
         IsBusy = true;
         try
         {
-            var user = await _apiClient.LoginAsync(new LoginRequest(Account, Password.ToMd5()));
+            var (succeeded, user, message) = await _apiClient.LoginAsync(new LoginReqiest(Account, Password.ToMd5()));
+            if (!succeeded)
+            {
+                await Toast.Make(message).Show();
+                return;
+            }
             await Toast
                 .Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString())
                 .Show();

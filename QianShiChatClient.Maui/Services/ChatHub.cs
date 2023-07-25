@@ -4,11 +4,9 @@ namespace QianShiChatClient.Maui.Services;
 
 public class ChatHub
 {
-    private readonly IApiClient _apiClient;
-
-    private HubConnection connection;
-    private bool _isConnected;
-    private bool _isConnecting;
+    HubConnection connection;
+    bool _isConnected;
+    bool _isConnecting;
 
     public event Action<string, string> ReceiveMessage;
 
@@ -31,21 +29,20 @@ public class ChatHub
         }
     }
 
-    public ChatHub(IApiClient apiClient)
+    public ChatHub()
     {
-        _apiClient = apiClient;
-
         connection = new HubConnectionBuilder()
-          .WithUrl($"{ApiClient.BaseAddress}/Hubs/Chat", options => {
+          .WithUrl($"{AppConsts.API_BASE_URL}/Hubs/Chat", options => {
               options.AccessTokenProvider = () => GetAccessToken();
-              options.Headers.Add("Client-Type", _apiClient.ClientType);
+              options.Headers.Add("User-Agent", "QianShiChatClient-Maui");
+              options.Headers.Add("Client-Type", AppConsts.CLIENT_TYPE);
           })
           .WithAutomaticReconnect()
           .Build();
 
-        connection.On<string, string>("ReceiveMessage", (u, n) => ReceiveMessage?.Invoke(u, n));
-        connection.On<NotificationMessage>("Notification", (msg) => Notification?.Invoke(msg));
-        connection.On<ChatMessageDto>("PrivateChat", (msg) => PrivateChat?.Invoke(msg));
+        connection.On<string, string>(nameof(ReceiveMessage), (u, n) => ReceiveMessage?.Invoke(u, n));
+        connection.On<NotificationMessage>(nameof(Notification), (msg) => Notification?.Invoke(msg));
+        connection.On<ChatMessageDto>(nameof(PrivateChat), (msg) => PrivateChat?.Invoke(msg));
 
         connection.Closed += async (error) => {
             IsConnected = false;
@@ -67,11 +64,11 @@ public class ChatHub
         };
     }
 
-    private Task<string> GetAccessToken() => Task.FromResult(_apiClient.AccessToken);
+    Task<string> GetAccessToken() => Task.FromResult(Settings.AccessToken);
 
     public async Task Connect()
     {
-        if (IsConnected || _isConnecting || string.IsNullOrWhiteSpace(_apiClient.AccessToken)) return;
+        if (IsConnected || _isConnecting || string.IsNullOrWhiteSpace(await GetAccessToken())) return;
 
         _isConnecting = true;
         try
