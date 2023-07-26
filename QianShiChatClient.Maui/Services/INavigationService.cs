@@ -27,4 +27,5 @@ public interface INavigationService
     Task GoToMessagePage();
 
     Task GoToQrAuthPage(string key);
+    Task GoToMessagePage(IDictionary<string, object> parameters);
 }

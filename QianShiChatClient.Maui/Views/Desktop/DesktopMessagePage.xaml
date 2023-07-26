@@ -17,6 +17,7 @@
             <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <exts:TimestampConverter x:Key="TimestampConverter" />
             <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <toolkit:IntToBoolConverter x:Key="IntToBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <Grid ColumnDefinitions="220, *">
@@ -92,13 +93,14 @@
                                                                       Light=#CCCCCC,
                                                                       Dark=#575757}"
                                     HorizontalOptions="End"
+                                    IsVisible="{Binding UnreadCount, Converter={StaticResource IntToBoolConverter}}"
                                     VerticalOptions="Start">
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="40" />
                                     </Border.StrokeShape>
                                     <Label
                                         FontSize="12"
-                                        Text="99"
+                                        Text="{Binding UnreadCount}"
                                         TextColor="White" />
                                 </Border>
                                 <VisualStateManager.VisualStateGroups>

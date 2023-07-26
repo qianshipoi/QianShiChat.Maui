@@ -38,6 +38,11 @@ public class ChatDatabase
         await Database.InsertOrReplaceAsync(message);
     }
 
+    public async Task UpdateChatMessageAsync(ChatMessage message)
+    {
+        await Database.UpdateAsync(message);
+    }
+
     public async Task SaveChatMessagesAsnyc(IEnumerable<ChatMessage> messages)
     {
         foreach (var message in messages)

@@ -1,12 +1,9 @@
 ﻿namespace QianShiChatClient.Maui.ViewModels;
 
+[QueryProperty(nameof(CurrentSelectedSession), nameof(CurrentSelectedSession))]
 public sealed partial class MessageViewModel : ViewModelBase
 {
     private readonly ChatHub _chatHub;
-    private readonly IApiClient _apiClient;
-    private readonly ChatDatabase _database;
-    private readonly IUserService _userService;
-    private readonly IServiceProvider _serviceProvider;
     private readonly Dictionary<Session, View> _viewCache;
 
     [ObservableProperty]
@@ -27,11 +24,11 @@ public sealed partial class MessageViewModel : ViewModelBase
 
         if (!_viewCache.TryGetValue(value, out var view))
         {
-            var viewModel = _serviceProvider.GetRequiredService<ChatMessageViewModel>();
+            var viewModel = ServiceHelper.GetService<ChatMessageViewModel>();
             viewModel.Session = value;
             view = new ChatMessageView(viewModel);
             view.Opacity = 0;
-            view.FadeTo(1, 1000);
+            view.FadeTo(1);
             _viewCache.Add(value, view);
         }
 
@@ -47,24 +44,14 @@ public sealed partial class MessageViewModel : ViewModelBase
     [ObservableProperty]
     private string _message;
 
-    public List<string> Strings { get; } = new List<string> { "111", "222", "333" };
-
     public MessageViewModel(
         DataCenter dataCenter,
-        ChatHub chatHub,
-        IApiClient apiClient,
-        ChatDatabase database,
-        IUserService userService,
-        IServiceProvider serviceProvider)
+        ChatHub chatHub)
     {
         DataCenter = dataCenter;
         _chatHub = chatHub;
         _viewCache = new();
         _ = UpdateMessage();
-        _apiClient = apiClient;
-        _database = database;
-        _userService = userService;
-        _serviceProvider = serviceProvider;
     }
 
     [RelayCommand]
@@ -75,17 +62,7 @@ public sealed partial class MessageViewModel : ViewModelBase
         IsBusy = true;
         try
         {
-            var chatDto = await _apiClient
-                .SendTextAsync(new PrivateChatMessageRequest(
-                    CurrentSelectedSession.User.Id,
-                    Message,
-                    ChatMessageSendType.Personal));
-            chatDto.IsSelfSend = true;
-            var message = chatDto.ToChatMessage();
-            message.FromAvatar = (await _userService.GetUserInfoByIdAsync(message.FromId)).Avatar;
-            message.ToAvatar = (await _userService.GetUserInfoByIdAsync(message.ToId)).Avatar;
-            CurrentSelectedSession.AddMessage(message);
-            await _database.SaveChatMessageAsnyc(message);
+            var message = await DataCenter.SendTextAsync(User, CurrentSelectedSession, Message);
             ScrollAnimated = true;
             ToMessage = message;
             Message = string.Empty;
@@ -106,13 +83,13 @@ public sealed partial class MessageViewModel : ViewModelBase
     [RelayCommand]
     private Task JoinDetail(Session item)
     {
-        if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
+        if (AppConsts.IsDesktop)
         {
             CurrentSelectedSession = item;
 
             if (!_viewCache.TryGetValue(item, out var view))
             {
-                var viewModel = _serviceProvider.GetRequiredService<ChatMessageViewModel>();
+                var viewModel = ServiceHelper.GetService<ChatMessageViewModel>();
                 viewModel.Session = item;
                 view = new ChatMessageView(viewModel);
                 _viewCache.Add(item, view);

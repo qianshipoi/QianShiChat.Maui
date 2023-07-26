@@ -33,8 +33,8 @@ public sealed partial class LoginViewModel : ViewModelBase
     {
         _apiClient = apiClient;
         _dispatcher = dispatcher;
-        Task.Run(CheckAccessToken);
         _serviceProvider = serviceProvider;
+        Task.Run(CheckAccessToken);
     }
 
     private void JoinMainPage(UserInfo user)

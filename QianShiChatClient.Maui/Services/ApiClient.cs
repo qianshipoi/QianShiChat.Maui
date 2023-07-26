@@ -62,7 +62,7 @@ public class ApiClient : IApiClient
         }
         catch (Exception ex)
         {
-            await Toast.Make(ex.Message).Show(cancellationToken);
+            await Toast.Make(ex.Message).Show();
             return (false, null);
         }
     }

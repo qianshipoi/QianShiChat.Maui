@@ -1,8 +1,10 @@
 ﻿namespace QianShiChatClient.Maui.Models;
 
-public class ChatMessage
+public partial class ChatMessage : ObservableObject
 {
     [PrimaryKey]
+    public Guid LocalId { get; set; }
+
     public long Id { get; set; }
 
     public int FromId { get; set; }
@@ -24,6 +26,16 @@ public class ChatMessage
     public long CreateTime { get; set; }
 
     public bool IsSelfSend { get; set; }
+
+    [ObservableProperty]
+    private MessageStatus _status;
+}
+
+public enum MessageStatus
+{
+    Sending,
+    Successful,
+    Failed
 }
 
 public static class ChatMessageExtensions

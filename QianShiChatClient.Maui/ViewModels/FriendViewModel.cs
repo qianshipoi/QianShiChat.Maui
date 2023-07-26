@@ -76,9 +76,7 @@ public sealed partial class FriendViewModel : ViewModelBase
         {
             var view = ServiceHelper.GetService<UserInfoView>();
             (view.BindingContext as UserInfoViewModel).Info = user;
-            view.Opacity = 0;
             Content = view;
-            await view.FadeTo(1, 1000);
         }
         else
         {

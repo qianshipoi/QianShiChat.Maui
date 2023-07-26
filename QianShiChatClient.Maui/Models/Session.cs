@@ -2,8 +2,6 @@
 
 public partial class Session : ObservableObject
 {
-    private readonly IUserService _userService;
-
     [ObservableProperty]
     private int _unreadCount;
 
@@ -17,42 +15,52 @@ public partial class Session : ObservableObject
 
     public ObservableCollection<ChatMessage> Messages { get; }
 
-    public Session(UserInfo user, IEnumerable<ChatMessage> messages, IUserService userService)
+    public Session(UserInfo user, IEnumerable<ChatMessage> messages)
     {
-        _userService = userService;
         User = user;
-        var orderMessages = messages.OrderBy(x => x.CreateTime).Select(x => {
-            _userService.GetUserInfoByIdAsync(x.FromId).ContinueWith(item => {
-                x.FromAvatar = item.Result.Avatar;
-            });
-            _userService.GetUserInfoByIdAsync(x.ToId).ContinueWith(item => {
-                x.ToAvatar = item.Result.Avatar;
-            });
-            return x;
-        });
-        Messages = new ObservableCollection<ChatMessage>(orderMessages);
-        LastMessageTime = orderMessages.LastOrDefault()?.CreateTime ?? 0;
-        UnreadCount += messages.Count();
-        LastMessageContent = orderMessages.LastOrDefault()?.Content;
+        Messages = new ObservableCollection<ChatMessage>();
+        _ = AddMessagesAsync(messages);
     }
 
-    public void AddMessages(IEnumerable<ChatMessage> messages)
+    public async Task AddMessagesAsync(IEnumerable<ChatMessage> messages, CancellationToken cancellationToken = default)
     {
+        var ids = messages.Select(x => x.FromId).Concat(messages.Select(x => x.ToId)).ToHashSet();
+        var dic = new Dictionary<int, UserInfo>();
+        var userService = ServiceHelper.GetService<IUserService>();
+
+        foreach (var id in ids)
+        {
+            var userInfo = await userService.GetUserInfoByIdAsync(id, cancellationToken);
+            dic.Add(id, userInfo);
+        }
+
         var orderMessages = messages.OrderBy(x => x.CreateTime);
         foreach (var message in orderMessages)
         {
-            AddMessage(message);
+            message.FromAvatar = dic[message.FromId]?.Avatar;
+            message.ToAvatar = dic[message.ToId]?.Avatar;
+            await AddMessageAsync(message, cancellationToken);
         }
-        LastMessageTime = orderMessages.Last().CreateTime;
-        LastMessageContent = orderMessages.Last().Content;
     }
 
-    public void AddMessage(ChatMessage message)
+    public async Task AddMessageAsync(ChatMessage message, CancellationToken cancellationToken = default)
     {
         if (Messages.Any(x => x.Id == message.Id))
         {
             return;
         }
+
+        var userService = ServiceHelper.GetService<IUserService>();
+        if (string.IsNullOrWhiteSpace(message.FromAvatar))
+        {
+            message.FromAvatar = (await userService.GetUserInfoByIdAsync(message.FromId, cancellationToken)).Avatar;
+
+        }
+        if (string.IsNullOrWhiteSpace(message.ToAvatar))
+        {
+            message.ToAvatar = (await userService.GetUserInfoByIdAsync(message.ToId, cancellationToken)).Avatar;
+        }
+
         Messages.Add(message);
         UnreadCount = message.IsSelfSend ? 0 : UnreadCount + 1;
         LastMessageTime = message.CreateTime;

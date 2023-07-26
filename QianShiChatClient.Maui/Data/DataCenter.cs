@@ -6,33 +6,33 @@ public sealed partial class DataCenter : ObservableObject
     private readonly IApiClient _apiClient;
     private readonly ChatDatabase _database;
     private readonly ChatHub _chatHub;
-    private readonly IUserService _userService;
+    private readonly ILogger<DataCenter> _logger;
 
     [ObservableProperty]
     private bool _isConnected;
 
-    public SortableObservableCollection<Session> Sessions { get; }
+    public ObservableCollection<Session> Sessions { get; }
 
     public ObservableCollection<ApplyPending> Pendings { get; }
 
     public ObservableCollection<UserInfo> Friends { get; }
 
-    public DataCenter(IApiClient apiClient, ChatDatabase database, ChatHub chatHub, IDispatcher dispatcher, IUserService userService)
+    public DataCenter(
+        IApiClient apiClient,
+        ChatDatabase database,
+        ChatHub chatHub,
+        IDispatcher dispatcher,
+        ILogger<DataCenter> logger)
     {
         _apiClient = apiClient;
         _database = database;
         _chatHub = chatHub;
         _dispatcher = dispatcher;
-        _userService = userService;
+        _logger = logger;
         Friends = new ObservableCollection<UserInfo>();
         Pendings = new ObservableCollection<ApplyPending>();
-        Sessions = new SortableObservableCollection<Session>
-        {
-            Descending = true,
-            SortingSelector = (t) => t.LastMessageTime
-        };
+        Sessions = new ObservableCollection<Session>();
         Sessions.CollectionChanged += Sessions_CollectionChanged;
-
         _chatHub.PrivateChat += ChatHubPrivateChat;
         _chatHub.IsConnectedChanged += (val) => IsConnected = val;
         IsConnected = _chatHub.IsConnected;
@@ -44,10 +44,7 @@ public sealed partial class DataCenter : ObservableObject
 
     private void Sessions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-        //foreach (var session in Sessions)
-        //{
-        //    await _database.SaveSessionAsync(session.ToSessionModel());
-        //}
+        // todo: save sorted sessions to database.
     }
 
     private async void ChatHubPrivateChat(ChatMessageDto obj)
@@ -59,12 +56,12 @@ public sealed partial class DataCenter : ObservableObject
             var user = await _database.GetUserByIdAsync(obj.FromId);
             // todo: if user is null, need query user info.
 
-            session = new Session(user, new List<ChatMessage>(), _userService);
+            session = new Session(user, new List<ChatMessage>());
             _dispatcher.Dispatch(() => {
                 Sessions.Add(session);
             });
         }
-        session.AddMessage(message);
+        await session.AddMessageAsync(message);
         await _database.SaveChatMessageAsnyc(message);
         await _database.SaveSessionAsync(session.ToSessionModel());
     }
@@ -84,7 +81,7 @@ public sealed partial class DataCenter : ObservableObject
                     if (user != null)
                     {
                         var messages = await _database.GetChatMessageAsync(user.Id, 0, 20);
-                        session = new Session(user, messages, _userService);
+                        session = new Session(user, messages);
                         _dispatcher.Dispatch(() => Sessions.Add(session));
                     }
                 }
@@ -92,18 +89,18 @@ public sealed partial class DataCenter : ObservableObject
         }
     }
 
-    private Session AddSessions(UserInfo user, IEnumerable<ChatMessage> messages)
+    private async Task<Session> AddSessionsAsync(UserInfo user, IEnumerable<ChatMessage> messages)
     {
         var session = Sessions.FirstOrDefault(x => x.User.Id == user.Id);
         if (session != null)
         {
             session.User.Avatar = user.Avatar;
             session.User.NickName = user.NickName;
-            session.AddMessages(messages);
+            await session.AddMessagesAsync(messages);
         }
         else
         {
-            session = new Session(user, messages, _userService);
+            session = new Session(user, messages);
             _dispatcher.Dispatch(() => {
                 Sessions.Add(session);
             });
@@ -124,7 +121,7 @@ public sealed partial class DataCenter : ObservableObject
                 message.IsSelfSend = message.FromId == App.Current.User.Id;
             }
 
-            var session = AddSessions(user, messages);
+            var session = await AddSessionsAsync(user, messages);
 
             await _database.SaveUserAsync(user);
             if (messages.Any())
@@ -169,5 +166,65 @@ public sealed partial class DataCenter : ObservableObject
             }
             await _database.SaveUserAsync(user);
         }
+    }
+
+    public async Task<ChatMessage> SendTextAsync(UserInfo user, Session session, string text)
+    {
+        var message = new ChatMessage();
+        message.LocalId = Guid.NewGuid();
+        message.MessageType = ChatMessageType.Text;
+        message.SendType = ChatMessageSendType.Personal;
+        message.Status = MessageStatus.Sending;
+        message.CreateTime = Timestamp.Now;
+        message.Content = text;
+        message.FromId = user.Id;
+        message.ToId = session.User.Id;
+        message.FromAvatar = user.Avatar;
+        message.ToAvatar = user.Avatar;
+        message.IsSelfSend = true;
+
+        _ = Task.Run(async () => {
+            try
+            {
+                var chatDto = await _apiClient
+                      .SendTextAsync(new PrivateChatMessageRequest(
+                          session.User.Id,
+                          text,
+                          ChatMessageSendType.Personal));
+                message.Id = chatDto.Id;
+                _dispatcher.Dispatch(() => {
+                    message.Status = MessageStatus.Successful;
+                });
+                await _database.UpdateChatMessageAsync(message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "send text message error.");
+            }
+        });
+
+        await session.AddMessageAsync(message);
+
+        var index = Sessions.IndexOf(session);
+
+        if (index != -1)
+        {
+            Sessions.Move(index, 0);
+        }
+        else if (index != 0)
+        {
+            Sessions.Insert(0, session);
+        }
+
+        try
+        {
+            await _database.SaveChatMessageAsnyc(message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "");
+        }
+
+        return message;
     }
 }

@@ -26,6 +26,8 @@ public class NavigationService : INavigationService
 
     public Task GoToMessagePage() => Shell.Current.GoToAsync($"//{nameof(MessagePage)}");
 
+    public Task GoToMessagePage(IDictionary<string, object> parameters) => Shell.Current.GoToAsync($"//{nameof(MessagePage)}", parameters);
+
     public Task GoToAddFriendPage(UserInfo user)
     {
         var navigationParameter = new Dictionary<string, object>
