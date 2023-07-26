@@ -50,6 +50,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Platforms\Android\Resources\values\style.xml" />
 	  <None Remove="Resources\Fonts\iconfont.ttf" />
 	  <None Remove="Resources\Images\default_avatar.png" />
 	</ItemGroup>

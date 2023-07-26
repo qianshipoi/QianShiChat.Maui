@@ -70,18 +70,19 @@ public sealed partial class FriendViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private Task JoinDetail(UserInfo user)
+    private async Task JoinDetail(UserInfo user)
     {
         if (AppConsts.IsDesktop)
         {
             var view = ServiceHelper.GetService<UserInfoView>();
             (view.BindingContext as UserInfoViewModel).Info = user;
+            view.Opacity = 0;
             Content = view;
-            return Task.CompletedTask;
+            await view.FadeTo(1, 1000);
         }
         else
         {
-            return _navigationService.GoToMessageDetailPage(user.Id);
+            await _navigationService.GoToMessageDetailPage(user.Id);
         }
     }
 

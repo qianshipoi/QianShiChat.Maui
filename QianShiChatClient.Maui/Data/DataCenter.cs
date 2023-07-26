@@ -114,6 +114,7 @@ public sealed partial class DataCenter : ObservableObject
     public async Task GetUnreadMessageAsync()
     {
         var users = await _apiClient.GetUnreadMessageFriendsAsync();
+        if (users is null) return;
         foreach (var userDto in users)
         {
             var messages = userDto.Messages.ToChatMessages();

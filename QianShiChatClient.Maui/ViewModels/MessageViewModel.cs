@@ -30,6 +30,8 @@ public sealed partial class MessageViewModel : ViewModelBase
             var viewModel = _serviceProvider.GetRequiredService<ChatMessageViewModel>();
             viewModel.Session = value;
             view = new ChatMessageView(viewModel);
+            view.Opacity = 0;
+            view.FadeTo(1, 1000);
             _viewCache.Add(value, view);
         }
 
