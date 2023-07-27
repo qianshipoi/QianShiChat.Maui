@@ -32,9 +32,14 @@ public partial class App : Application
         window.Height = height;
         window.MinimumWidth = minWidth;
         window.MinimumHeight = minHeight;
-        //var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
-        //window.X = (displayInfo.Width / displayInfo.Density - window.Width) / 2;
-        //window.Y = (displayInfo.Height / displayInfo.Density - window.Height) / 2;
+
+#if WINDOWS
+        var screenHeight =  Microsoft.UI.Windowing.DisplayArea.Primary.WorkArea.Height;
+        var screenWidth =  Microsoft.UI.Windowing.DisplayArea.Primary.WorkArea.Width;
+        
+        window.X = (screenWidth - width) / 2;
+        window.Y = (screenHeight - height) / 2;
+#endif
 
         window.Destroying += Window_Destroying;
 

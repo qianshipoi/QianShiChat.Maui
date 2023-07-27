@@ -3,9 +3,9 @@
 using QianShiChatClient.Maui.Platforms.Android;
 
 #elif WINDOWS
-using CommunityToolkit.Maui;
 
 using QianShiChatClient.Maui.Platforms.Windows;
+
 #endif
 
 namespace QianShiChatClient.Maui;

@@ -1,4 +1,17 @@
-﻿using QianShiChatClient.Maui.Windows;
+﻿#if WINDOWS
+using Microsoft.Maui.Platform;
+
+using PInvoke;
+
+using static PInvoke.User32;
+
+using Microsoftui = Microsoft.UI;
+using MicrosoftuiWindowing = Microsoft.UI.Windowing;
+using MicrosoftuiXaml = Microsoft.UI.Xaml;
+using MicrosoftuixmlMedia = Microsoft.UI.Xaml.Media;
+#endif
+
+using QianShiChatClient.Maui.Windows;
 
 namespace QianShiChatClient.Maui.Services
 {
@@ -19,21 +32,29 @@ namespace QianShiChatClient.Maui.Services
             if (_chatRoomWindows.ContainsKey(user.Id))
             {
                 var roomWindow = _chatRoomWindows[user.Id];
-                App.Current.OpenWindow(roomWindow);
+#if WINDOWS
+                if (roomWindow.Handler?.PlatformView is not MicrosoftuiXaml.Window winuiWindow)
+                    return;
+                winuiWindow.Activate();
+#endif
                 return;
             }
 
             var session = _dataConter.Sessions.FirstOrDefault(x => x.User.Id == user.Id);
 
-            if (session is not null)
+            if (session is null)
             {
-                _dataConter.Sessions.Remove(session);
+                session = new Session(user, new List<ChatMessage>());
+                _dataConter.Sessions.Insert(0, session);
             }
             else
             {
-                session = new Session(user, new List<ChatMessage>());
+                var index = _dataConter.Sessions.IndexOf(session);
+                if (index > 0)
+                {
+                    _dataConter.Sessions.Move(index, 0);
+                }
             }
-            _dataConter.Sessions.Insert(0, session);
 
             var viewModel = ServiceHelper.GetService<ChatMessageViewModel>();
             viewModel.Session = session;
@@ -42,6 +63,11 @@ namespace QianShiChatClient.Maui.Services
             var window = new DesktopWindow(page);
             _chatRoomWindows.Add(user.Id, window);
             App.Current.OpenWindow(window);
+        }
+
+        public bool ContainsChatRootWindow(UserInfo user)
+        {
+            return _chatRoomWindows.ContainsKey(user.Id);
         }
 
         public void CloseChatRoomWindow(UserInfo user)
@@ -65,7 +91,7 @@ namespace QianShiChatClient.Maui.Services
 
         public void CloseWindow(Window window)
         {
-            var keys = _chatRoomWindows.Where(x => x.Value == window).Select(x => x.Key);
+            var keys = _chatRoomWindows.Where(x => x.Value.Equals(window)).Select(x => x.Key);
 
             if (keys.Any())
             {

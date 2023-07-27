@@ -7,7 +7,7 @@ public partial class ChatMessageView : ContentView
         InitializeComponent();
     }
 
-    public ChatMessageView(ChatMessageViewModel viewModel) : base()
+    public ChatMessageView(ChatMessageViewModel viewModel) : this()
     {
         this.BindingContext = viewModel;
     }

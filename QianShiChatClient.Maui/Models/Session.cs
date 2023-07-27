@@ -20,6 +20,7 @@ public partial class Session : ObservableObject
         User = user;
         Messages = new ObservableCollection<ChatMessage>();
         _ = AddMessagesAsync(messages);
+        LastMessageTime = Timestamp.Now;
     }
 
     public async Task AddMessagesAsync(IEnumerable<ChatMessage> messages, CancellationToken cancellationToken = default)

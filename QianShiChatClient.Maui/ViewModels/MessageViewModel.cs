@@ -1,12 +1,11 @@
-﻿using QianShiChatClient.Maui.Windows;
-
-namespace QianShiChatClient.Maui.ViewModels;
+﻿namespace QianShiChatClient.Maui.ViewModels;
 
 [QueryProperty(nameof(CurrentSelectedSession), nameof(CurrentSelectedSession))]
 public sealed partial class MessageViewModel : ViewModelBase
 {
     private readonly ChatHub _chatHub;
     private readonly Dictionary<Session, View> _viewCache;
+    private readonly WindowManagerService _windowManagerService;
 
     [ObservableProperty]
     private View _content;
@@ -21,6 +20,13 @@ public sealed partial class MessageViewModel : ViewModelBase
         if (value is null)
         {
             Content = null;
+            return;
+        }
+
+        if (_windowManagerService.ContainsChatRootWindow(value.User))
+        {
+            _windowManagerService.OpenChatRoomWindow(value.User);
+            CurrentSelectedSession = null;
             return;
         }
 
@@ -48,9 +54,11 @@ public sealed partial class MessageViewModel : ViewModelBase
 
     public MessageViewModel(
         DataCenter dataCenter,
-        ChatHub chatHub)
+        ChatHub chatHub,
+        WindowManagerService windowManagerService)
     {
         DataCenter = dataCenter;
+        _windowManagerService = windowManagerService;
         _chatHub = chatHub;
         _viewCache = new();
         _ = UpdateMessage();
@@ -78,11 +86,12 @@ public sealed partial class MessageViewModel : ViewModelBase
     [RelayCommand]
     private void OpenNewWindow(Session session)
     {
-        var viewModel = ServiceHelper.GetService<ChatMessageViewModel>();
-        viewModel.Session = session;
-        var page = new ChatRoomPage();
-        page.BindingContext = viewModel;
-        App.Current.OpenWindow(new DesktopWindow(page));
+        _windowManagerService.OpenChatRoomWindow(session.User);
+
+        if(CurrentSelectedSession == session)
+        {
+            CurrentSelectedSession = null;
+        }
     }
 
     [RelayCommand]
