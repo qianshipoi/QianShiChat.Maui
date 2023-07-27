@@ -17,7 +17,7 @@ public partial class App : Application
         var culture = new CultureInfo(Settings.Language);
         LocalizationResourceManager.Instance.SetCulture(culture);
         _ = ServiceProvider.GetRequiredService<ChatDatabase>().Init();
-        MainPage = ServiceProvider.GetRequiredService<LoginPage>();
+        MainPage = ServiceProvider.GetRequiredService<SplashScreenPage>();
     }
 
     protected override Window CreateWindow(IActivationState activationState)

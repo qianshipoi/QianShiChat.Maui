@@ -1,6 +1,4 @@
-﻿using QianShiChatClient.Maui.Windows;
-
-namespace QianShiChatClient.Maui.ViewModels;
+﻿namespace QianShiChatClient.Maui.ViewModels;
 
 public sealed partial class DesktopShellViewModel : ViewModelBase
 {
@@ -11,9 +9,9 @@ public sealed partial class DesktopShellViewModel : ViewModelBase
         ChatHub chatHub,
         IDialogService dialogService)
     {
-        _ = chatHub.Connect();
         _chatHub = chatHub;
         _dialogService = dialogService;
+        _ = _chatHub.Connect();
     }
 
     [RelayCommand]

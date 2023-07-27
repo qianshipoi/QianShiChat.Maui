@@ -34,7 +34,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         _apiClient = apiClient;
         _dispatcher = dispatcher;
         _serviceProvider = serviceProvider;
-        Task.Run(CheckAccessToken);
+        //Task.Run(CheckAccessToken);
     }
 
     private void JoinMainPage(UserInfo user)
@@ -42,8 +42,8 @@ public sealed partial class LoginViewModel : ViewModelBase
         _dispatcher.Dispatch(() => {
             App.Current.User = user;
             Settings.CurrentUser = App.Current.User;
-            App.Current.MainPage = AppConsts.IsDesktop ? 
-                _serviceProvider.GetRequiredService<DesktopShell>() : 
+            App.Current.MainPage = AppConsts.IsDesktop ?
+                _serviceProvider.GetRequiredService<DesktopShell>() :
                 _serviceProvider.GetRequiredService<AppShell>();
         });
     }
@@ -59,16 +59,23 @@ public sealed partial class LoginViewModel : ViewModelBase
                 JoinMainPage(user);
                 // update user info.
                 _ = Task.Run(async () => {
-                    var (isSuccessed, userDto) = await _apiClient.CheckAccessToken(accessToken);
+                    var (isSuccessed, userDto) = await _apiClient.CheckAccessToken();
                     if (isSuccessed)
                     {
-                        JoinMainPage(userDto.ToUserInfo());
+                        _dispatcher.Dispatch(() => {
+                            App.Current.User = userDto.ToUserInfo();
+                            Settings.CurrentUser = App.Current.User;
+                        });
+                    }
+                    else
+                    {
+                        await _navigationService.GoToLoginPage();
                     }
                 });
             }
             else
             {
-                var (isSuccessed, userDto) = await _apiClient.CheckAccessToken(accessToken);
+                var (isSuccessed, userDto) = await _apiClient.CheckAccessToken();
                 if (isSuccessed)
                 {
                     JoinMainPage(userDto.ToUserInfo());

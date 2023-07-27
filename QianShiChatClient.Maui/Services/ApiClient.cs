@@ -42,7 +42,7 @@ public class ApiClient : IApiClient
         return (response.IsSuccessStatusCode, result.Data, result.Errors is string str ? str : JsonSerializer.Serialize(result.Errors));
     }
 
-    public async Task<(bool, UserDto)> CheckAccessToken(string token, CancellationToken cancellationToken = default)
+    public async Task<(bool, UserDto)> CheckAccessToken(CancellationToken cancellationToken = default)
     {
         using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
         try

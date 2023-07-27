@@ -1,4 +1,14 @@
-﻿global using Bogus;
+﻿#if ANDROID
+
+global using QianShiChatClient.Maui.Platforms.Android;
+
+#elif WINDOWS
+
+global using QianShiChatClient.Maui.Platforms.Windows;
+
+#endif
+
+global using Bogus;
 
 global using CommunityToolkit.Maui;
 global using CommunityToolkit.Maui.Alerts;
@@ -30,7 +40,10 @@ global using QianShiChatClient.Maui.Views.Popups;
 
 global using SQLite;
 
+global using SkiaSharp.Views.Maui.Controls.Hosting;
+
 global using System;
+global using System.ComponentModel;
 global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
 global using System.Collections.Specialized;

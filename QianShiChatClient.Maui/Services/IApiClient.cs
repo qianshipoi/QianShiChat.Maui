@@ -7,7 +7,7 @@ public interface IApiClient
 
     Task<(bool succeeded, UserDto data, string message)> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default);
 
-    Task<(bool, UserDto)> CheckAccessToken(string token, CancellationToken cancellationToken = default);
+    Task<(bool, UserDto)> CheckAccessToken(CancellationToken cancellationToken = default);
 
     Task<List<UserWithMessageDto>> GetUnreadMessageFriendsAsync(CancellationToken cancellationToken = default);
 

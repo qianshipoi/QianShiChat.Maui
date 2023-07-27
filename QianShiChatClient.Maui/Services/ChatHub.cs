@@ -2,6 +2,7 @@
 
 public class ChatHub
 {
+    private readonly ILogger<ChatHub> _logger;
     private readonly HubConnection _connection;
     private bool _isConnected;
     private bool _isConnecting;
@@ -27,8 +28,9 @@ public class ChatHub
         }
     }
 
-    public ChatHub()
+    public ChatHub(ILogger<ChatHub> logger)
     {
+        _logger = logger;
         _connection = new HubConnectionBuilder()
           .WithUrl($"{AppConsts.API_BASE_URL}/Hubs/Chat", options => {
               options.AccessTokenProvider = () => ChatHub.GetAccessToken();
@@ -66,7 +68,7 @@ public class ChatHub
 
     public async Task Connect()
     {
-        if (IsConnected || _isConnecting || string.IsNullOrWhiteSpace(await ChatHub.GetAccessToken())) return;
+        if (IsConnected || _isConnecting || string.IsNullOrWhiteSpace(await GetAccessToken())) return;
 
         _isConnecting = true;
         try
@@ -76,6 +78,7 @@ public class ChatHub
         catch (Exception ex)
         {
             await Toast.Make(ex.Message).Show();
+            _logger.LogError(ex, "chat hub connect error.");
         }
         finally
         {

@@ -6,6 +6,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     private readonly ChatHub _chatHub;
     private readonly Dictionary<Session, View> _viewCache;
     private readonly WindowManagerService _windowManagerService;
+    private readonly ILogger<MessageViewModel> _logger;
 
     [ObservableProperty]
     private View _content;
@@ -55,13 +56,15 @@ public sealed partial class MessageViewModel : ViewModelBase
     public MessageViewModel(
         DataCenter dataCenter,
         ChatHub chatHub,
-        WindowManagerService windowManagerService)
+        WindowManagerService windowManagerService,
+        ILogger<MessageViewModel> logger)
     {
         DataCenter = dataCenter;
         _windowManagerService = windowManagerService;
         _chatHub = chatHub;
         _viewCache = new();
         _ = UpdateMessage();
+        _logger = logger;
     }
 
     [RelayCommand]
@@ -77,6 +80,10 @@ public sealed partial class MessageViewModel : ViewModelBase
             ToMessage = message;
             Message = string.Empty;
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "send message error.");
+        }
         finally
         {
             IsBusy = false;
@@ -88,7 +95,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     {
         _windowManagerService.OpenChatRoomWindow(session.User);
 
-        if(CurrentSelectedSession == session)
+        if (CurrentSelectedSession == session)
         {
             CurrentSelectedSession = null;
         }
@@ -149,6 +156,10 @@ public sealed partial class MessageViewModel : ViewModelBase
         {
             await DataCenter.GetUnreadMessageAsync();
             await _chatHub.Connect();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "update messages error.");
         }
         finally
         {

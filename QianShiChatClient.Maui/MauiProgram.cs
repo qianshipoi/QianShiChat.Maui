@@ -1,14 +1,4 @@
-﻿#if ANDROID
-
-using QianShiChatClient.Maui.Platforms.Android;
-
-#elif WINDOWS
-
-using QianShiChatClient.Maui.Platforms.Windows;
-
-#endif
-
-namespace QianShiChatClient.Maui;
+﻿namespace QianShiChatClient.Maui;
 
 public static class MauiProgram
 {
@@ -17,6 +7,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseSkiaSharp()
             .UseBarcodeReader()
             .UseMauiCommunityToolkit()
             .ConfigureLifecycleEvents(events => {
@@ -57,6 +48,8 @@ public static class MauiProgram
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Settings.AccessToken);
             }
         });
+
+        services.AddScoped<SplashScreenPage>();
 
         services.AddSingleton<IApiClient, ApiClient>();
         services.AddSingleton<ChatHub>();
