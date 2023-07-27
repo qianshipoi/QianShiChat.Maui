@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.ViewModels;
+﻿using QianShiChatClient.Maui.Windows;
+
+namespace QianShiChatClient.Maui.ViewModels;
 
 [QueryProperty(nameof(CurrentSelectedSession), nameof(CurrentSelectedSession))]
 public sealed partial class MessageViewModel : ViewModelBase
@@ -74,6 +76,16 @@ public sealed partial class MessageViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void OpenNewWindow(Session session)
+    {
+        var viewModel = ServiceHelper.GetService<ChatMessageViewModel>();
+        viewModel.Session = session;
+        var page = new ChatRoomPage();
+        page.BindingContext = viewModel;
+        App.Current.OpenWindow(new DesktopWindow(page));
+    }
+
+    [RelayCommand]
     private Task Search(string searchText)
     {
         Toast.Make("Search:" + searchText).Show();
@@ -111,7 +123,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     [RelayCommand]
     private Task JoinQueryPage()
     {
-        if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
+        if (AppConsts.IsDesktop)
         {
             return _navigationService.GoToQueryPage();
         }

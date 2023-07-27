@@ -148,6 +148,7 @@ public sealed partial class DataCenter : ObservableObject
     public async Task GetAllFriendAsync()
     {
         var userdtos = await _apiClient.AllFriendAsync();
+        if (userdtos is null) return;
         foreach (var userDto in userdtos)
         {
             var user = userDto.ToUserInfo();

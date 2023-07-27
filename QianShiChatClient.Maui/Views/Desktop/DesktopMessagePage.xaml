@@ -51,6 +51,14 @@
                                 ColumnDefinitions="Auto,*,Auto"
                                 ColumnSpacing="6"
                                 RowDefinitions="*,*">
+                                <!--<FlyoutBase.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem
+                                            Command="{Binding OpenNewWindowCommand, Source={RelativeSource AncestorType={x:Type vms:MessageViewModel}}}"
+                                            CommandParameter="{Binding}"
+                                            Text="打开独立聊天窗口" />
+                                    </MenuFlyout>
+                                </FlyoutBase.ContextFlyout>-->
                                 <toolkit:AvatarView
                                     Grid.RowSpan="2"
                                     BorderColor="{DynamicResource Gray300}"

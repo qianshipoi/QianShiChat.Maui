@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.ViewModels;
+﻿using QianShiChatClient.Maui.Windows;
+
+namespace QianShiChatClient.Maui.ViewModels;
 
 public sealed partial class DesktopShellViewModel : ViewModelBase
 {
@@ -25,8 +27,11 @@ public sealed partial class DesktopShellViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private Task MessageDialog() => _dialogService.PushMessageDialog();
-    
+    private void MessageDialog()
+    {
+
+    }
+
     [RelayCommand]
     private Task GotoSettings() => _navigationService.GoToSettingsPage();
 }

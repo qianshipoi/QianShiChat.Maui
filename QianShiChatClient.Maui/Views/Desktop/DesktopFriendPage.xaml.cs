@@ -7,4 +7,13 @@ public partial class DesktopFriendPage : ContentPage
         InitializeComponent();
         this.BindingContext = viewModel;
     }
+
+    private void OpenChatWindow_Clicked(object sender, EventArgs e)
+    {
+        if(sender is not MenuFlyoutItem item || item.CommandParameter is not UserInfo user)
+        {
+            return;
+        }
+        (BindingContext as FriendViewModel).OpenNewWindowCommand.Execute(user);
+    }
 }

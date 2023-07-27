@@ -2,9 +2,6 @@
 
 public sealed partial class ChatMessageViewModel : ViewModelBase
 {
-    private readonly IApiClient _apiClient;
-    private readonly IUserService _userService;
-    private readonly ChatDatabase _database;
     private readonly DataCenter _dataCenter;
     private readonly ILogger<ChatMessageViewModel> _logger;
     private readonly IDialogService _dialogService;
@@ -22,16 +19,10 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
     private bool _scrollAnimated;
 
     public ChatMessageViewModel(
-        IApiClient apiClient,
-        IUserService userService,
-        ChatDatabase database,
         DataCenter dataCenter,
         ILogger<ChatMessageViewModel> logger,
         IDialogService dialogService)
     {
-        _apiClient = apiClient;
-        _userService = userService;
-        _database = database;
         _dataCenter = dataCenter;
         _logger = logger;
         _dialogService = dialogService;

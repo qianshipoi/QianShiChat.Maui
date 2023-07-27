@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.Maui.Views.ChatRoomPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Microsoft.Extensions.Localization;assembly=Microsoft.Extensions.Localization"
+    xmlns:views="clr-namespace:QianShiChatClient.Maui.Views"
+    xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    Title="ChatRoomPage"
+    x:DataType="{x:Type vms:ChatMessageViewModel}">
+    <views:ChatMessageView />
+</ContentPage>

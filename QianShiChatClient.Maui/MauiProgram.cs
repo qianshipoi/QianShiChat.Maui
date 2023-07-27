@@ -63,6 +63,7 @@ public static class MauiProgram
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<ChatDatabase>();
         services.AddSingleton<DataCenter>();
+        services.AddSingleton<WindowManagerService>();
         services.AddSingleton<IDialogService, DialogService>();
 
         services.AddSingleton<IUserService, UserService>();

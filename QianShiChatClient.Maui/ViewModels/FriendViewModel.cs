@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.ViewModels;
+﻿using QianShiChatClient.Maui.Windows;
+
+namespace QianShiChatClient.Maui.ViewModels;
 
 public class OperationItem
 {
@@ -9,19 +11,17 @@ public class OperationItem
 
 public sealed partial class FriendViewModel : ViewModelBase
 {
+    private readonly WindowManagerService _windowManagerService;
     public DataCenter DataCenter { get; }
-
-    public ObservableCollection<FriendItem> Friends { get; set; }
 
     public List<OperationItem> Operations { get; private set; }
 
     [ObservableProperty]
     private View _content;
 
-    public FriendViewModel(DataCenter dataCenter)
+    public FriendViewModel(DataCenter dataCenter, WindowManagerService windowManagerService)
     {
         DataCenter = dataCenter;
-        Friends = new ObservableCollection<FriendItem>();
         Operations = new List<OperationItem>
         {
             new OperationItem
@@ -35,10 +35,7 @@ public sealed partial class FriendViewModel : ViewModelBase
                 Command = JoinNewFriendPageCommand
             }
         };
-        foreach (var friend in FakerFriend.GetFriends(20))
-        {
-            Friends.Add(friend);
-        }
+        _windowManagerService = windowManagerService;
     }
 
     [RelayCommand]
@@ -47,6 +44,12 @@ public sealed partial class FriendViewModel : ViewModelBase
         Shell.Current.FlyoutBehavior = FlyoutBehavior.Locked;
         Shell.Current.FlyoutBehavior = FlyoutBehavior.Flyout;
         Shell.Current.FlyoutIsPresented = true;
+    }
+
+    [RelayCommand]
+    private void OpenNewWindow(UserInfo user)
+    {
+        _windowManagerService.OpenChatRoomWindow(user);
     }
 
     [RelayCommand]

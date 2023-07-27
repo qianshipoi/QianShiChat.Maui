@@ -76,13 +76,6 @@
                 SelfTextMessageDataTemplate="{StaticResource SelfTextMessageDataTemplate}" />
         </ResourceDictionary>
     </ContentView.Resources>
-    <!--<ContentView.Behaviors>
-        <toolkit:AnimationBehavior>
-            <toolkit:AnimationBehavior.AnimationType>
-                <toolkit:FadeAnimation Opacity="0.5" />
-            </toolkit:AnimationBehavior.AnimationType>
-        </toolkit:AnimationBehavior>
-    </ContentView.Behaviors>-->
     <Grid RowDefinitions="60, *">
         <Label
             Margin="16,0"

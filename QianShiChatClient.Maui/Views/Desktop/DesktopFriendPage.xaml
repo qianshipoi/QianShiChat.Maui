@@ -3,6 +3,7 @@
     x:Class="QianShiChatClient.Maui.Views.Desktop.DesktopFriendPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:desktopViews="clr-namespace:QianShiChatClient.Maui.Views.Desktop"
     xmlns:local="clr-namespace:QianShiChatClient.Maui"
     xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -130,6 +131,15 @@
                                 ColumnDefinitions="Auto,*"
                                 ColumnSpacing="8"
                                 RowDefinitions="*,*">
+                                <FlyoutBase.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem
+                                            x:Name="OpenChatWindow"
+                                            Clicked="OpenChatWindow_Clicked"
+                                            CommandParameter="{Binding}"
+                                            Text="打开独立聊天窗口" />
+                                    </MenuFlyout>
+                                </FlyoutBase.ContextFlyout>
                                 <toolkit:AvatarView
                                     Grid.RowSpan="2"
                                     BorderColor="{DynamicResource Gray300}"
