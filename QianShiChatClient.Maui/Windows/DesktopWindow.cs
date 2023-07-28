@@ -47,7 +47,7 @@ namespace QianShiChatClient.Maui.Windows
 
         protected override void OnDestroying()
         {
-            ServiceHelper.GetService<WindowManagerService>().CloseWindow(this);
+            ServiceHelper.GetService<WindowManagerService>()?.CloseWindow(this);
             base.OnDestroying();
         }
     }

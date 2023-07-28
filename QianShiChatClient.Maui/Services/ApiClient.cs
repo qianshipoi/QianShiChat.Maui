@@ -62,7 +62,8 @@ public class ApiClient : IApiClient
         }
         catch (Exception ex)
         {
-            await Toast.Make(ex.Message).Show();
+            _logger.LogError(ex, "check token error.");
+            //await Toast.Make(ex.Message).Show();
             return (false, null);
         }
     }

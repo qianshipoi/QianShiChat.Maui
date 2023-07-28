@@ -4,7 +4,6 @@ public sealed partial class LoginViewModel : ViewModelBase
 {
     private readonly IApiClient _apiClient;
     private readonly IDispatcher _dispatcher;
-    private readonly IServiceProvider _serviceProvider;
 
     private Timer _updateQrCodeTimer;
     private Timer _checkTimer;
@@ -27,14 +26,11 @@ public sealed partial class LoginViewModel : ViewModelBase
 
     public LoginViewModel(
         IDispatcher dispatcher,
-        IApiClient apiClient,
-        IServiceProvider serviceProvider
+        IApiClient apiClient
     )
     {
         _apiClient = apiClient;
         _dispatcher = dispatcher;
-        _serviceProvider = serviceProvider;
-        //Task.Run(CheckAccessToken);
     }
 
     private void JoinMainPage(UserInfo user)
@@ -43,8 +39,8 @@ public sealed partial class LoginViewModel : ViewModelBase
             App.Current.User = user;
             Settings.CurrentUser = App.Current.User;
             App.Current.MainPage = AppConsts.IsDesktop ?
-                _serviceProvider.GetRequiredService<DesktopShell>() :
-                _serviceProvider.GetRequiredService<AppShell>();
+                ServiceHelper.GetService<DesktopShell>() :
+                ServiceHelper.GetService<AppShell>();
         });
     }
 

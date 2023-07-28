@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace QianShiChatClient.Maui.Views;
 
 public partial class SplashScreenPage : ContentPage
@@ -20,7 +18,7 @@ public partial class SplashScreenPage : ContentPage
 
     private void GoToLoginPage()
     {
-        MainThread.BeginInvokeOnMainThread(() => {
+        Dispatcher.Dispatch(() => {
             App.Current.MainPage = new NavigationPage(ServiceHelper.GetService<LoginPage>());
         });
     }
@@ -42,7 +40,7 @@ public partial class SplashScreenPage : ContentPage
         }
         await Task.Delay(3000);
 
-        MainThread.BeginInvokeOnMainThread(() => {
+        Dispatcher.Dispatch(() => {
             App.Current.User = user.ToUserInfo();
             Settings.CurrentUser = App.Current.User;
             App.Current.MainPage = AppConsts.IsDesktop ?

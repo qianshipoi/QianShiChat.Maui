@@ -61,5 +61,7 @@ global using System.Threading.Tasks;
 global using System.Web;
 global using System.Windows.Input;
 
+global using Xe.AcrylicView;
+
 global using ZXing.Net.Maui;
 global using ZXing.Net.Maui.Controls;

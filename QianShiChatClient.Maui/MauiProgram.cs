@@ -8,6 +8,7 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseSkiaSharp()
+            .UseAcrylicView()
             .UseBarcodeReader()
             .UseMauiCommunityToolkit()
             .ConfigureLifecycleEvents(events => {

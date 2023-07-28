@@ -57,10 +57,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AcrylicView.Maui" Version="1.13.0" />
 		<PackageReference Include="Bogus" Version="34.0.2" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0-preview.6.23329.11" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-preview.6.8686" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0-preview.6.23329.7" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0-preview.6.23329.7" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.0-preview.6.23329.11" />

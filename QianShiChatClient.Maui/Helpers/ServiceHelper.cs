@@ -6,12 +6,12 @@ public static class ServiceHelper
 
     public static IServiceProvider Current =>
 #if WINDOWS
-            MauiWinUIApplication.Current.Services;
+            MauiWinUIApplication.Current?.Services;
 #elif ANDROID
-        MauiApplication.Current.Services;
+        MauiApplication.Current?.Services;
 
 #elif IOS || MACCATALYST
-            MauiUIApplicationDelegate.Current.Services;
+            MauiUIApplicationDelegate.Current?.Services;
 #else
             null;
 #endif
