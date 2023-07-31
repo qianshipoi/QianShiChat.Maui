@@ -11,7 +11,7 @@ public partial class SplashScreenPage : ContentPage
 
     private void SplashScreenPage_Loaded(object sender, EventArgs e)
     {
-        BackgroundWorker backgroundWorker = new BackgroundWorker();
+        var backgroundWorker = new BackgroundWorker();
         backgroundWorker.DoWork += BackgroundWorker_DoWork;
         backgroundWorker.RunWorkerAsync();
     }
@@ -19,8 +19,10 @@ public partial class SplashScreenPage : ContentPage
     private void GoToLoginPage()
     {
         Dispatcher.Dispatch(() => {
-            App.Current.MainPage = new NavigationPage(ServiceHelper.GetService<LoginPage>());
+            var loginPage = ServiceHelper.GetService<LoginPage>();
+            App.Current.MainPage = new NavigationPage(loginPage);
         });
+
     }
 
     private async void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)

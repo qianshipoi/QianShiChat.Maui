@@ -7,6 +7,8 @@ public sealed partial class DataCenter : ObservableObject
     private readonly ChatDatabase _database;
     private readonly ChatHub _chatHub;
     private readonly ILogger<DataCenter> _logger;
+    private readonly IUserService _userService;
+    private IDispatcherTimer _timer;
 
     [ObservableProperty]
     private bool _isConnected;
@@ -22,7 +24,8 @@ public sealed partial class DataCenter : ObservableObject
         ChatDatabase database,
         ChatHub chatHub,
         IDispatcher dispatcher,
-        ILogger<DataCenter> logger)
+        ILogger<DataCenter> logger,
+        IUserService userService)
     {
         _apiClient = apiClient;
         _database = database;
@@ -36,6 +39,7 @@ public sealed partial class DataCenter : ObservableObject
         _chatHub.PrivateChat += ChatHubPrivateChat;
         _chatHub.IsConnectedChanged += (val) => IsConnected = val;
         IsConnected = _chatHub.IsConnected;
+        _userService = userService;
 
         _ = GetSessionsAsync();
         _ = GetApplyPendingsAsync();
@@ -44,7 +48,30 @@ public sealed partial class DataCenter : ObservableObject
 
     private void Sessions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-        // todo: save sorted sessions to database.
+        // todo:optimize - record order by last message time.
+        ClearTimer();
+        _timer = _dispatcher.CreateTimer();
+        _timer.Interval = TimeSpan.FromSeconds(3);
+        _timer.IsRepeating = false;
+        _timer.Tick += Timer_Tick;
+        _timer.Start();
+    }
+
+    private void ClearTimer()
+    {
+        if (_timer is not null)
+        {
+            _timer.Tick -= Timer_Tick;
+            _timer.Stop();
+        }
+    }
+
+    private async void Timer_Tick(object sender, EventArgs e) => await SaveSessionsAsync();
+
+    private async Task SaveSessionsAsync()
+    {
+        await _database.SaveSessionsAsync(Sessions.OrderByDescending(x => x.LastMessageTime).Select(x => x.ToSessionModel()));
+        ClearTimer();
     }
 
     private async void ChatHubPrivateChat(ChatMessageDto obj)
@@ -53,9 +80,7 @@ public sealed partial class DataCenter : ObservableObject
         var message = obj.ToChatMessage();
         if (message is null)
         {
-            var user = await _database.GetUserByIdAsync(obj.FromId);
-            // todo: if user is null, need query user info.
-
+            var user = await _userService.GetUserInfoByIdAsync(obj.FromId);
             session = new Session(user, new List<ChatMessage>());
             _dispatcher.Dispatch(() => {
                 Sessions.Add(session);
@@ -77,7 +102,7 @@ public sealed partial class DataCenter : ObservableObject
                 var session = Sessions.FirstOrDefault(x => x.User.Id == model.ToId);
                 if (session == null)
                 {
-                    var user = await _database.GetUserByIdAsync(model.ToId);
+                    var user = await _userService.GetUserInfoByIdAsync(model.ToId);
                     if (user != null)
                     {
                         var messages = await _database.GetChatMessageAsync(user.Id, 0, 20);
@@ -92,19 +117,17 @@ public sealed partial class DataCenter : ObservableObject
     private async Task<Session> AddSessionsAsync(UserInfo user, IEnumerable<ChatMessage> messages)
     {
         var session = Sessions.FirstOrDefault(x => x.User.Id == user.Id);
-        if (session != null)
-        {
-            session.User.Avatar = user.Avatar;
-            session.User.NickName = user.NickName;
-            await session.AddMessagesAsync(messages);
-        }
-        else
+        if (session is null)
         {
             session = new Session(user, messages);
             _dispatcher.Dispatch(() => {
                 Sessions.Add(session);
             });
+
         }
+        session.User.Avatar = user.Avatar;
+        session.User.NickName = user.NickName;
+        await session.AddMessagesAsync(messages);
         return session;
     }
 

@@ -58,7 +58,7 @@ public static class MauiProgram
         services.AddSingleton<ChatDatabase>();
         services.AddSingleton<DataCenter>();
 #if WINDOWS
-        services.AddSingleton<IWindowManagerService,WinUIManagerService>();
+        services.AddSingleton<IWindowManagerService, WinUIManagerService>();
 #endif
         services.AddSingleton<IDialogService, DialogService>();
 

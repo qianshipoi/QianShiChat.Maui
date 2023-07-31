@@ -44,42 +44,6 @@ public sealed partial class LoginViewModel : ViewModelBase
         });
     }
 
-    private async Task CheckAccessToken()
-    {
-        var accessToken = Settings.AccessToken;
-        if (!string.IsNullOrWhiteSpace(Settings.AccessToken))
-        {
-            var user = Settings.CurrentUser;
-            if (user != null)
-            {
-                JoinMainPage(user);
-                // update user info.
-                _ = Task.Run(async () => {
-                    var (isSuccessed, userDto) = await _apiClient.CheckAccessToken();
-                    if (isSuccessed)
-                    {
-                        _dispatcher.Dispatch(() => {
-                            App.Current.User = userDto.ToUserInfo();
-                            Settings.CurrentUser = App.Current.User;
-                        });
-                    }
-                    else
-                    {
-                        await _navigationService.GoToLoginPage();
-                    }
-                });
-            }
-            else
-            {
-                var (isSuccessed, userDto) = await _apiClient.CheckAccessToken();
-                if (isSuccessed)
-                {
-                    JoinMainPage(userDto.ToUserInfo());
-                }
-            }
-        }
-    }
-
     [RelayCommand]
     private async Task Submit()
     {

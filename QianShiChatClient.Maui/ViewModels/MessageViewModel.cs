@@ -5,7 +5,6 @@ public sealed partial class MessageViewModel : ViewModelBase
 {
     private readonly ChatHub _chatHub;
     private readonly Dictionary<Session, View> _viewCache;
-    private readonly IWindowManagerService _windowManagerService;
     private readonly ILogger<MessageViewModel> _logger;
 
     [ObservableProperty]
@@ -24,12 +23,17 @@ public sealed partial class MessageViewModel : ViewModelBase
             return;
         }
 
-        if (_windowManagerService.ContainsChatRootWindow(value.User))
+        var windowManagerService =  ServiceHelper.GetService<IWindowManagerService>();
+        if(windowManagerService != null)
         {
-            _windowManagerService.OpenChatRoomWindow(value.User);
-            CurrentSelectedSession = null;
-            return;
+            if (windowManagerService.ContainsChatRootWindow(value.User))
+            {
+                windowManagerService.OpenChatRoomWindow(value.User);
+                CurrentSelectedSession = null;
+                return;
+            }
         }
+
 
         if (!_viewCache.TryGetValue(value, out var view))
         {
@@ -56,11 +60,9 @@ public sealed partial class MessageViewModel : ViewModelBase
     public MessageViewModel(
         DataCenter dataCenter,
         ChatHub chatHub,
-        IWindowManagerService windowManagerService,
         ILogger<MessageViewModel> logger)
     {
         DataCenter = dataCenter;
-        _windowManagerService = windowManagerService;
         _chatHub = chatHub;
         _viewCache = new();
         _ = UpdateMessage();
@@ -93,8 +95,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     [RelayCommand]
     private void OpenNewWindow(Session session)
     {
-        _windowManagerService.OpenChatRoomWindow(session.User);
-
+        ServiceHelper.GetService<IWindowManagerService>().OpenChatRoomWindow(session.User);
         if (CurrentSelectedSession == session)
         {
             CurrentSelectedSession = null;
@@ -104,8 +105,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     [RelayCommand]
     private Task Search(string searchText)
     {
-        Toast.Make("Search:" + searchText).Show();
-        return Task.CompletedTask;
+        return Toast.Make("Search:" + searchText).Show();
     }
 
     [RelayCommand]
@@ -141,7 +141,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     {
         if (AppConsts.IsDesktop)
         {
-            _windowManagerService.OpenQueryWindow();
+            ServiceHelper.GetService<IWindowManagerService>()?.OpenQueryWindow();
             return Task.CompletedTask;
         }
         else

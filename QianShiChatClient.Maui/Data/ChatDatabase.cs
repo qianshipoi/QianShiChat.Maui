@@ -17,6 +17,22 @@ public class ChatDatabase
         await Database.InsertOrReplaceAsync(session);
     }
 
+    public async Task SaveSessionsAsync(IEnumerable<SessionModel> sessions)
+    {
+        await Database.RunInTransactionAsync(con => {
+            con.DeleteAll<SessionModel>();
+            foreach (var item in sessions)
+            {
+                if(item.Id == 0)
+                {
+                    continue;
+                }
+                con.InsertOrReplace(item);
+            }
+            con.Commit();
+        });
+    }
+
     public async Task<List<SessionModel>> GetAllSessionAsync()
     {
         return await Database.Table<SessionModel>().ToListAsync();

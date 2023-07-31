@@ -15,9 +15,12 @@ public class UserService : IUserService
         _memoryCache = memoryCache;
     }
 
+    private string GetUserCacheKey(int id) => nameof(GetUserInfoByIdAsync) + id;
+
     public async Task<UserInfo> GetUserInfoByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var userInfo = _memoryCache.Get<UserInfo>(nameof(GetUserInfoByIdAsync));
+        var cacheKey = GetUserCacheKey(id);
+        var userInfo = _memoryCache.Get<UserInfo>(cacheKey);
 
         if (userInfo is not null)
         {
@@ -47,7 +50,7 @@ public class UserService : IUserService
             }
         }
 
-        _memoryCache.Set(nameof(GetUserInfoByIdAsync), userInfo, DateTimeOffset.Now.AddMinutes(2));
-        return UserInfo.Unknown;
+        _memoryCache.Set(cacheKey, userInfo, DateTimeOffset.Now.AddMinutes(2));
+        return userInfo;
     }
 }

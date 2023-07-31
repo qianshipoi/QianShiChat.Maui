@@ -25,7 +25,8 @@ public static class SessionModelExtensions
             Type = ChatMessageSendType.Personal,
             LastMessageContent = session.LastMessageContent,
             LastMessageTime = session.LastMessageTime,
-            ToId = session.User.Id
+            ToId = session.User.Id,
+            Id = session.User.Id
         };
     }
 }
