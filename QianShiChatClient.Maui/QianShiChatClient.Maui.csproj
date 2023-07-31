@@ -83,6 +83,9 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>MyStrings.resx</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\Desktop\DesktopAddQueryPage.xaml.cs">
+	    <DependentUpon>DesktopAddQueryPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\Desktop\DesktopFriendPage.xaml.cs">
 	    <DependentUpon>DesktopFriendPage.xaml</DependentUpon>
 	  </Compile>
@@ -108,10 +111,16 @@
 	  <MauiXaml Update="Views\AddFriendPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\AddFriendView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ChatMessageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\ChatRoomPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Desktop\DesktopAddQueryPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Desktop\DesktopMessagePage.xaml">

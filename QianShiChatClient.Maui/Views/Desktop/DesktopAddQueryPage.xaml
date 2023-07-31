@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.Maui.Views.Desktop.DesktopAddQueryPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:views="clr-namespace:QianShiChatClient.Maui.Views"
+    xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    x:Name="page"
+    x:DataType="{x:Type vms:AddQueryViewModel}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid Padding="8" toolkit:StateContainer.CurrentState="{Binding CurrentState}">
+        <toolkit:StateContainer.StateViews>
+            <Grid
+                toolkit:StateView.StateKey="Query"
+                RowDefinitions="Auto, *"
+                RowSpacing="8">
+                <SearchBar SearchCommand="{Binding SearchCommand}" Text="{Binding SearchContent}" />
+                <ScrollView Grid.Row="1">
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Result}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:UserInfo">
+                                <Grid
+                                    Padding="8,4"
+                                    ColumnDefinitions="Auto, *, Auto"
+                                    ColumnSpacing="8"
+                                    RowDefinitions="*,*">
+                                    <toolkit:AvatarView
+                                        Grid.RowSpan="2"
+                                        CornerRadius="20"
+                                        HeightRequest="40"
+                                        ImageSource="{Binding Avatar}"
+                                        Text="{Binding NickName}"
+                                        WidthRequest="40" />
+                                    <Label
+                                        Grid.Column="1"
+                                        LineBreakMode="TailTruncation"
+                                        Text="{Binding NickName}" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        FontSize="Caption"
+                                        LineBreakMode="TailTruncation"
+                                        Text="{Binding Account}" />
+                                    <Button
+                                        Grid.RowSpan="2"
+                                        Grid.Column="2"
+                                        Padding="0"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type VerticalStackLayout}}, Path=BindingContext.AddFriendCommand}"
+                                        CommandParameter="{Binding}"
+                                        CornerRadius="4"
+                                        FontSize="Caption"
+                                        HeightRequest="24"
+                                        IsVisible="{Binding IsFriend, Converter={StaticResource InvertedBoolConverter}}"
+                                        MinimumHeightRequest="24"
+                                        Text="添加"
+                                        VerticalOptions="Center"
+                                        WidthRequest="60" />
+                                    <Label
+                                        Grid.RowSpan="2"
+                                        Grid.Column="2"
+                                        IsVisible="{Binding IsFriend}"
+                                        Text="已添加"
+                                        TextColor="{StaticResource Gray300}" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Grid>
+            <Grid toolkit:StateView.StateKey="Add">
+                <views:AddFriendView
+                    BindingContext="{Binding AddFriendVM}"
+                    CancelCommand="{Binding BindingContext.CancelCommand, Source={x:Reference page}}"
+                    ShowCancel="True" />
+            </Grid>
+        </toolkit:StateContainer.StateViews>
+    </Grid>
+</ContentPage>

@@ -9,6 +9,10 @@ using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Microsoftui = Microsoft.UI;
+using MicrosoftuiWindowing = Microsoft.UI.Windowing;
+using MicrosoftuiXaml = Microsoft.UI.Xaml;
+using MicrosoftuixmlMedia = Microsoft.UI.Xaml.Media;
 using WinRT.Interop;
 #endif
 
@@ -26,6 +30,21 @@ namespace QianShiChatClient.Maui.Windows
             Height = 500;
         }
 
+        public void NoResize()
+        { 
+#if WINDOWS
+        if (Handler?.PlatformView is not MicrosoftuiXaml.Window winuiWindow)
+            return;
+        var appWindow = winuiWindow.GetAppWindow();
+        if (appWindow is null)
+            return;
+
+        winuiWindow.ExtendsContentIntoTitleBar = true;
+        //var customOverlappedPresenter = Microsoft.UI.Windowing.OverlappedPresenter.CreateForContextMenu();
+        //appWindow.SetPresenter(customOverlappedPresenter);
+#endif
+        }
+
         protected override void OnCreated()
         {
             base.OnCreated();
@@ -37,17 +56,18 @@ namespace QianShiChatClient.Maui.Windows
             Y = (screenHeight - Height) / 2;
 
 #if WINDOWS
-            if (Handler?.PlatformView is not Microsoft.UI.Xaml.Window winuiWindow)
+            if (Handler?.PlatformView is not MicrosoftuiXaml.Window winuiWindow)
                 return;
+
             var hwnd = WindowNative.GetWindowHandle(winuiWindow);
-            WindowId id = Win32Interop.GetWindowIdFromWindow(hwnd);
+            var id = Win32Interop.GetWindowIdFromWindow(hwnd);
             var appWindow = AppWindow.GetFromWindowId(id);
 #endif
         }
 
         protected override void OnDestroying()
         {
-            ServiceHelper.GetService<WindowManagerService>()?.CloseWindow(this);
+            ServiceHelper.GetService<IWindowManagerService>()?.CloseWindow(this);
             base.OnDestroying();
         }
     }

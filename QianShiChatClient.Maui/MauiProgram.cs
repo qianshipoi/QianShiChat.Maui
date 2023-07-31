@@ -57,7 +57,9 @@ public static class MauiProgram
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<ChatDatabase>();
         services.AddSingleton<DataCenter>();
-        services.AddSingleton<WindowManagerService>();
+#if WINDOWS
+        services.AddSingleton<IWindowManagerService,WinUIManagerService>();
+#endif
         services.AddSingleton<IDialogService, DialogService>();
 
         services.AddSingleton<IUserService, UserService>();
@@ -72,6 +74,7 @@ public static class MauiProgram
             services.AddSingleton<NewFriendView>();
             services.AddTransient<UserInfoViewModel>();
             services.AddSingleton<UserInfoView>();
+            services.AddTransient<DesktopAddQueryPage, AddQueryViewModel>();
         }
         else
         {

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="QianShiChatClient.Maui.Views.AddFriendView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QianShiChatClient.Maui"
+    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:QianShiChatClient.Maui.ViewModels"
+    x:Name="view"
+    x:DataType="{x:Type viewmodels:AddFriendViewModel}">
+    <Grid>
+        <ScrollView>
+            <StackLayout Spacing="16">
+                <toolkit:AvatarView
+                    CornerRadius="60"
+                    HeightRequest="120"
+                    ImageSource="{Binding UserInfo.Avatar}"
+                    WidthRequest="120" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    HorizontalOptions="Center"
+                    LineBreakMode="TailTruncation"
+                    Text="{Binding UserInfo.NickName}" />
+                <Label
+                    HorizontalOptions="Center"
+                    LineBreakMode="CharacterWrap"
+                    Text="{Binding UserInfo.Content}" />
+                <Editor
+                    x:Name="VerificationControl"
+                    AutoSize="TextChanges"
+                    MaxLength="255"
+                    Placeholder="{local:Localize VerificationHit}"
+                    VerticalOptions="Start" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <Button
+                        Command="{Binding SendCommand}"
+                        CommandParameter="{Binding Source={x:Reference VerificationControl}, Path=Text}"
+                        Text="{local:Localize Send}" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding Source={x:Reference view}, Path=CancelCommand}"
+                        IsVisible="{Binding Source={x:Reference view}, Path=ShowCancel}"
+                        Text="取消" />
+                </Grid>
+            </StackLayout>
+        </ScrollView>
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+    </Grid>
+</ContentView>

@@ -5,7 +5,7 @@ public sealed partial class MessageViewModel : ViewModelBase
 {
     private readonly ChatHub _chatHub;
     private readonly Dictionary<Session, View> _viewCache;
-    private readonly WindowManagerService _windowManagerService;
+    private readonly IWindowManagerService _windowManagerService;
     private readonly ILogger<MessageViewModel> _logger;
 
     [ObservableProperty]
@@ -56,7 +56,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     public MessageViewModel(
         DataCenter dataCenter,
         ChatHub chatHub,
-        WindowManagerService windowManagerService,
+        IWindowManagerService windowManagerService,
         ILogger<MessageViewModel> logger)
     {
         DataCenter = dataCenter;
@@ -141,7 +141,8 @@ public sealed partial class MessageViewModel : ViewModelBase
     {
         if (AppConsts.IsDesktop)
         {
-            return _navigationService.GoToQueryPage();
+            _windowManagerService.OpenQueryWindow();
+            return Task.CompletedTask;
         }
         else
         {

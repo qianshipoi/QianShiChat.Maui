@@ -19,6 +19,9 @@ public partial class UserInfo : ObservableObject
     [ObservableProperty]
     private bool _isUnknown = false;
 
+    [ObservableProperty]
+    private bool _isFriend;
+
     public static readonly UserInfo Unknown = new() { IsUnknown = true };
 }
 

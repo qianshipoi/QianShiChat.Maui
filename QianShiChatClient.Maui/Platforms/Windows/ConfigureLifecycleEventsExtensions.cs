@@ -19,11 +19,11 @@
         {
             builder.AddWindows(windows => {
                 windows.OnResumed(window => {
-                    if (App.Current.User != null && !string.IsNullOrWhiteSpace(Settings.AccessToken))
-                    {
-                        _ = ServiceHelper.Current.GetRequiredService<ChatHub>().Connect();
-                        _ = ServiceHelper.Current.GetRequiredService<DataCenter>().GetUnreadMessageAsync();
-                    }
+                    //if (App.Current.User != null && !string.IsNullOrWhiteSpace(Settings.AccessToken))
+                    //{
+                    //    _ = ServiceHelper.Current.GetRequiredService<ChatHub>().Connect();
+                    //    _ = ServiceHelper.Current.GetRequiredService<DataCenter>().GetUnreadMessageAsync();
+                    //}
                 })
                 .OnWindowCreated(window => {
                     //var mauiwin = window as MauiWinUIWindow;

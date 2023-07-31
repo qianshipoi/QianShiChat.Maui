@@ -48,6 +48,6 @@ public partial class App : Application
 
     private void Window_Destroying(object sender, EventArgs e)
     {
-        ServiceProvider.GetRequiredService<WindowManagerService>().CloseAllWindow();
+        ServiceProvider.GetRequiredService<IWindowManagerService>().CloseAllWindow();
     }
 }

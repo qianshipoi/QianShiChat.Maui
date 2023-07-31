@@ -1,6 +1,4 @@
-﻿using QianShiChatClient.Maui.Windows;
-
-namespace QianShiChatClient.Maui.ViewModels;
+﻿namespace QianShiChatClient.Maui.ViewModels;
 
 public class OperationItem
 {
@@ -11,7 +9,7 @@ public class OperationItem
 
 public sealed partial class FriendViewModel : ViewModelBase
 {
-    private readonly WindowManagerService _windowManagerService;
+    private readonly IWindowManagerService _windowManagerService;
     public DataCenter DataCenter { get; }
 
     public List<OperationItem> Operations { get; private set; }
@@ -19,7 +17,7 @@ public sealed partial class FriendViewModel : ViewModelBase
     [ObservableProperty]
     private View _content;
 
-    public FriendViewModel(DataCenter dataCenter, WindowManagerService windowManagerService)
+    public FriendViewModel(DataCenter dataCenter, IWindowManagerService windowManagerService)
     {
         DataCenter = dataCenter;
         Operations = new List<OperationItem>

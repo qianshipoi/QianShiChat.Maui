@@ -31,6 +31,12 @@
                     SearchCommand="{Binding SearchCommand}"
                     SearchCommandParameter="{Binding Source={Reference searchBar}, Path=Text}"
                     VerticalOptions="Center" />
+                <Button
+                    Grid.Column="1"
+                    Padding="0"
+                    Command="{Binding JoinQueryPageCommand}"
+                    Text="Add"
+                    VerticalOptions="Center" />
             </Grid>
             <ListView
                 Grid.Row="1"
