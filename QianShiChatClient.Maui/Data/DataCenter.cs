@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.Data;
+﻿using static System.Net.Mime.MediaTypeNames;
+
+namespace QianShiChatClient.Maui.Data;
 
 public sealed partial class DataCenter : ObservableObject
 {
@@ -192,20 +194,31 @@ public sealed partial class DataCenter : ObservableObject
         }
     }
 
+    private ChatMessage CreateSendMessage(
+        UserInfo user,
+        int toId,
+        string content,
+        ChatMessageType messageType = ChatMessageType.Text)
+    {
+        return new ChatMessage
+        {
+            LocalId = Guid.NewGuid(),
+            MessageType = messageType,
+            SendType = ChatMessageSendType.Personal,
+            Status = MessageStatus.Sending,
+            CreateTime = Timestamp.Now,
+            FromId = user.Id,
+            ToId = toId,
+            FromAvatar = user.Avatar,
+            ToAvatar = user.Avatar,
+            IsSelfSend = true,
+            Content = content
+        };
+    }
+
     public async Task<ChatMessage> SendTextAsync(UserInfo user, Session session, string text)
     {
-        var message = new ChatMessage();
-        message.LocalId = Guid.NewGuid();
-        message.MessageType = ChatMessageType.Text;
-        message.SendType = ChatMessageSendType.Personal;
-        message.Status = MessageStatus.Sending;
-        message.CreateTime = Timestamp.Now;
-        message.Content = text;
-        message.FromId = user.Id;
-        message.ToId = session.User.Id;
-        message.FromAvatar = user.Avatar;
-        message.ToAvatar = user.Avatar;
-        message.IsSelfSend = true;
+        var message = CreateSendMessage(user, session.User.Id, text);
 
         _ = Task.Run(async () => {
             try
@@ -229,6 +242,21 @@ public sealed partial class DataCenter : ObservableObject
 
         await session.AddMessageAsync(message);
 
+        UpdateSessions(session);
+        try
+        {
+            await _database.SaveChatMessageAsnyc(message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "");
+        }
+
+        return message;
+    }
+
+    private void UpdateSessions(Session session)
+    {
         var index = Sessions.IndexOf(session);
 
         if (index != -1)
@@ -239,7 +267,59 @@ public sealed partial class DataCenter : ObservableObject
         {
             Sessions.Insert(0, session);
         }
+    }
 
+    private Task<ChatMessageDto> MockSendFileAsync(Action<double, double> uploadProgressValue)
+    {
+        var total = 25;
+        return Task.Run(async () => {
+            for (int i = 0; i < total; i++)
+            {
+                await Task.Delay(1000);
+                uploadProgressValue.Invoke(i, total);
+            }
+            return new ChatMessageDto { Id = DateTime.Now.Ticks };
+        });
+    }
+
+    public async Task<ChatMessage> SendFileAsync(UserInfo user, Session session, string filePath)
+    {
+        var message = CreateSendMessage(user, session.User.Id, filePath, ChatMessageType.OtherFile);
+
+        _ = Task.Run(async () => {
+            try
+            {
+                var chatDto = await MockSendFileAsync((loaded, total) => {
+                    MainThread.BeginInvokeOnMainThread(() => {
+                        message.UploadProgressValue = loaded / total;
+                    });
+                });
+
+                //var chatDto = await _apiClient
+                //      .SendFileAsync(
+                //    session.User.Id,
+                //    ChatMessageSendType.Personal,
+                //    filePath,
+                //    (loaded, total) => {
+                //        MainThread.BeginInvokeOnMainThread(() => {
+                //            message.UploadProgressValue = loaded / total;
+                //        });
+                //    });
+                message.Id = chatDto.Id;
+                _dispatcher.Dispatch(() => {
+                    message.Status = MessageStatus.Successful;
+                });
+                await _database.UpdateChatMessageAsync(message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "send text message error.");
+            }
+        });
+
+        await session.AddMessageAsync(message);
+
+        UpdateSessions(session);
         try
         {
             await _database.SaveChatMessageAsnyc(message);

@@ -17,6 +17,7 @@
             <toolkit:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
             <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <exts:TimestampConverter x:Key="TimestampConverter" />
+            <helpers:PathToFilenameConverter x:Key="PathToFilenameConverter" />
             <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
             <DataTemplate x:Key="OtherTextMessageDataTemplate" x:DataType="{x:Type models:ChatMessage}">
                 <Grid
@@ -70,9 +71,71 @@
                         WidthRequest="40" />
                 </Grid>
             </DataTemplate>
+            <DataTemplate x:Key="SelfFileMessageDataTemplate" x:DataType="{x:Type models:ChatMessage}">
+                <Grid
+                    Margin="8"
+                    ColumnDefinitions="40,*,Auto"
+                    ColumnSpacing="8">
+                    <Frame
+                        Grid.Column="1"
+                        Padding="8,6"
+                        BackgroundColor="White"
+                        CornerRadius="5"
+                        HeightRequest="90"
+                        HorizontalOptions="End"
+                        MinimumHeightRequest="40"
+                        VerticalOptions="Start"
+                        WidthRequest="230">
+                        <Grid
+                            Padding="8"
+                            ColumnDefinitions="*,50"
+                            ColumnSpacing="16"
+                            RowDefinitions="*,Auto">
+                            <Label
+                                FontSize="18"
+                                HorizontalTextAlignment="Start"
+                                LineBreakMode="CharacterWrap"
+                                Text="{Binding Content, Converter={StaticResource PathToFilenameConverter}}" />
+                            <BoxView
+                                Grid.Column="1"
+                                BackgroundColor="#91999E"
+                                CornerRadius="4"
+                                HeightRequest="50"
+                                WidthRequest="50" />
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                HorizontalTextAlignment="Center"
+                                Text="{Binding UploadProgressValue, StringFormat='{0:F2}'}"
+                                TextColor="White"
+                                VerticalOptions="Center" />
+                            <StackLayout
+                                Grid.Row="1"
+                                Orientation="Horizontal"
+                                Spacing="8">
+                                <Label
+                                    FontSize="Caption"
+                                    Text="3.9MB"
+                                    TextColor="{StaticResource Gray300}" />
+                                <Label
+                                    FontSize="Caption"
+                                    Text="已发送"
+                                    TextColor="{StaticResource Gray300}" />
+                            </StackLayout>
+                        </Grid>
+                    </Frame>
+                    <toolkit:AvatarView
+                        Grid.Column="2"
+                        HeightRequest="40"
+                        ImageSource="{Binding ToAvatar}"
+                        VerticalOptions="Start"
+                        WidthRequest="40" />
+                </Grid>
+            </DataTemplate>
             <helpers:ChatMessageSelector
                 x:Key="ChatMessageSelector"
                 OtherTextMessageDataTemplate="{StaticResource OtherTextMessageDataTemplate}"
+                SelfFileMessageDataTemplate="{StaticResource SelfFileMessageDataTemplate}"
                 SelfTextMessageDataTemplate="{StaticResource SelfTextMessageDataTemplate}" />
         </ResourceDictionary>
     </ContentView.Resources>
@@ -101,6 +164,35 @@
             </ScrollView>
             <Grid
                 Grid.Row="1"
+                HeightRequest="200"
+                RowDefinitions="Auto, *">
+                <StackLayout Orientation="Horizontal">
+                    <Button
+                        Padding="4"
+                        Command="{Binding SelectFileCommand}"
+                        CornerRadius="2"
+                        FontSize="Caption"
+                        MinimumHeightRequest="0"
+                        MinimumWidthRequest="0"
+                        Text="UP" />
+                </StackLayout>
+                <Editor Grid.Row="1" Text="{Binding Message}" />
+                <Button
+                    Grid.Row="1"
+                    Margin="0,0,20,10"
+                    Padding="4,0"
+                    Command="{Binding SendCommand}"
+                    CornerRadius="4"
+                    FontSize="Caption"
+                    HeightRequest="24"
+                    HorizontalOptions="End"
+                    MinimumHeightRequest="24"
+                    Text="发送"
+                    VerticalOptions="End"
+                    WidthRequest="100" />
+            </Grid>
+            <!--<Grid
+                Grid.Row="1"
                 Margin="8,0,8,8"
                 ColumnDefinitions="*, Auto"
                 ColumnSpacing="8">
@@ -112,7 +204,7 @@
                     Grid.Column="1"
                     Command="{Binding SendCommand}"
                     Text="{local:Localize Send}" />
-            </Grid>
+            </Grid>-->
         </Grid>
     </Grid>
 </ContentView>

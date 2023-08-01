@@ -29,6 +29,10 @@ public partial class ChatMessage : ObservableObject
 
     [ObservableProperty]
     private MessageStatus _status;
+
+    [ObservableProperty]
+    [property:Ignore]
+    private double _uploadProgressValue;
 }
 
 public enum MessageStatus

@@ -51,4 +51,21 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
             IsBusy = false;
         }
     }
+
+    [RelayCommand]
+    private async Task SelectFile()
+    {
+        var results = await FilePicker.Default.PickMultipleAsync();
+        if (!results.Any())
+        {
+            return;
+        }
+
+        // 上传到服务器
+        foreach (var fileResult in results)
+        {
+            ToMessage = await _dataCenter.SendFileAsync(User, Session, fileResult.FullPath);
+        }
+        ScrollAnimated = true;
+    }
 }

@@ -32,4 +32,6 @@ public interface IApiClient
     Task<CreateQrCodeResponse> CreateQrCodeAsync(CreateQrCodeRequest request, CancellationToken cancellationToken = default);
 
     Task<CheckQrAuthKeyResponse> CheckQrKeyAsync(string key, CancellationToken cancellationToken = default);
+   
+    Task<ChatMessageDto> SendFileAsync(int toId, ChatMessageSendType chatMessageSendType, string filePath, Action<double, double> uploadProgressValue = null, CancellationToken cancellationToken = default);
 }

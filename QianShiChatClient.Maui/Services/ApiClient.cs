@@ -1,4 +1,7 @@
-﻿namespace QianShiChatClient.Maui.Services;
+﻿using System.Diagnostics.Contracts;
+using System.Net;
+
+namespace QianShiChatClient.Maui.Services;
 
 public class ApiClient : IApiClient
 {
@@ -153,6 +156,67 @@ public class ApiClient : IApiClient
         return (true, "Succeeded!");
     }
 
+    private async Task<(bool Succeeded, TReponse response, string Message)> PostAsync<TReponse>(string url, HttpContent request = null, CancellationToken
+       cancellationToken = default)
+    {
+        using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
+
+        using var response = await client.PostAsync(url, request, cancellationToken);
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            await _navigationService.GoToLoginPage();
+            return (false, default, "Unauthorized！");
+        }
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        _logger.LogInformation("http post: {url} - response content: {response}", url, content);
+
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return (false, default, "Response is empty.");
+        }
+
+        var result = JsonSerializer.Deserialize<GlobalResult<TReponse>>(content, _serializerOptions);
+
+        if (!result.Succeeded)
+        {
+            return (false, default, result.Errors is string err ? err : JsonSerializer.Serialize(result.Errors, _serializerOptions));
+        }
+
+        return (true, result.Data, "Succeeded!");
+    }
+
+    private async Task<(bool Succeeded, TReponse response, string Message)> PostProgressAsync<TReponse>(string url, HttpContent request = null, CancellationToken
+       cancellationToken = default)
+    {
+        using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
+
+        using var response = await client.PostAsync(url, request, cancellationToken);
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            await _navigationService.GoToLoginPage();
+            return (false, default, "Unauthorized！");
+        }
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        _logger.LogInformation("http post: {url} - response content: {response}", url, content);
+
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return (false, default, "Response is empty.");
+        }
+
+        var result = JsonSerializer.Deserialize<GlobalResult<TReponse>>(content, _serializerOptions);
+
+        if (!result.Succeeded)
+        {
+            return (false, default, result.Errors is string err ? err : JsonSerializer.Serialize(result.Errors, _serializerOptions));
+        }
+
+        return (true, result.Data, "Succeeded!");
+    }
+
+
     public async Task<List<UserWithMessageDto>> GetUnreadMessageFriendsAsync(CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await GetJsonAsync<List<UserWithMessageDto>>("/api/Friend/Unread", cancellationToken);
@@ -162,6 +226,29 @@ public class ApiClient : IApiClient
     public async Task<ChatMessageDto> SendTextAsync(PrivateChatMessageRequest request, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await PostJsonAsync<ChatMessageDto, PrivateChatMessageRequest>("/api/chat/text", request, cancellationToken);
+        return data;
+    }
+
+    public async Task<ChatMessageDto> SendFileAsync(
+        int toId,
+        ChatMessageSendType chatMessageSendType,
+        string filePath,
+        Action<double, double> uploadProgressValue = null,
+        CancellationToken cancellationToken = default)
+    {
+        using var fileStream = File.OpenRead(filePath);
+        var size = fileStream.Length;
+
+        var progress = new Progress<double>(value => {
+            uploadProgressValue?.Invoke(value, size);
+        });
+        using var content = new MultipartFormDataContent
+        {
+            { new StringContent(toId.ToString()), "ToId" },
+            { new StringContent(((sbyte)chatMessageSendType).ToString()), "SendType" },
+            { new ProgressableStreamContent2(fileStream, progress), "File" },
+        };
+        var (succeeded, data, message) = await PostAsync<ChatMessageDto>("/api/chat/file", content, cancellationToken);
         return data;
     }
 
@@ -243,5 +330,218 @@ public class ApiClient : IApiClient
     {
         var (succeeded, data, message) = await GetJsonAsync<UserDto>($"/api/user/{id}", cancellationToken);
         return data;
+    }
+}
+
+public class Download
+{
+    public DownloadState State { get; private set; }
+
+    public double Uploaded { get; set; }
+
+    public double Total { get; }
+
+    public Download(double total)
+    {
+        Total = total;
+    }
+
+    public void ChangeState(DownloadState state)
+    {
+        State = state;
+    }
+}
+
+public enum DownloadState
+{
+    UnReadly,
+    PendingUpload,
+    Uploading,
+    PendingResponse
+}
+
+public class ProgressableStreamContent2 : HttpContent
+{
+    private const int defaultBufferSize = 4096;
+    private Stream content;
+    private int bufferSize;
+    private bool contentConsumed;
+    private IProgress<double> progress;
+
+    public ProgressableStreamContent2(Stream content, IProgress<double> progress) : this(content, defaultBufferSize, progress)
+    {
+    }
+
+    public ProgressableStreamContent2(Stream content, int bufferSize, IProgress<double> progress)
+    {
+        if (content is null)
+        {
+            throw new ArgumentNullException(nameof(content));
+        }
+        if (bufferSize < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(bufferSize));
+        }
+
+        this.content = content;
+        this.bufferSize = bufferSize;
+        this.progress = progress;
+    }
+
+    protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+    {
+        Contract.Assert(stream != null);
+
+        PrepareContent();
+
+        return Task.Run(() => {
+            var buffer = new byte[bufferSize];
+            var size = content.Length;
+            var uploaded = 0;
+
+            progress.Report(0);
+
+
+            using (content)
+            {
+                while (true)
+                {
+                    var lenght = content.Read(buffer, 0, buffer.Length);
+                    if (lenght <= 0) break;
+                    progress.Report(uploaded += lenght);
+
+                    stream.Write(buffer, 0, lenght);
+                }
+            }
+        });
+    }
+
+    protected override bool TryComputeLength(out long length)
+    {
+        length = content.Length;
+        return true;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            content.Dispose();
+        }
+        base.Dispose(disposing);
+    }
+
+    private void PrepareContent()
+    {
+        if (contentConsumed)
+        {
+            if (content.CanSeek)
+            {
+                content.Position = 0;
+            }
+            else
+            {
+                throw new InvalidOperationException("SR.net_http_content_stream_already_read");
+            }
+        }
+        contentConsumed = true;
+    }
+}
+
+
+
+/// <summary>
+/// prgressable stream content.
+/// used: https://stackoverflow.com/questions/35320238/how-to-display-upload-progress-using-c-sharp-httpclient-postasync
+/// </summary>
+public class ProgressableStreamContent : HttpContent
+{
+    private const int defaultBufferSize = 4096;
+    private Stream content;
+    private int bufferSize;
+    private bool contentConsumed;
+    private Download downloader;
+
+    public ProgressableStreamContent(Stream content, Download downloader) : this(content, defaultBufferSize, downloader)
+    {
+    }
+
+    public ProgressableStreamContent(Stream content, int bufferSize, Download downloader)
+    {
+        if (content is null)
+        {
+            throw new ArgumentNullException(nameof(content));
+        }
+        if (bufferSize < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(bufferSize));
+        }
+
+        this.content = content;
+        this.bufferSize = bufferSize;
+        this.downloader = downloader;
+    }
+
+    protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+    {
+        Contract.Assert(stream != null);
+
+        PrepareContent();
+
+        return Task.Run(() => {
+            var buffer = new Byte[bufferSize];
+            var size = content.Length;
+            var uploaded = 0;
+
+            downloader.ChangeState(DownloadState.PendingUpload);
+
+            using (content)
+            {
+                while (true)
+                {
+                    var lenght = content.Read(buffer, 0, buffer.Length);
+                    if (lenght <= 0) break;
+
+                    downloader.Uploaded = uploaded += lenght;
+
+                    stream.Write(buffer, 0, lenght);
+
+                    downloader.ChangeState(DownloadState.Uploading);
+                }
+
+                downloader.ChangeState(DownloadState.PendingResponse);
+            }
+        });
+    }
+
+    protected override bool TryComputeLength(out long length)
+    {
+        length = content.Length;
+        return true;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            content.Dispose();
+        }
+        base.Dispose(disposing);
+    }
+
+    private void PrepareContent()
+    {
+        if (contentConsumed)
+        {
+            if (content.CanSeek)
+            {
+                content.Position = 0;
+            }
+            else
+            {
+                throw new InvalidOperationException("SR.net_http_content_stream_already_read");
+            }
+        }
+        contentConsumed = true;
     }
 }

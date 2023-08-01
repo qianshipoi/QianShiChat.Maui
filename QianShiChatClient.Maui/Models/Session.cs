@@ -46,7 +46,7 @@ public partial class Session : ObservableObject
 
     public async Task AddMessageAsync(ChatMessage message, CancellationToken cancellationToken = default)
     {
-        if (Messages.Any(x => x.Id == message.Id))
+        if (Messages.Any(x => x.LocalId == message.LocalId))
         {
             return;
         }
