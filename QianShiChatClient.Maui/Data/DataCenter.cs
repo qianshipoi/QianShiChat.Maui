@@ -275,8 +275,8 @@ public sealed partial class DataCenter : ObservableObject
         return Task.Run(async () => {
             for (int i = 0; i < total; i++)
             {
-                await Task.Delay(1000);
-                uploadProgressValue.Invoke(i, total);
+                await Task.Delay(250);
+                uploadProgressValue.Invoke(i + 1, total);
             }
             return new ChatMessageDto { Id = DateTime.Now.Ticks };
         });

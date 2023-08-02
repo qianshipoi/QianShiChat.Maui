@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.Contracts;
+﻿using Squidex.Assets;
+
+using System.Diagnostics.Contracts;
 using System.Net;
 
 namespace QianShiChatClient.Maui.Services;
@@ -190,6 +192,19 @@ public class ApiClient : IApiClient
        cancellationToken = default)
     {
         using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
+
+        //var handler = new DelegatingProgressHandler();
+
+        //handler.OnProgressAsync = async (@event, cancellationToken) => {
+                
+        //};
+
+        //var uploadOption = new UploadOptions()
+        //{
+        //    ProgressHandler = handler
+        //};
+
+        //client.UploadWithProgressAsync("", new UploadFile(), uploadOption, cancellationToken);
 
         using var response = await client.PostAsync(url, request, cancellationToken);
         if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
