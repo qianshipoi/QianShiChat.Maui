@@ -8,9 +8,9 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseSkiaSharp()
-            .UseAcrylicView()
             .UseBarcodeReader()
             .UseMauiCommunityToolkit()
+            .ConfigureMauiWorkarounds()
             .ConfigureLifecycleEvents(events => {
 #if ANDROID
                 events.ConfigureAndroidLifecycleEvents();
@@ -81,12 +81,13 @@ public static class MauiProgram
             services.AddTransient<AppShell, AppShellViewModel>();
             services.AddTransient<MessagePage>();
             services.AddTransient<SettingsPage, SettingsViewModel>();
-            services.AddTransient<FriendPage>();
         }
 
         services.AddTransient<LoginPage, LoginViewModel>();
-        services.AddTransient<FriendViewModel>();
+        //services.AddTransient<FriendPage, FriendViewModel>();
         services.AddTransient<MessageViewModel>();
+
+        services.AddTransientWithShellRoute<FriendPage, FriendViewModel>(nameof(FriendPage));
 
         services.AddTransientWithShellRoute<MessageDetailPage, MessageDetailViewModel>(nameof(MessageDetailPage));
         services.AddTransientWithShellRoute<SearchPage, SearchViewModel>(nameof(SearchPage));

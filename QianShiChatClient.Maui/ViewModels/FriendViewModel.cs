@@ -9,7 +9,6 @@ public class OperationItem
 
 public sealed partial class FriendViewModel : ViewModelBase
 {
-    private readonly IWindowManagerService _windowManagerService;
     public DataCenter DataCenter { get; }
 
     public List<OperationItem> Operations { get; private set; }
@@ -17,7 +16,7 @@ public sealed partial class FriendViewModel : ViewModelBase
     [ObservableProperty]
     private View _content;
 
-    public FriendViewModel(DataCenter dataCenter, IWindowManagerService windowManagerService)
+    public FriendViewModel(DataCenter dataCenter)
     {
         DataCenter = dataCenter;
         Operations = new List<OperationItem>
@@ -33,7 +32,6 @@ public sealed partial class FriendViewModel : ViewModelBase
                 Command = JoinNewFriendPageCommand
             }
         };
-        _windowManagerService = windowManagerService;
     }
 
     [RelayCommand]
@@ -47,7 +45,10 @@ public sealed partial class FriendViewModel : ViewModelBase
     [RelayCommand]
     private void OpenNewWindow(UserInfo user)
     {
-        _windowManagerService.OpenChatRoomWindow(user);
+        if (AppConsts.IsDesktop)
+        {
+            ServiceHelper.GetService<IWindowManagerService>().OpenChatRoomWindow(user);
+        }
     }
 
     [RelayCommand]

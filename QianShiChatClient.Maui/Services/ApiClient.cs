@@ -55,7 +55,7 @@ public class ApiClient : IApiClient
             using var response = await client.GetAsync("/api/auth", cancellationToken);
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                await _navigationService.GoToLoginPage();
+                //await _navigationService.GoToLoginPage();
                 return (false, null);
             }
             response.EnsureSuccessStatusCode();

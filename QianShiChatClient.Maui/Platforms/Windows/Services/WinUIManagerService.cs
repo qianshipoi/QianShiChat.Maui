@@ -1,11 +1,6 @@
 ﻿using QianShiChatClient.Maui.Windows;
-using Microsoft.Maui.Platform;
-using PInvoke;
-using static PInvoke.User32;
-using Microsoftui = Microsoft.UI;
-using MicrosoftuiWindowing = Microsoft.UI.Windowing;
+
 using MicrosoftuiXaml = Microsoft.UI.Xaml;
-using MicrosoftuixmlMedia = Microsoft.UI.Xaml.Media;
 
 namespace QianShiChatClient.Maui.Services;
 
@@ -96,7 +91,7 @@ public class WinUIManagerService : IWindowManagerService
         window.Width = 320;
         _opendWindows.Add(QueryWindowId, window);
         App.Current.OpenWindow(window);
-        //window.NoResize();
+        window.NoResize();
     }
 
     public void CloseQueryWindow() => CloseWindow(QueryWindowId);
