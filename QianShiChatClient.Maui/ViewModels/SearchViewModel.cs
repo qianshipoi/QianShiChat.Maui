@@ -22,12 +22,12 @@ public sealed partial class SearchViewModel : ViewModelBase
         try
         {
             await Task.Delay(2000);
-            var friends = FakerFriend.GetFriends(20);
-            foreach (var friend in friends)
-            {
-                friend.Avatar = "default_avatar.png";
-                Result.Add(friend);
-            }
+            //var friends = FakerFriend.GetFriends(20);
+            //foreach (var friend in friends)
+            //{
+            //    friend.Avatar = "default_avatar.png";
+            //    Result.Add(friend);
+            //}
         }
         finally
         {

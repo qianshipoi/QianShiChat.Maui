@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:exts="clr-namespace:QianShiChatClient.Maui.Extensions"
     xmlns:local="clr-namespace:QianShiChatClient.Maui"
-    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:models="clr-namespace:QianShiChatClient.Core.Models;assembly=QianShiChatClient.Core"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:QianShiChatClient.Maui.ViewModels"
     x:Name="Root"
@@ -13,7 +13,7 @@
     x:DataType="{x:Type viewmodels:MessageViewModel}"
     Shell.NavBarIsVisible="False">
     <ContentPage.Behaviors>
-        <toolkit:StatusBarBehavior StatusBarColor="{AppThemeBinding Light=White, Default=White, Dark=Black}" StatusBarStyle="{AppThemeBinding Light=DarkContent, Dark=LightContent, Default=DarkContent}" />
+        <toolkit:StatusBarBehavior StatusBarStyle="{AppThemeBinding Light=DarkContent, Dark=LightContent, Default=DarkContent}" />
     </ContentPage.Behaviors>
     <ContentPage.Resources>
         <ResourceDictionary>

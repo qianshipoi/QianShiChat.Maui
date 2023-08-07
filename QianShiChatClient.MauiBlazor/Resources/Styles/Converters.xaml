@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    x:Class="QianShiChatClient.Maui.Resources.Styles.Converters"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:exts="clr-namespace:QianShiChatClient.MauiBlazor.Extensions"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+    <toolkit:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
+    <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    <exts:TimestampConverter x:Key="TimestampConverter" />
+    <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
+</ResourceDictionary>

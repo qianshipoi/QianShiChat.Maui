@@ -53,4 +53,6 @@ public class UserService : IUserService
         _memoryCache.Set(cacheKey, userInfo, DateTimeOffset.Now.AddMinutes(2));
         return userInfo;
     }
+
+    public UserInfo CurrentUser() => App.Current.User;
 }

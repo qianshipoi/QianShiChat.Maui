@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:desktopViews="clr-namespace:QianShiChatClient.Maui.Views.Desktop"
     xmlns:local="clr-namespace:QianShiChatClient.Maui"
-    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:models="clr-namespace:QianShiChatClient.Core.Models;assembly=QianShiChatClient.Core"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:QianShiChatClient.Maui.ViewModels"
     Title="{Binding Title}"
@@ -14,9 +14,6 @@
     <ContentPage.Resources>
         <toolkit:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
     </ContentPage.Resources>
-    <ContentPage.Behaviors>
-        <toolkit:StatusBarBehavior StatusBarColor="{AppThemeBinding Light=White, Default=White, Dark=Black}" StatusBarStyle="{AppThemeBinding Light=DarkContent, Dark=LightContent, Default=DarkContent}" />
-    </ContentPage.Behaviors>
     <Grid ColumnDefinitions="Auto,*">
         <Grid RowDefinitions="Auto,Auto,Auto,*" WidthRequest="220">
             <Grid

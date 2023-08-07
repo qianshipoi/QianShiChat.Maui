@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Maui", "QianShiChatClient.Maui\QianShiChatClient.Maui.csproj", "{BCA5A8C3-E322-4F44-9035-C5ACA4A78E1A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.MauiBlazor", "QianShiChatClient.MauiBlazor\QianShiChatClient.MauiBlazor.csproj", "{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Core", "QianShiChatClient.Core\QianShiChatClient.Core.csproj", "{6212EC45-763C-420D-83C4-A964A0287789}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +21,16 @@ Global
 		{BCA5A8C3-E322-4F44-9035-C5ACA4A78E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCA5A8C3-E322-4F44-9035-C5ACA4A78E1A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCA5A8C3-E322-4F44-9035-C5ACA4A78E1A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{6212EC45-763C-420D-83C4-A964A0287789}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6212EC45-763C-420D-83C4-A964A0287789}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6212EC45-763C-420D-83C4-A964A0287789}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6212EC45-763C-420D-83C4-A964A0287789}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,23 @@
+﻿@page "/friend"
+@inject DataCenter _dataConter;
+@inject IJSRuntime _jsRuntime;
+
+<h3>Firend</h3>
+
+<ul>
+    @foreach (var item in _dataConter.Friends)
+    {
+        <li> @item.Account</li>
+    }
+</ul>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        System.Diagnostics.Debug.WriteLine(firstRender);
+        if (firstRender)
+        {
+            await _dataConter.GetAllFriendAsync();
+        }
+    }
+}

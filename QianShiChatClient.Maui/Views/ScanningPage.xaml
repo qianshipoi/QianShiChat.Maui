@@ -11,6 +11,9 @@
     x:DataType="{x:Type vms:ScanningViewModel}"
     Shell.NavBarIsVisible="False"
     Shell.TabBarIsVisible="False">
+    <!--<ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{AppThemeBinding Light=Transparent, Default=Transparent, Dark=Transparent}" StatusBarStyle="{AppThemeBinding Light=DarkContent, Dark=LightContent, Default=DarkContent}" />
+    </ContentPage.Behaviors>-->
     <ContentPage.Resources>
         <ResourceDictionary>
             <helpers:BarcodeDetectionEventArgsConverter x:Key="BarcodeDetectionEventArgsConverter" />

@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:QianShiChatClient.Maui"
-    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:models="clr-namespace:QianShiChatClient.Core.Models;assembly=QianShiChatClient.Core"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:QianShiChatClient.Maui.ViewModels"
     x:DataType="{x:Type viewmodels:NewFriendViewModel}">

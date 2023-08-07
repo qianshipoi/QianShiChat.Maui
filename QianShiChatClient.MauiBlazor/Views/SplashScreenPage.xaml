@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="QianShiChatClient.MauiBlazor.Views.SplashScreenPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+    Title="SplashScreenPage">
+    <VerticalStackLayout VerticalOptions="Center">
+        <skia:SKLottieView
+            Margin="0,-100,0,0"
+            HeightRequest="240"
+            HorizontalOptions="Fill"
+            RepeatCount="-1"
+            RepeatMode="Restart"
+            Source="car_loading.json" />
+        <Label
+            Margin="0,16,0,0"
+            FontAttributes="Bold"
+            FontSize="24"
+            HorizontalOptions="Center"
+            Text="Loading..."
+            TextColor="{StaticResource Gray300}" />
+    </VerticalStackLayout>
+</ContentPage>

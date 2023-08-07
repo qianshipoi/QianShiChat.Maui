@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:am="clr-namespace:Microsoft.Maui.ApplicationModel;assembly=Microsoft.Maui.Essentials"
     xmlns:local="clr-namespace:QianShiChatClient.Maui"
-    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
+    xmlns:models="clr-namespace:QianShiChatClient.Core.Models;assembly=QianShiChatClient.Core"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
     Title="{local:Localize Settings}"
