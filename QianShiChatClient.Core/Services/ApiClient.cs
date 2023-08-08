@@ -342,6 +342,10 @@ public class ApiClient : IApiClient
     public async Task<CheckQrAuthKeyResponse?> CheckQrKeyAsync(string key, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await GetJsonAsync<CheckQrAuthKeyResponse>($"/api/Auth/qr/check?key={key}", cancellationToken);
+        if (succeeded && data is not null && data.Code  == 803)
+        {
+            AccessToken = data.AccessToken;
+        }
         return data;
     }
 

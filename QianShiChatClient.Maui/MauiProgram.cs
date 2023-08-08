@@ -1,5 +1,4 @@
-﻿using SimpleToolkit.Core;
-using SimpleToolkit.SimpleShell;
+﻿using System.Diagnostics;
 
 namespace QianShiChatClient.Maui;
 
@@ -14,6 +13,9 @@ public static class MauiProgram
             .UseBarcodeReader()
             .UseMauiCommunityToolkit()
             .ConfigureMauiWorkarounds()
+            .ConfigureMopups()
+            .UseSimpleShell()
+            .UseSimpleToolkit()
             .ConfigureLifecycleEvents(events => {
 #if ANDROID
                 events.ConfigureAndroidLifecycleEvents();
@@ -29,12 +31,7 @@ public static class MauiProgram
                 fonts.AddFont("Nunito-Bold.ttf", "NunitoBold");
                 fonts.AddFont("Nunito-SemiBold.ttf", "NunitoSemiBold");
             })
-            .ConfigureMopups(() => {
-            })
             .Services.ConfigureService();
-
-        builder.UseSimpleShell();
-        builder.UseSimpleToolkit();
 
 #if DEBUG
         builder.Logging.AddDebug();
@@ -62,6 +59,7 @@ public static class MauiProgram
             client.DefaultRequestHeaders.Add("Client-Type", AppConsts.CLIENT_TYPE);
             if (!string.IsNullOrWhiteSpace(Settings.AccessToken))
             {
+                Debug.WriteLine("token", Settings.AccessToken);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Settings.AccessToken);
             }
         });

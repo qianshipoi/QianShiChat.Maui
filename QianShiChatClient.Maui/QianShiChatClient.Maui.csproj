@@ -91,6 +91,9 @@
 	  <Compile Update="AppShell - 复制.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
+	  <Compile Update="DesktopShell - 复制.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
 	  <Compile Update="Resources\Strings\MyStrings.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
@@ -113,6 +116,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="AppShell - 复制.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="DesktopShell - 复制.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="DesktopShell.xaml">

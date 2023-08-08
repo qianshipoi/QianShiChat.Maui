@@ -142,12 +142,5 @@
             Grid.Column="1"
             BackgroundColor="#F2F2F2"
             Content="{Binding Content}" />
-        <Border
-            Grid.ColumnSpan="2"
-            Margin="-1,0,0,0"
-            BackgroundColor="#CCCCCC"
-            HorizontalOptions="StartAndExpand"
-            StrokeThickness="0"
-            WidthRequest="2" />
     </Grid>
 </ContentPage>

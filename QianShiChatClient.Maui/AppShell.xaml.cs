@@ -1,7 +1,4 @@
-﻿using SimpleToolkit.Core;
-using SimpleToolkit.SimpleShell;
-
-namespace QianShiChatClient.Maui;
+﻿namespace QianShiChatClient.Maui;
 
 public partial class AppShell : SimpleShell
 {
@@ -15,13 +12,12 @@ public partial class AppShell : SimpleShell
     {
         InitializeComponent();
         this.BindingContext = viewModel;
-        flyoutBackdrop.Fill = Colors.Black.WithAlpha(FlyoutBackdropOpacity);
-        flyoutBackdrop.InputTransparent = false;
 
         Loaded += AppShellLoaded;
 
         //HideFlyout();
     }
+
     private static void AppShellLoaded(object sender, EventArgs e)
     {
         var shell = sender as AppShell;
@@ -35,6 +31,7 @@ public partial class AppShell : SimpleShell
             shell.UpdateFlyoutWidth();
         });
     }
+
     private async void ItemClicked(object sender, EventArgs e)
     {
         var button = sender as ContentButton;
@@ -71,6 +68,7 @@ public partial class AppShell : SimpleShell
     {
         HideFlyout(true);
     }
+
     private void HideFlyout(bool animated = false)
     {
         flyoutBackdrop.InputTransparent = true;

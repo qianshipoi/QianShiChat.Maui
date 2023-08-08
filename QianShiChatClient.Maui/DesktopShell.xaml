@@ -1,75 +1,248 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Shell
+<simpleShell:SimpleShell
     x:Class="QianShiChatClient.Maui.DesktopShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:desktopViews="clr-namespace:QianShiChatClient.Maui.Views.Desktop"
     xmlns:local="clr-namespace:QianShiChatClient.Maui"
     xmlns:models="clr-namespace:QianShiChatClient.Core.Models;assembly=QianShiChatClient.Core"
+    xmlns:simpleCore="clr-namespace:SimpleToolkit.Core;assembly=SimpleToolkit.Core"
+    xmlns:simpleShell="clr-namespace:SimpleToolkit.SimpleShell;assembly=SimpleToolkit.SimpleShell"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="clr-namespace:QianShiChatClient.Maui.Views"
     xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
-    Title="QianShiChatClient.Maui"
+    x:Name="thisShell"
     x:DataType="{x:Type vms:DesktopShellViewModel}"
-    Shell.FlyoutBehavior="Locked"
-    Shell.FlyoutWidth="200"
-    Shell.NavBarIsVisible="False"
-    Shell.TabBarIsVisible="False">
+    Background="{AppThemeBinding Light=White,
+                                 Dark=Black}">
 
-    <Shell.FlyoutHeader>
-        <Grid
-            Margin="20"
-            ColumnDefinitions="Auto, *"
-            RowDefinitions="Auto,*">
-            <toolkit:AvatarView
-                Grid.RowSpan="2"
-                Margin="0,0,16,0"
-                BorderColor="{StaticResource Gray100}"
-                CornerRadius="100"
-                HeightRequest="58"
-                ImageSource="{Binding User.Avatar}"
-                Text="QS"
-                WidthRequest="58" />
-
-            <Label
-                Grid.Column="1"
-                Margin="0,8,0,0"
-                FontAttributes="Bold"
-                FontSize="18"
-                Text="{Binding User.NickName}"
-                VerticalOptions="Center" />
-            <Label
-                Grid.Row="1"
-                Grid.Column="1"
-                Text="{Binding User.Content}"
-                TextColor="{StaticResource Gray400}"
-                VerticalOptions="Center" />
-        </Grid>
-    </Shell.FlyoutHeader>
-    <Shell.FlyoutFooter>
-        <ImageButton Source="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily}, Glyph={x:Static models:IconFontIcons.Settings}, Color={StaticResource Gray200}}">
-            <FlyoutBase.ContextFlyout>
-                <MenuFlyout>
-                    <MenuFlyoutItem Command="{Binding LogoutCommand}" Text="登出" />
-                    <MenuFlyoutItem Command="{Binding GotoSettingsCommand}" Text="设置" />
-                </MenuFlyout>
-            </FlyoutBase.ContextFlyout>
-        </ImageButton>
-    </Shell.FlyoutFooter>
-
-    <ShellContent
+    <Tab
         Title="{local:Localize Message}"
-        ContentTemplate="{DataTemplate desktopViews:DesktopMessagePage}"
+        FlyoutIcon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                               Glyph={x:Static models:IconFontIcons.Message},
+                               Color={StaticResource Gray200}}"
         Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
-                         Glyph={x:Static models:IconFontIcons.Message}}"
-        Route="MessagePage" />
-
-    <ShellContent
+                         Glyph={x:Static models:IconFontIcons.Message},
+                         Color={StaticResource Gray200}}"
+        Route="HomeTab">
+        <ShellContent
+            Title="{local:Localize Message}"
+            ContentTemplate="{DataTemplate desktopViews:DesktopMessagePage}"
+            Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                             Glyph={x:Static models:IconFontIcons.Message}}"
+            Route="MessagePage" />
+    </Tab>
+    <Tab
         Title="{local:Localize Friend}"
-        ContentTemplate="{DataTemplate desktopViews:DesktopFriendPage}"
+        FlyoutIcon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                               Glyph={x:Static models:IconFontIcons.Members},
+                               Color={StaticResource Gray200}}"
         Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
-                         Glyph={x:Static models:IconFontIcons.Members}}"
-        Route="FriendPage" />
+                         Glyph={x:Static models:IconFontIcons.Members},
+                         Color={StaticResource Gray200}}">
+        <ShellContent
+            Title="{local:Localize Friend}"
+            ContentTemplate="{DataTemplate desktopViews:DesktopFriendPage}"
+            Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                             Glyph={x:Static models:IconFontIcons.Members}}"
+            Route="FriendPage" />
+    </Tab>
+    <Tab
+        Title="{local:Localize Settings}"
+        FlyoutIcon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                               Glyph={x:Static models:IconFontIcons.Settings},
+                               Color={StaticResource Gray200}}"
+        Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                         Glyph={x:Static models:IconFontIcons.Settings},
+                         Color={StaticResource Gray200}}"
+        Route="SettingsTab">
+        <ShellContent
+            Title="{local:Localize Settings}"
+            ContentTemplate="{DataTemplate views:SettingsPage}"
+            Icon="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily},
+                             Glyph={x:Static models:IconFontIcons.Settings},
+                             Color={StaticResource Gray200}}"
+            Route="SettingsPage" />
+    </Tab>
 
-    <MenuItem Command="{Binding MessageDialogCommand}" Text="MessageDailog" />
-</Shell>
+    <simpleShell:SimpleShell.RootPageContainer>
+        <Grid x:Name="rootPageContainer" RowDefinitions="Auto, *">
+            <!--<Grid
+                x:Name="navBar"
+                Margin="20,0"
+                RowDefinitions="60, 60">
+                <Image
+                    Grid.RowSpan="2"
+                    Aspect="AspectFit"
+                    HeightRequest="60"
+                    HorizontalOptions="End"
+                    Source="{Binding CurrentShellSection.Icon, Source={x:Reference thisShell}}"
+                    VerticalOptions="Center"
+                    WidthRequest="60" />
+                <simpleCore:ContentButton
+                    Clicked="MenuClicked"
+                    HeightRequest="25"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center"
+                    WidthRequest="25">
+                    <Image Aspect="AspectFit" Source="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily}, Glyph={x:Static models:IconFontIcons.List}, Color={StaticResource Gray300}}" />
+                </simpleCore:ContentButton>
+                <Label
+                    Grid.Row="1"
+                    FontFamily="NunitoBold"
+                    FontSize="30"
+                    Text="{Binding CurrentShellSection.Title, Source={x:Reference thisShell}}"
+                    TextColor="{AppThemeBinding Dark={StaticResource White},
+                                                Light={StaticResource Black}}"
+                    VerticalOptions="Center" />
+            </Grid>-->
+
+            <simpleShell:SimpleNavigationHost Grid.Row="1" />
+        </Grid>
+    </simpleShell:SimpleShell.RootPageContainer>
+
+    <simpleShell:SimpleShell.Content>
+        <Grid ColumnDefinitions="220, *">
+            <Grid
+                x:Name="flyout"
+                Background="{AppThemeBinding Light=White,
+                                             Dark=Black}"
+                BackgroundColor="#E5E5E5"
+                HorizontalOptions="Start"
+                Shadow="{OnPlatform Default={x:Null},
+                                    iOS={Shadow Brush=Black,
+                                                Opacity=0.3}}"
+                VerticalOptions="Fill"
+                WidthRequest="220">
+
+                <Path
+                    Fill="Transparent"
+                    InputTransparent="True"
+                    Opacity="0.3"
+                    Stroke="LightGray"
+                    StrokeThickness="10">
+                    <Path.Data>
+                        <GeometryGroup>
+                            <EllipseGeometry
+                                Center="30,25"
+                                RadiusX="75"
+                                RadiusY="75" />
+                            <EllipseGeometry
+                                Center="20,120"
+                                RadiusX="55"
+                                RadiusY="55" />
+                        </GeometryGroup>
+                    </Path.Data>
+                </Path>
+
+                <Grid
+                    x:Name="flyoutContent"
+                    BackgroundColor="#E5E5E5"
+                    RowDefinitions="120, *, auto">
+                    <Grid
+                        Margin="20"
+                        ColumnDefinitions="Auto, *"
+                        RowDefinitions="Auto,*">
+                        <toolkit:AvatarView
+                            Grid.RowSpan="2"
+                            Margin="0,0,16,0"
+                            BorderColor="{StaticResource Gray100}"
+                            CornerRadius="100"
+                            HeightRequest="58"
+                            ImageSource="{Binding User.Avatar}"
+                            Text="QS"
+                            WidthRequest="58" />
+
+                        <Label
+                            Grid.Column="1"
+                            Margin="0,8,0,0"
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="{Binding User.NickName}"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Text="{Binding User.Content}"
+                            TextColor="{StaticResource Gray400}"
+                            VerticalOptions="Center" />
+                    </Grid>
+
+                    <ScrollView Grid.Row="1">
+                        <VerticalStackLayout Spacing="10" VerticalOptions="Start">
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding ShellSections, Source={x:Reference thisShell}}" Spacing="10">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="BaseShellItem">
+                                        <simpleCore:ContentButton Padding="20,0" Clicked="ItemClicked">
+                                            <VerticalStackLayout>
+                                                <Grid Padding="0,13,0,10" ColumnDefinitions="45, *">
+                                                    <Image
+                                                        HeightRequest="20"
+                                                        HorizontalOptions="Start"
+                                                        Source="{Binding FlyoutIcon}"
+                                                        VerticalOptions="Center"
+                                                        WidthRequest="20" />
+                                                    <Label
+                                                        Grid.Column="1"
+                                                        FontFamily="NunitoSemiBold"
+                                                        FontSize="15"
+                                                        Text="{Binding Title}"
+                                                        TextColor="{AppThemeBinding Light=Black,
+                                                                                    Dark=White}" />
+                                                </Grid>
+
+                                                <Rectangle
+                                                    Fill="{AppThemeBinding Light=LightGray,
+                                                                           Dark=Gray}"
+                                                    HeightRequest="1.5"
+                                                    HorizontalOptions="Fill"
+                                                    VerticalOptions="End" />
+                                            </VerticalStackLayout>
+                                        </simpleCore:ContentButton>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                            <simpleCore:ContentButton Padding="20,0" Command="{Binding LogoutCommand}">
+                                <VerticalStackLayout>
+                                    <Grid Padding="0,13,0,10" ColumnDefinitions="45, *">
+                                        <Image
+                                            HeightRequest="20"
+                                            HorizontalOptions="Start"
+                                            Source="{AppThemeBinding Light=log_out.png,
+                                                                     Dark=log_out_dark.png}"
+                                            VerticalOptions="Center"
+                                            WidthRequest="20" />
+                                        <Label
+                                            Grid.Column="1"
+                                            FontFamily="NunitoSemiBold"
+                                            FontSize="15"
+                                            Text="Logout"
+                                            TextColor="{AppThemeBinding Light=Black,
+                                                                        Dark=White}" />
+                                    </Grid>
+
+                                    <Rectangle
+                                        Fill="{AppThemeBinding Light=LightGray,
+                                                               Dark=Gray}"
+                                        HeightRequest="1.5"
+                                        HorizontalOptions="Fill"
+                                        VerticalOptions="End" />
+                                </VerticalStackLayout>
+                            </simpleCore:ContentButton>
+                        </VerticalStackLayout>
+                    </ScrollView>
+
+                    <Border
+                        Grid.RowSpan="3"
+                        Margin="0,0,-1,0"
+                        BackgroundColor="{StaticResource Gray300}"
+                        HorizontalOptions="End"
+                        WidthRequest="1" />
+                </Grid>
+            </Grid>
+
+            <simpleShell:SimpleNavigationHost Grid.Column="1" />
+        </Grid>
+    </simpleShell:SimpleShell.Content>
+
+</simpleShell:SimpleShell>
