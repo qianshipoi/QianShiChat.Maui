@@ -2,7 +2,7 @@
 
 public class SortableObservableCollection<T> : ObservableCollection<T>
 {
-    public Func<T, object> SortingSelector { get; set; }
+    public Func<T, object>? SortingSelector { get; set; }
 
     public bool Descending { get; set; }
 

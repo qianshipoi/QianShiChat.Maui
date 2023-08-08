@@ -7,9 +7,9 @@ public class ApplyPending
     public int FriendId { get; set; }
     public long CreateTime { get; set; }
     public int Status { get; set; }
-    public string Remark { get; set; }
-    public UserInfo User { get; set; }
-    public UserInfo Friend { get; set; }
+    public string? Remark { get; set; }
+    public UserInfo? User { get; set; }
+    public UserInfo? Friend { get; set; }
 }
 
 public static class ApplyPendingExtensions

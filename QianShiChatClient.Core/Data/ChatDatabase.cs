@@ -2,7 +2,7 @@
 
 public class ChatDatabase
 {
-    private SQLiteAsyncConnection Database;
+    private SQLiteAsyncConnection? Database;
 
     public async Task Init()
     {
@@ -14,12 +14,12 @@ public class ChatDatabase
 
     public async Task SaveSessionAsync(SessionModel session)
     {
-        await Database.InsertOrReplaceAsync(session);
+        await Database!.InsertOrReplaceAsync(session);
     }
 
     public async Task SaveSessionsAsync(IEnumerable<SessionModel> sessions)
     {
-        await Database.RunInTransactionAsync(con => {
+        await Database!.RunInTransactionAsync(con => {
             con.DeleteAll<SessionModel>();
             foreach (var item in sessions)
             {
@@ -35,12 +35,12 @@ public class ChatDatabase
 
     public async Task<List<SessionModel>> GetAllSessionAsync()
     {
-        return await Database.Table<SessionModel>().ToListAsync();
+        return await Database!.Table<SessionModel>().ToListAsync();
     }
 
     public async Task<List<ChatMessage>> GetChatMessageAsync(int userId, int skip = 0, int count = 10)
     {
-        return await Database.Table<ChatMessage>()
+        return await Database!.Table<ChatMessage>()
             .Where(x => x.ToId == userId || x.FromId == userId)
             .Where(x => x.SendType == ChatMessageSendType.Personal)
             .OrderByDescending(x => x.Id)
@@ -51,39 +51,39 @@ public class ChatDatabase
 
     public async Task SaveChatMessageAsnyc(ChatMessage message)
     {
-        await Database.InsertOrReplaceAsync(message);
+        await Database!.InsertOrReplaceAsync(message);
     }
 
     public async Task UpdateChatMessageAsync(ChatMessage message)
     {
-        await Database.UpdateAsync(message);
+        await Database!.UpdateAsync(message);
     }
 
     public async Task SaveChatMessagesAsnyc(IEnumerable<ChatMessage> messages)
     {
         foreach (var message in messages)
         {
-            await Database.InsertOrReplaceAsync(message);
+            await Database!.InsertOrReplaceAsync(message);
         }
     }
 
     public async Task<UserInfo> GetUserByIdAsync(int id)
     {
-        return await Database.Table<UserInfo>().FirstOrDefaultAsync(x => x.Id == id);
+        return await Database!.Table<UserInfo>().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<bool> UserExistsAsync(int id)
     {
-        return await Database.Table<UserInfo>().Where(x => x.Id == id).CountAsync() > 0;
+        return await Database!.Table<UserInfo>().Where(x => x.Id == id).CountAsync() > 0;
     }
 
     public async Task DeleteUserAsync(int id)
     {
-        await Database.Table<UserInfo>().DeleteAsync(x => x.Id == id);
+        await Database!.Table<UserInfo>().DeleteAsync(x => x.Id == id);
     }
 
     public async Task SaveUserAsync(UserInfo user)
     {
-        await Database.InsertOrReplaceAsync(user);
+        await Database!.InsertOrReplaceAsync(user);
     }
 }

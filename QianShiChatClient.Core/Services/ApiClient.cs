@@ -21,7 +21,7 @@ public class ApiClient : IApiClient
         _logger = logger;
     }
 
-    public string AccessToken
+    public string? AccessToken
     {
         get => Settings.AccessToken;
         private set => Settings.AccessToken = value;
@@ -29,7 +29,7 @@ public class ApiClient : IApiClient
 
     public string ClientType => AppConsts.CLIENT_TYPE;
 
-    public async Task<(bool succeeded, UserDto data, string message)> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
+    public async Task<(bool succeeded, UserDto? data, string message)> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
         using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
         using var response = await client.PostAsJsonAsync("/api/Auth", request, cancellationToken);
@@ -39,10 +39,14 @@ public class ApiClient : IApiClient
         var body = await response.Content.ReadAsStringAsync(cancellationToken);
         _logger.LogInformation("login: request: {request}, response: {response}", JsonSerializer.Serialize(request), body);
         var result = JsonSerializer.Deserialize<GlobalResult<UserDto>>(body, _serializerOptions);
+        if (result is null)
+        {
+            return (false, default, "Deserialize error.");
+        }
         return (response.IsSuccessStatusCode, result.Data, result.Errors is string str ? str : JsonSerializer.Serialize(result.Errors));
     }
 
-    public async Task<(bool, UserDto)> CheckAccessToken(CancellationToken cancellationToken = default)
+    public async Task<(bool, UserDto?)> CheckAccessToken(CancellationToken cancellationToken = default)
     {
         using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
         try
@@ -58,6 +62,10 @@ public class ApiClient : IApiClient
             AccessToken = accessToken;
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
             var user = JsonSerializer.Deserialize<GlobalResult<UserDto>>(body, _serializerOptions);
+            if (user is null)
+            {
+                return (false, default);
+            }
             return (true, user.Data);
         }
         catch (Exception ex)
@@ -68,7 +76,7 @@ public class ApiClient : IApiClient
         }
     }
 
-    private async Task<(bool Succeeded, T Data, string Message)> GetJsonAsync<T>(string url, CancellationToken cancellationToken = default)
+    private async Task<(bool Succeeded, T? Data, string Message)> GetJsonAsync<T>(string url, CancellationToken cancellationToken = default)
     {
         using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
         using var response = await client.GetAsync(url, cancellationToken);
@@ -88,6 +96,10 @@ public class ApiClient : IApiClient
 
         var result = JsonSerializer.Deserialize<GlobalResult<T>>(content, _serializerOptions);
 
+        if (result is null)
+        {
+            return (false, default, "Deserialize error.");
+        }
         if (!result.Succeeded)
         {
             return (false, result.Data, result.Errors is string err ? err : JsonSerializer.Serialize(result.Errors, _serializerOptions));
@@ -96,7 +108,7 @@ public class ApiClient : IApiClient
         return (true, result.Data, "Succeeded!");
     }
 
-    private async Task<(bool Succeeded, TResponse Data, string Message)> PostJsonAsync<TResponse, TRequest>(string url, TRequest request, CancellationToken cancellationToken = default)
+    private async Task<(bool Succeeded, TResponse? Data, string Message)> PostJsonAsync<TResponse, TRequest>(string url, TRequest? request, CancellationToken cancellationToken = default)
     {
         using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
         using var response = await client.PostAsJsonAsync(url, request, cancellationToken);
@@ -116,6 +128,10 @@ public class ApiClient : IApiClient
 
         var result = JsonSerializer.Deserialize<GlobalResult<TResponse>>(content, _serializerOptions);
 
+        if (result is null)
+        {
+            return (false, default, "Deserialize error.");
+        }
         if (!result.Succeeded)
         {
             return (false, result.Data, result.Errors is string err ? err : JsonSerializer.Serialize(result.Errors, _serializerOptions));
@@ -145,6 +161,11 @@ public class ApiClient : IApiClient
 
         var result = JsonSerializer.Deserialize<GlobalResult<object>>(content, _serializerOptions);
 
+        if (result is null)
+        {
+            return (false, "Deserialize error.");
+        }
+
         if (!result.Succeeded)
         {
             return (false, result.Errors is string err ? err : JsonSerializer.Serialize(result.Errors, _serializerOptions));
@@ -153,7 +174,7 @@ public class ApiClient : IApiClient
         return (true, "Succeeded!");
     }
 
-    private async Task<(bool Succeeded, TReponse response, string Message)> PostAsync<TReponse>(string url, HttpContent request = null, CancellationToken
+    private async Task<(bool Succeeded, TReponse? response, string Message)> PostAsync<TReponse>(string url, HttpContent? request = null, CancellationToken
        cancellationToken = default)
     {
         using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
@@ -175,6 +196,11 @@ public class ApiClient : IApiClient
 
         var result = JsonSerializer.Deserialize<GlobalResult<TReponse>>(content, _serializerOptions);
 
+        if (result is null)
+        {
+            return (false, default, "Deserialize error.");
+        }
+
         if (!result.Succeeded)
         {
             return (false, default, result.Errors is string err ? err : JsonSerializer.Serialize(result.Errors, _serializerOptions));
@@ -183,7 +209,7 @@ public class ApiClient : IApiClient
         return (true, result.Data, "Succeeded!");
     }
 
-    private async Task<(bool Succeeded, TReponse response, string Message)> PostProgressAsync<TReponse>(string url, HttpContent request = null, CancellationToken
+    private async Task<(bool Succeeded, TReponse? response, string Message)> PostProgressAsync<TReponse>(string url, HttpContent? request = null, CancellationToken
        cancellationToken = default)
     {
         using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
@@ -218,6 +244,11 @@ public class ApiClient : IApiClient
 
         var result = JsonSerializer.Deserialize<GlobalResult<TReponse>>(content, _serializerOptions);
 
+        if (result is null)
+        {
+            return (false, default, "Deserialize error.");
+        }
+
         if (!result.Succeeded)
         {
             return (false, default, result.Errors is string err ? err : JsonSerializer.Serialize(result.Errors, _serializerOptions));
@@ -226,23 +257,23 @@ public class ApiClient : IApiClient
         return (true, result.Data, "Succeeded!");
     }
 
-    public async Task<List<UserWithMessageDto>> GetUnreadMessageFriendsAsync(CancellationToken cancellationToken = default)
+    public async Task<List<UserWithMessageDto>?> GetUnreadMessageFriendsAsync(CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await GetJsonAsync<List<UserWithMessageDto>>("/api/Friend/Unread", cancellationToken);
         return data;
     }
 
-    public async Task<ChatMessageDto> SendTextAsync(PrivateChatMessageRequest request, CancellationToken cancellationToken = default)
+    public async Task<ChatMessageDto?> SendTextAsync(PrivateChatMessageRequest request, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await PostJsonAsync<ChatMessageDto, PrivateChatMessageRequest>("/api/chat/text", request, cancellationToken);
         return data;
     }
 
-    public async Task<ChatMessageDto> SendFileAsync(
+    public async Task<ChatMessageDto?> SendFileAsync(
         int toId,
         ChatMessageSendType chatMessageSendType,
         string filePath,
-        Action<double, double> uploadProgressValue = null,
+        Action<double, double>? uploadProgressValue = null,
         CancellationToken cancellationToken = default)
     {
         using var fileStream = File.OpenRead(filePath);
@@ -261,7 +292,7 @@ public class ApiClient : IApiClient
         return data;
     }
 
-    public async Task<PagedList<UserDto>> SearchNickNameAsync(string searchContent, uint page = 1, uint size = 20, CancellationToken cancellationToken = default)
+    public async Task<PagedList<UserDto>?> SearchNickNameAsync(string searchContent, uint page = 1, uint size = 20, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await GetJsonAsync<PagedList<UserDto>>($"/api/User/{page}/{size}?NickName={searchContent}", cancellationToken);
         return data;
@@ -272,43 +303,43 @@ public class ApiClient : IApiClient
         var (succeeded, message) = await PostJsonAsync("/api/FriendApply", request, cancellationToken);
     }
 
-    public async Task<PagedList<ApplyPendingDto>> FriendApplyPendingAsync(FriendApplyPendingRequest request, CancellationToken cancellationToken = default)
+    public async Task<PagedList<ApplyPendingDto>?> FriendApplyPendingAsync(FriendApplyPendingRequest request, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await GetJsonAsync<PagedList<ApplyPendingDto>>(ApiClient.FormatParam($"/api/FriendApply/Pending", request), cancellationToken);
         return data;
     }
 
-    public async Task<List<UserDto>> AllFriendAsync(CancellationToken cancellationToken = default)
+    public async Task<List<UserDto>?> AllFriendAsync(CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await GetJsonAsync<List<UserDto>>("/api/Friend", cancellationToken);
         return data;
     }
 
-    public async Task<QrAuthResponse> QrPreAuthAsync(string key, CancellationToken cancellationToken = default)
+    public async Task<QrAuthResponse?> QrPreAuthAsync(string key, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await PostJsonAsync<QrAuthResponse, object>($"/api/Auth/qr/preauth?key={key}", null, cancellationToken);
         return data;
     }
 
-    public async Task<QrAuthResponse> QrAuthAsync(string key, CancellationToken cancellationToken = default)
+    public async Task<QrAuthResponse?> QrAuthAsync(string key, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await PostJsonAsync<QrAuthResponse, object>($"/api/Auth/qr/auth?key={key}", null, cancellationToken);
         return data;
     }
 
-    public async Task<CreateQrAuthKeyResponse> CreateQrKeyAsync(CancellationToken cancellationToken = default)
+    public async Task<CreateQrAuthKeyResponse?> CreateQrKeyAsync(CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await GetJsonAsync<CreateQrAuthKeyResponse>("/api/Auth/qr/key", cancellationToken);
         return data;
     }
 
-    public async Task<CreateQrCodeResponse> CreateQrCodeAsync(CreateQrCodeRequest request, CancellationToken cancellationToken = default)
+    public async Task<CreateQrCodeResponse?> CreateQrCodeAsync(CreateQrCodeRequest request, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await PostJsonAsync<CreateQrCodeResponse, CreateQrCodeRequest>("/api/Auth/qr/create", request, cancellationToken);
         return data;
     }
 
-    public async Task<CheckQrAuthKeyResponse> CheckQrKeyAsync(string key, CancellationToken cancellationToken = default)
+    public async Task<CheckQrAuthKeyResponse?> CheckQrKeyAsync(string key, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await GetJsonAsync<CheckQrAuthKeyResponse>($"/api/Auth/qr/check?key={key}", cancellationToken);
         return data;
@@ -335,7 +366,7 @@ public class ApiClient : IApiClient
         return sb.ToString();
     }
 
-    public async Task<UserDto> FindUserAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<UserDto?> FindUserAsync(int id, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await GetJsonAsync<UserDto>($"/api/user/{id}", cancellationToken);
         return data;
@@ -397,7 +428,7 @@ public class ProgressableStreamContent2 : HttpContent
         this.progress = progress;
     }
 
-    protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+    protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context)
     {
         Contract.Assert(stream != null);
 
@@ -489,7 +520,7 @@ public class ProgressableStreamContent : HttpContent
         this.downloader = downloader;
     }
 
-    protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+    protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context)
     {
         Contract.Assert(stream != null);
 

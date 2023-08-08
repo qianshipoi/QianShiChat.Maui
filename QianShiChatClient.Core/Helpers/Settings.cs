@@ -8,8 +8,8 @@ public static class Settings
         {
             if (!Preferences.ContainsKey(nameof(Theme)))
                 return AppTheme.Unspecified;
-
-            return Enum.Parse<AppTheme>(Preferences.Get(nameof(Theme), Enum.GetName(AppTheme.Unspecified)));
+            var appThemeStr = Preferences.Get(nameof(Theme), Enum.GetName(AppTheme.Unspecified));
+            return Enum.Parse<AppTheme>(appThemeStr!);
         }
         set => Preferences.Set(nameof(Theme), value.ToString());
     }
@@ -33,7 +33,7 @@ public static class Settings
         }
     }
 
-    public static string AccessToken
+    public static string? AccessToken
     {
         get
         {
@@ -52,7 +52,7 @@ public static class Settings
         }
     }
 
-    public static UserInfo CurrentUser
+    public static UserInfo? CurrentUser
     {
         get
         {

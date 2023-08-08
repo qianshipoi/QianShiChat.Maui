@@ -9,7 +9,7 @@ public partial class Session : ObservableObject
     private long _lastMessageTime;
 
     [ObservableProperty]
-    private string _lastMessageContent;
+    private string? _lastMessageContent;
 
     public UserInfo User { get; }
 
@@ -27,7 +27,7 @@ public partial class Session : ObservableObject
     {
         var ids = messages.Select(x => x.FromId).Concat(messages.Select(x => x.ToId)).ToHashSet();
         var dic = new Dictionary<int, UserInfo>();
-        var userService = ServiceHelper.GetService<IUserService>();
+        var userService = ServiceHelper.GetReqiredService<IUserService>();
 
         foreach (var id in ids)
         {
@@ -38,8 +38,15 @@ public partial class Session : ObservableObject
         var orderMessages = messages.OrderBy(x => x.CreateTime);
         foreach (var message in orderMessages)
         {
-            message.FromAvatar = dic[message.FromId]?.Avatar;
-            message.ToAvatar = dic[message.ToId]?.Avatar;
+            if (dic.TryGetValue(message.FromId, out var fromUser))
+            {
+                message.FromAvatar = fromUser.Avatar;
+            }
+            if (dic.TryGetValue(message.ToId, out var toUser))
+            {
+                message.ToAvatar = toUser.Avatar;
+            }
+
             await AddMessageAsync(message, cancellationToken);
         }
     }
@@ -51,7 +58,7 @@ public partial class Session : ObservableObject
             return;
         }
 
-        var userService = ServiceHelper.GetService<IUserService>();
+        var userService = ServiceHelper.GetReqiredService<IUserService>();
         if (string.IsNullOrWhiteSpace(message.FromAvatar))
         {
             message.FromAvatar = (await userService.GetUserInfoByIdAsync(message.FromId, cancellationToken)).Avatar;

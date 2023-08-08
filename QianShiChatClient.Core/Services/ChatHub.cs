@@ -7,13 +7,13 @@ public class ChatHub
     private bool _isConnected;
     private bool _isConnecting;
 
-    public event Action<string, string> ReceiveMessage;
+    public event Action<string, string>? ReceiveMessage;
 
-    public event Action<NotificationMessage> Notification;
+    public event Action<NotificationMessage>? Notification;
 
-    public event Action<ChatMessageDto> PrivateChat;
+    public event Action<ChatMessageDto>? PrivateChat;
 
-    public event Action<bool> IsConnectedChanged;
+    public event Action<bool>? IsConnectedChanged;
 
     public bool IsConnected
     {
@@ -64,7 +64,7 @@ public class ChatHub
         };
     }
 
-    private static Task<string> GetAccessToken() => Task.FromResult(Settings.AccessToken);
+    private static Task<string?> GetAccessToken() => Task.FromResult(Settings.AccessToken);
 
     public async Task Connect()
     {

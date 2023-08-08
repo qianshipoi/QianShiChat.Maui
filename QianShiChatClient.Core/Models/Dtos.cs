@@ -18,7 +18,7 @@ public class GlobalResult<T>
     /// <summary>
     /// 数据
     /// </summary>
-    public T Data { get; set; }
+    public T Data { get; set; } = default!;
 
     /// <summary>
     /// 执行成功
@@ -28,7 +28,7 @@ public class GlobalResult<T>
     /// <summary>
     /// 错误信息
     /// </summary>
-    public object Errors { get; set; }
+    public object? Errors { get; set; }
 
     /// <summary>
     /// 时间戳
@@ -42,7 +42,7 @@ public class QrAuthResponse
 {
     public int Code { get; set; }
 
-    public string Message { get; set; }
+    public string Message { get; set; } = default!;
 }
 
 public class CheckQrAuthKeyResponse
@@ -52,30 +52,30 @@ public class CheckQrAuthKeyResponse
     /// </summary>
     public int Code { get; set; }
 
-    public string Message { get; set; }
-    public UserDto User { get; set; }
-    public string AccessToken { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public UserDto? User { get; set; }
+    public string? AccessToken { get; set; }
 }
 
 public class CreateQrAuthKeyResponse
 {
     public int Code { get; set; }
 
-    public string Key { get; set; }
+    public string Key { get; set; } = string.Empty;
 }
 
 public class CreateQrCodeRequest
 {
-    public string Key { get; set; }
+    public string Key { get; set; } = string.Empty;
 
     public bool Qrimg { get; set; }
 }
 
 public class CreateQrCodeResponse
 {
-    public string Url { get; set; }
+    public string Url { get; set; } = string.Empty;
 
-    public string Image { get; set; }
+    public string? Image { get; set; }
 }
 
 public class ApplyPendingDto
@@ -85,15 +85,15 @@ public class ApplyPendingDto
     public int FriendId { get; set; }
     public long CreateTime { get; set; }
     public int Status { get; set; }
-    public string Remark { get; set; }
-    public UserDto User { get; set; }
-    public UserDto Friend { get; set; }
+    public string? Remark { get; set; }
+    public UserDto User { get; set; } = default!;
+    public UserDto Friend { get; set; } = default!;
 }
 
 public class PagedList<T> where T : class
 {
     public int Total { get; set; }
-    public List<T> Items { get; set; }
+    public List<T> Items { get; set; } = default!;
 }
 
 public record UserWithMessageDto : UserDto
@@ -125,7 +125,7 @@ public record ChatMessageDto
 
     public bool IsSelfSend { get; set; }
 
-    public UserDto FromUser { get; set; }
+    public UserDto? FromUser { get; set; }
 }
 
 public record NotificationMessage(NotificationType Type, string Message);

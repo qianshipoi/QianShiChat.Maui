@@ -13,7 +13,7 @@ public class SessionModel
 
     public long LastMessageTime { get; set; }
 
-    public string LastMessageContent { get; set; }
+    public string? LastMessageContent { get; set; }
 }
 
 public static class SessionModelExtensions

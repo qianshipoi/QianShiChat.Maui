@@ -10,11 +10,11 @@ public interface IDialogService
 
     Task Snackbar(
         string message,
-        Action action = null,
+        Action? action = null,
         string actionButtonText = "OK",
         TimeSpan? duration = null,
-        SnackbarOptions visualOptions = null,
-        IView anchor = null
+        SnackbarOptions? visualOptions = null,
+        IView? anchor = null
     );
 
     Task Toast(

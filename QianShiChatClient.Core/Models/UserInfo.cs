@@ -5,10 +5,10 @@ public partial class UserInfo : ObservableObject
     [PrimaryKey]
     public int Id { get; set; }
 
-    public string Account { get; set; }
+    public string? Account { get; set; }
 
     [ObservableProperty]
-    private string _nickName;
+    private string? _nickName;
 
     [ObservableProperty]
     private string _avatar = "default_avatar.png";

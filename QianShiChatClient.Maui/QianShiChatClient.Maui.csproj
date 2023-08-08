@@ -53,6 +53,9 @@
 	  <None Remove="Platforms\Android\Resources\values\attrs.xml" />
 	  <None Remove="Platforms\Android\Resources\values\style.xml" />
 	  <None Remove="Resources\Fonts\iconfont.ttf" />
+	  <None Remove="Resources\Fonts\Nunito-Bold.ttf" />
+	  <None Remove="Resources\Fonts\Nunito-Regular.ttf" />
+	  <None Remove="Resources\Fonts\Nunito-SemiBold.ttf" />
 	  <None Remove="Resources\Images\default_avatar.png" />
 	  <None Remove="Resources\raw\car_loading.json" />
 	</ItemGroup>
@@ -69,11 +72,13 @@
 		</PackageReference>
 		<PackageReference Include="Mopups" Version="1.1.1" />
 		<PackageReference Include="PureWeen.Maui.FixesAndWorkarounds" Version="1.4.9" />
+		<PackageReference Include="SimpleToolkit.Core" Version="3.0.0" />
+		<PackageReference Include="SimpleToolkit.SimpleShell" Version="3.0.1" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0-preview.61" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.141-beta" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.5" />
 		<PackageReference Include="Squidex.Assets.TusClient" Version="5.16.0" />
-		<PackageReference Include="Vanara.PInvoke.Shared" Version="3.4.15" />
+		<PackageReference Include="Vanara.PInvoke.Shared" Version="3.4.16" />
 		<PackageReference Include="WinUI.Interop" Version="0.3.0" />
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.3.0-preview.1" />
 	</ItemGroup>
@@ -83,6 +88,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="AppShell - 复制.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
 	  <Compile Update="Resources\Strings\MyStrings.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
@@ -104,6 +112,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="AppShell - 复制.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="DesktopShell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

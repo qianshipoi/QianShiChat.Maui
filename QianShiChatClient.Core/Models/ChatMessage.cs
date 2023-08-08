@@ -10,12 +10,12 @@ public partial class ChatMessage : ObservableObject
     public int FromId { get; set; }
 
     [Ignore]
-    public string FromAvatar { get; set; }
+    public string? FromAvatar { get; set; }
 
     public int ToId { get; set; }
 
     [Ignore]
-    public string ToAvatar { get; set; }
+    public string? ToAvatar { get; set; }
 
     public ChatMessageSendType SendType { get; set; }
 

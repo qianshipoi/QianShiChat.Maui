@@ -10,7 +10,7 @@ public sealed partial class DataCenter : ObservableObject
     private readonly ChatHub _chatHub;
     private readonly ILogger<DataCenter> _logger;
     private readonly IUserService _userService;
-    private IDispatcherTimer _timer;
+    private IDispatcherTimer? _timer;
 
     [ObservableProperty]
     private bool _isConnected;
@@ -48,7 +48,7 @@ public sealed partial class DataCenter : ObservableObject
         _ = GetAllFriendAsync();
     }
 
-    private void Sessions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    private void Sessions_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         // todo:optimize - record order by last message time.
         ClearTimer();
@@ -68,7 +68,7 @@ public sealed partial class DataCenter : ObservableObject
         }
     }
 
-    private async void Timer_Tick(object sender, EventArgs e) => await SaveSessionsAsync();
+    private async void Timer_Tick(object? sender, EventArgs e) => await SaveSessionsAsync();
 
     private async Task SaveSessionsAsync()
     {
@@ -79,16 +79,18 @@ public sealed partial class DataCenter : ObservableObject
     private async void ChatHubPrivateChat(ChatMessageDto obj)
     {
         var session = Sessions.FirstOrDefault(x => x.User.Id == obj.FromId);
-        var message = obj.ToChatMessage();
-        if (message is null)
+        if(session is null)
         {
             var user = await _userService.GetUserInfoByIdAsync(obj.FromId);
             session = new Session(user, new List<ChatMessage>());
-            _dispatcher.Dispatch(() => {
-                Sessions.Add(session);
-            });
+        }
+        var message = obj.ToChatMessage();
+        if (message is null)
+        {
+            return;
         }
         await session.AddMessageAsync(message);
+        UpdateSessions(session);
         await _database.SaveChatMessageAsnyc(message);
         await _database.SaveSessionAsync(session.ToSessionModel());
     }
@@ -228,7 +230,7 @@ public sealed partial class DataCenter : ObservableObject
                           session.User.Id,
                           text,
                           ChatMessageSendType.Personal));
-                message.Id = chatDto.Id;
+                message.Id = chatDto!.Id;
                 _dispatcher.Dispatch(() => {
                     message.Status = MessageStatus.Successful;
                 });

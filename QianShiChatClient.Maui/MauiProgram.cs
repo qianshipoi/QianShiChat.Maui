@@ -1,4 +1,7 @@
-﻿namespace QianShiChatClient.Maui;
+﻿using SimpleToolkit.Core;
+using SimpleToolkit.SimpleShell;
+
+namespace QianShiChatClient.Maui;
 
 public static class MauiProgram
 {
@@ -22,13 +25,26 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("iconfont.ttf", IconFontIcons.FontFamily);
+                fonts.AddFont("Nunito-Regular.ttf", "NunitoRegular");
+                fonts.AddFont("Nunito-Bold.ttf", "NunitoBold");
+                fonts.AddFont("Nunito-SemiBold.ttf", "NunitoSemiBold");
             })
             .ConfigureMopups(() => {
             })
             .Services.ConfigureService();
 
+        builder.UseSimpleShell();
+        builder.UseSimpleToolkit();
+
 #if DEBUG
         builder.Logging.AddDebug();
+#endif
+
+#if IOS || ANDROID
+        builder.DisplayContentBehindBars();
+#endif
+#if ANDROID
+        builder.SetDefaultStatusBarAppearance(Colors.Transparent, false);
 #endif
 
         return builder.Build();

@@ -15,12 +15,12 @@ public class MainActivity : MauiAppCompatActivity
         //半透明 任务栏
         //Window.SetFlags(Android.Views.WindowManagerFlags.TranslucentStatus, Android.Views.WindowManagerFlags.TranslucentStatus);
 
-        //全透明任务栏
-        Window.SetFlags(Android.Views.WindowManagerFlags.TranslucentNavigation, Android.Views.WindowManagerFlags.TranslucentNavigation);
+        ////全透明任务栏
+        //Window.SetFlags(Android.Views.WindowManagerFlags.TranslucentNavigation, Android.Views.WindowManagerFlags.TranslucentNavigation);
 
-        //设置状态栏、导航栏色颜色为透明
-        Window.SetStatusBarColor(Android.Graphics.Color.Transparent);
-        Window.SetNavigationBarColor(Android.Graphics.Color.Transparent);
+        ////设置状态栏、导航栏色颜色为透明
+        //Window.SetStatusBarColor(Android.Graphics.Color.Transparent);
+        //Window.SetNavigationBarColor(Android.Graphics.Color.Transparent);
 
         base.OnCreate(savedInstanceState);
     }
