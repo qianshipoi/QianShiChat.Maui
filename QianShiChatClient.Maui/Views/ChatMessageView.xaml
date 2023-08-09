@@ -6,7 +6,7 @@
     xmlns:exts="clr-namespace:QianShiChatClient.Maui.Extensions"
     xmlns:helpers="clr-namespace:QianShiChatClient.Maui.Helpers"
     xmlns:local="clr-namespace:QianShiChatClient.Maui"
-    xmlns:models="clr-namespace:QianShiChatClient.Core.Models;assembly=QianShiChatClient.Core"
+    xmlns:models="clr-namespace:QianShiChatClient.Application.Models;assembly=QianShiChatClient.Application"
     xmlns:styles="clr-namespace:QianShiChatClient.Maui.Resources.Styles"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"

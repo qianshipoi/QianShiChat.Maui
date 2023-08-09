@@ -1,10 +1,10 @@
 ﻿namespace QianShiChatClient.Maui;
 
-public partial class App : Application
+public partial class App : Microsoft.Maui.Controls.Application
 {
     public readonly IServiceProvider ServiceProvider;
 
-    public new static App Current => (App)Application.Current;
+    public new static App Current => (App)Microsoft.Maui.Controls.Application.Current;
 
     public UserInfo User { get; set; }
 

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace QianShiChatClient.Maui;
+﻿namespace QianShiChatClient.Maui;
 
 public static class MauiProgram
 {
@@ -59,7 +57,6 @@ public static class MauiProgram
             client.DefaultRequestHeaders.Add("Client-Type", AppConsts.CLIENT_TYPE);
             if (!string.IsNullOrWhiteSpace(Settings.AccessToken))
             {
-                Debug.WriteLine("token", Settings.AccessToken);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Settings.AccessToken);
             }
         });
