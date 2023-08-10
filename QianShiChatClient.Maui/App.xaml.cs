@@ -6,13 +6,12 @@ public partial class App : Microsoft.Maui.Controls.Application
 
     public new static App Current => (App)Microsoft.Maui.Controls.Application.Current;
 
-    public UserInfo User { get; set; }
+    public UserInfoModel User { get; set; }
 
     public App(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
         InitializeComponent();
-
         UserAppTheme = Settings.Theme;
         var culture = new CultureInfo(Settings.Language);
         LocalizationResourceManager.Instance.SetCulture(culture);

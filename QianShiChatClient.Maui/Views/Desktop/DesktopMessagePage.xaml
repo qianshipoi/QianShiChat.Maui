@@ -53,7 +53,7 @@
                 SeparatorVisibility="None">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell x:DataType="{x:Type models:Session}">
+                        <ViewCell x:DataType="{x:Type models:SessionModel}">
                             <Grid
                                 Padding="8,0"
                                 ColumnDefinitions="Auto,*,Auto"

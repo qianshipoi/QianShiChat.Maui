@@ -118,7 +118,7 @@
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell x:DataType="{x:Type models:UserInfo}">
+                        <ViewCell x:DataType="{x:Type models:UserInfoModel}">
                             <Grid
                                 Padding="10,0"
                                 ColumnDefinitions="Auto,*"

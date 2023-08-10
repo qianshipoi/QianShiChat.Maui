@@ -14,7 +14,7 @@
     <exts:TimestampConverter x:Key="TimestampConverter" />
     <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
     <DataTemplate x:Key="SessionListViewTemplate">
-        <ViewCell x:DataType="{x:Type models:Session}">
+        <ViewCell x:DataType="{x:Type models:SessionModel}">
             <SwipeView xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls" android:SwipeView.SwipeTransitionMode="Drag">
                 <SwipeView.RightItems>
                     <SwipeItems>
@@ -25,7 +25,7 @@
                 <!--  Content  -->
                 <Grid
                     Padding="20,0"
-                    x:DataType="{x:Type models:Session}"
+                    x:DataType="{x:Type models:SessionModel}"
                     BackgroundColor="{AppThemeBinding Light={StaticResource White},
                                                       Dark={StaticResource Black}}"
                     ColumnDefinitions="60,*,80"
@@ -63,7 +63,7 @@
             </SwipeView>
         </ViewCell>
     </DataTemplate>
-    <DataTemplate x:Key="OtherTextMessageDataTemplate" x:DataType="{x:Type models:ChatMessage}">
+    <DataTemplate x:Key="OtherTextMessageDataTemplate" x:DataType="{x:Type models:ChatMessageModel}">
         <Grid
             Margin="8"
             ColumnDefinitions="Auto,*,40"
@@ -88,7 +88,7 @@
             </Frame>
         </Grid>
     </DataTemplate>
-    <DataTemplate x:Key="SelfTextMessageDataTemplate" x:DataType="{x:Type models:ChatMessage}">
+    <DataTemplate x:Key="SelfTextMessageDataTemplate" x:DataType="{x:Type models:ChatMessageModel}">
         <Grid
             Margin="8"
             ColumnDefinitions="40,*,Auto"

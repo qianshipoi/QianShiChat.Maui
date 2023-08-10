@@ -17,5 +17,5 @@ public partial class ViewModelBase : ObservableObject
     [ObservableProperty]
     protected string _title;
 
-    public UserInfo User => App.Current.User;
+    public UserInfoModel User => App.Current.User;
 }

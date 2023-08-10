@@ -11,6 +11,7 @@ global using QianShiChatClient.Application.Helpers;
 global using QianShiChatClient.Application.Models;
 global using QianShiChatClient.Application.Services;
 global using QianShiChatClient.Application;
+global using QianShiChatClient.Core;
 
 global using SQLite;
 

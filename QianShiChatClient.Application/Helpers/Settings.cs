@@ -52,7 +52,7 @@ public static class Settings
         }
     }
 
-    public static UserInfo? CurrentUser
+    public static UserInfoModel? CurrentUser
     {
         get
         {
@@ -62,7 +62,7 @@ public static class Settings
             var value = Preferences.Get(nameof(CurrentUser), string.Empty);
             if (string.IsNullOrWhiteSpace(value)) return null;
 
-            return JsonSerializer.Deserialize<UserInfo>(value);
+            return JsonSerializer.Deserialize<UserInfoModel>(value);
         }
         set
         {

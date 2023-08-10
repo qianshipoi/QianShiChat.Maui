@@ -13,11 +13,11 @@ public sealed partial class DataCenter : ObservableObject
     [ObservableProperty]
     private bool _isConnected;
 
-    public ObservableCollection<Session> Sessions { get; }
+    public ObservableCollection<SessionModel> Sessions { get; }
 
     public ObservableCollection<ApplyPending> Pendings { get; }
 
-    public ObservableCollection<UserInfo> Friends { get; }
+    public ObservableCollection<UserInfoModel> Friends { get; }
 
     public DataCenter(
         IApiClient apiClient,
@@ -32,9 +32,9 @@ public sealed partial class DataCenter : ObservableObject
         _chatHub = chatHub;
         _dispatcher = dispatcher;
         _logger = logger;
-        Friends = new ObservableCollection<UserInfo>();
-        Pendings = new ObservableCollection<ApplyPending>();
-        Sessions = new ObservableCollection<Session>();
+        Friends = new();
+        Pendings = new();
+        Sessions = new();
         Sessions.CollectionChanged += Sessions_CollectionChanged;
         _chatHub.PrivateChat += ChatHubPrivateChat;
         _chatHub.IsConnectedChanged += (val) => IsConnected = val;
@@ -70,27 +70,27 @@ public sealed partial class DataCenter : ObservableObject
 
     private async Task SaveSessionsAsync()
     {
-        await _database.SaveSessionsAsync(Sessions.OrderByDescending(x => x.LastMessageTime).Select(x => x.ToSessionModel()));
+        await _database.SaveSessionsAsync(Sessions.OrderByDescending(x => x.LastMessageTime).Select(x => x.ToSession()));
         ClearTimer();
     }
 
     private async void ChatHubPrivateChat(ChatMessageDto obj)
     {
         var session = Sessions.FirstOrDefault(x => x.User.Id == obj.FromId);
-        if(session is null)
+        if (session is null)
         {
             var user = await _userService.GetUserInfoByIdAsync(obj.FromId);
-            session = new Session(user, new List<ChatMessage>());
+            session = new SessionModel(user, new List<ChatMessageModel>());
         }
         var message = obj.ToChatMessage();
         if (message is null)
         {
             return;
         }
-        await session.AddMessageAsync(message);
+        await session.AddMessageAsync(message.ToChatMessageModel());
         UpdateSessions(session);
         await _database.SaveChatMessageAsnyc(message);
-        await _database.SaveSessionAsync(session.ToSessionModel());
+        await _database.SaveSessionAsync(session.ToSession());
     }
 
     private async Task GetSessionsAsync()
@@ -108,7 +108,7 @@ public sealed partial class DataCenter : ObservableObject
                     if (user != null)
                     {
                         var messages = await _database.GetChatMessageAsync(user.Id, 0, 20);
-                        session = new Session(user, messages);
+                        session = new SessionModel(user, messages.Select(x=>x.ToChatMessageModel()));
                         _dispatcher.Dispatch(() => Sessions.Add(session));
                     }
                 }
@@ -116,12 +116,12 @@ public sealed partial class DataCenter : ObservableObject
         }
     }
 
-    private async Task<Session> AddSessionsAsync(UserInfo user, IEnumerable<ChatMessage> messages)
+    private async Task<SessionModel> AddSessionsAsync(UserInfoModel user, IEnumerable<ChatMessageModel> messages)
     {
         var session = Sessions.FirstOrDefault(x => x.User.Id == user.Id);
         if (session is null)
         {
-            session = new Session(user, messages);
+            session = new SessionModel(user, messages);
             _dispatcher.Dispatch(() => {
                 Sessions.Add(session);
             });
@@ -140,20 +140,20 @@ public sealed partial class DataCenter : ObservableObject
         foreach (var userDto in users)
         {
             var messages = userDto.Messages.ToChatMessages();
-            var user = userDto.ToUserInfo();
+            var user = userDto.ToUserInfoModel();
             foreach (var message in messages)
             {
                 message.IsSelfSend = message.FromId == _userService.CurrentUser().Id;
             }
 
-            var session = await AddSessionsAsync(user, messages);
+            var session = await AddSessionsAsync(user, messages.Select(x=>x.ToChatMessageModel()));
 
-            await _database.SaveUserAsync(user);
+            await _database.SaveUserAsync(user.ToUserInfo());
             if (messages.Any())
             {
                 await _database.SaveChatMessagesAsnyc(messages);
             }
-            await _database.SaveSessionAsync(session.ToSessionModel());
+            await _database.SaveSessionAsync(session.ToSession());
         }
     }
 
@@ -176,7 +176,7 @@ public sealed partial class DataCenter : ObservableObject
         if (userdtos is null) return;
         foreach (var userDto in userdtos)
         {
-            var user = userDto.ToUserInfo();
+            var user = userDto.ToUserInfoModel();
 
             var friend = Friends.FirstOrDefault(x => x.Id == user.Id);
 
@@ -190,17 +190,17 @@ public sealed partial class DataCenter : ObservableObject
                 friend.NickName = user.NickName;
                 friend.Content = user.Content;
             }
-            await _database.SaveUserAsync(user);
+            await _database.SaveUserAsync(user.ToUserInfo());
         }
     }
 
-    private ChatMessage CreateSendMessage(
-        UserInfo user,
+    private ChatMessageModel CreateSendMessage(
+        UserInfoModel user,
         int toId,
         string content,
         ChatMessageType messageType = ChatMessageType.Text)
     {
-        return new ChatMessage
+        return new ChatMessageModel
         {
             LocalId = Guid.NewGuid(),
             MessageType = messageType,
@@ -216,7 +216,7 @@ public sealed partial class DataCenter : ObservableObject
         };
     }
 
-    public async Task<ChatMessage> SendTextAsync(UserInfo user, Session session, string text)
+    public async Task<ChatMessageModel> SendTextAsync(UserInfoModel user, SessionModel session, string text)
     {
         var message = CreateSendMessage(user, session.User.Id, text);
 
@@ -232,7 +232,8 @@ public sealed partial class DataCenter : ObservableObject
                 _dispatcher.Dispatch(() => {
                     message.Status = MessageStatus.Successful;
                 });
-                await _database.UpdateChatMessageAsync(message);
+
+                await _database.UpdateChatMessageAsync(message.ToChatMessage());
             }
             catch (Exception ex)
             {
@@ -245,7 +246,7 @@ public sealed partial class DataCenter : ObservableObject
         UpdateSessions(session);
         try
         {
-            await _database.SaveChatMessageAsnyc(message);
+            await _database.SaveChatMessageAsnyc(message.ToChatMessage());
         }
         catch (Exception ex)
         {
@@ -255,7 +256,7 @@ public sealed partial class DataCenter : ObservableObject
         return message;
     }
 
-    private void UpdateSessions(Session session)
+    private void UpdateSessions(SessionModel session)
     {
         var index = Sessions.IndexOf(session);
 
@@ -282,7 +283,7 @@ public sealed partial class DataCenter : ObservableObject
         });
     }
 
-    public async Task<ChatMessage> SendFileAsync(UserInfo user, Session session, string filePath)
+    public async Task<ChatMessageModel> SendFileAsync(UserInfoModel user, SessionModel session, string filePath)
     {
         var message = CreateSendMessage(user, session.User.Id, filePath, ChatMessageType.OtherFile);
 
@@ -308,7 +309,7 @@ public sealed partial class DataCenter : ObservableObject
                 _dispatcher.Dispatch(() => {
                     message.Status = MessageStatus.Successful;
                 });
-                await _database.UpdateChatMessageAsync(message);
+                await _database.UpdateChatMessageAsync(message.ToChatMessage());
             }
             catch (Exception ex)
             {
@@ -321,7 +322,7 @@ public sealed partial class DataCenter : ObservableObject
         UpdateSessions(session);
         try
         {
-            await _database.SaveChatMessageAsnyc(message);
+            await _database.SaveChatMessageAsnyc(message.ToChatMessage());
         }
         catch (Exception ex)
         {

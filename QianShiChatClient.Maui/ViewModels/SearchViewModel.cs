@@ -5,11 +5,11 @@ public sealed partial class SearchViewModel : ViewModelBase
     [ObservableProperty]
     private string _searchContent;
 
-    public ObservableCollection<FriendItem> Result { get; }
+    public ObservableCollection<UserInfo> Result { get; }
 
     public SearchViewModel()
     {
-        Result = new ObservableCollection<FriendItem>();
+        Result = new ObservableCollection<UserInfo>();
     }
 
     [RelayCommand]

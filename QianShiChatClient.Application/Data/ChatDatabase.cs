@@ -9,18 +9,18 @@ public class ChatDatabase
         if (Database is not null)
             return;
         Database = new SQLiteAsyncConnection(AppConsts.DatabasePath, AppConsts.Flags);
-        await Database.CreateTablesAsync<UserInfo, ChatMessage, SessionModel>();
+        await Database.CreateTablesAsync<UserInfo, ChatMessage, Session>();
     }
 
-    public async Task SaveSessionAsync(SessionModel session)
+    public async Task SaveSessionAsync(Session session)
     {
         await Database!.InsertOrReplaceAsync(session);
     }
 
-    public async Task SaveSessionsAsync(IEnumerable<SessionModel> sessions)
+    public async Task SaveSessionsAsync(IEnumerable<Session> sessions)
     {
         await Database!.RunInTransactionAsync(con => {
-            con.DeleteAll<SessionModel>();
+            con.DeleteAll<Session>();
             foreach (var item in sessions)
             {
                 if(item.Id == 0)
@@ -33,9 +33,9 @@ public class ChatDatabase
         });
     }
 
-    public async Task<List<SessionModel>> GetAllSessionAsync()
+    public async Task<List<Session>> GetAllSessionAsync()
     {
-        return await Database!.Table<SessionModel>().ToListAsync();
+        return await Database!.Table<Session>().ToListAsync();
     }
 
     public async Task<List<ChatMessage>> GetChatMessageAsync(int userId, int skip = 0, int count = 10)

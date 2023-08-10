@@ -31,7 +31,7 @@
             RowHeight="60"
             SelectionMode="None">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="{x:Type models:FriendItem}">
+                <DataTemplate x:DataType="{x:Type models:UserInfoModel}">
                     <ViewCell>
                         <Grid
                             Padding="20,10"

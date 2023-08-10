@@ -4,14 +4,15 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
 {
     private readonly ChatDatabase _database;
     private readonly DataCenter _dataCenter;
+    private readonly IUserService _userService;
 
     public int SessionId { get; private set; }
 
     [ObservableProperty]
-    private Session _session;
+    private SessionModel _session;
 
     [ObservableProperty]
-    private ChatMessage _toMessage;
+    private ChatMessageModel _toMessage;
 
     [ObservableProperty]
     private bool _scrollAnimated;
@@ -21,10 +22,12 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
 
     public MessageDetailViewModel(
         ChatDatabase database,
-        DataCenter dataCenter)
+        DataCenter dataCenter,
+        IUserService userService)
     {
         _database = database;
         _dataCenter = dataCenter;
+        _userService = userService;
     }
 
     [RelayCommand]
@@ -58,11 +61,11 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
         }
         else
         {
-            var user = await _database.GetUserByIdAsync(SessionId);
+            var user = await _userService.GetUserInfoByIdAsync(SessionId);
             if (user != null)
             {
                 var message = await _database.GetChatMessageAsync(user.Id);
-                Session = new Session(user, message);
+                Session = new SessionModel(user, message.Select(x=>x.ToChatMessageModel()));
             }
         }
     }

@@ -1,6 +1,4 @@
-﻿using QianShiChatClient.Core;
-
-namespace QianShiChatClient.Core;
+﻿namespace QianShiChatClient.Core;
 
 public class Session
 {

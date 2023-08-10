@@ -2,7 +2,7 @@
 
 public interface IUserService
 {
-    Task<UserInfo> GetUserInfoByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<UserInfoModel> GetUserInfoByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    UserInfo CurrentUser();
+    UserInfoModel CurrentUser();
 }

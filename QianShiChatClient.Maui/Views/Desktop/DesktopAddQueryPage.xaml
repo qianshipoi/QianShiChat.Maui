@@ -24,7 +24,7 @@
                 <ScrollView Grid.Row="1">
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding Result}">
                         <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="models:UserInfo">
+                            <DataTemplate x:DataType="models:UserInfoModel">
                                 <Grid
                                     Padding="8,4"
                                     ColumnDefinitions="Auto, *, Auto"

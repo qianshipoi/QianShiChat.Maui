@@ -140,7 +140,7 @@
             </ListView.Behaviors>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <ViewCell x:DataType="{x:Type models:Session}">
+                    <ViewCell x:DataType="{x:Type models:SessionModel}">
                         <SwipeView xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls" android:SwipeView.SwipeTransitionMode="Drag">
                             <SwipeView.RightItems>
                                 <SwipeItems>
@@ -151,7 +151,7 @@
                             <!--  Content  -->
                             <Grid
                                 Padding="20,0"
-                                x:DataType="{x:Type models:Session}"
+                                x:DataType="{x:Type models:SessionModel}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource White},
                                                                   Dark={StaticResource Black}}"
                                 ColumnDefinitions="60,*,80"

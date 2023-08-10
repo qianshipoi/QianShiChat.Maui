@@ -19,7 +19,7 @@
             <exts:TimestampConverter x:Key="TimestampConverter" />
             <helpers:PathToFilenameConverter x:Key="PathToFilenameConverter" />
             <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
-            <DataTemplate x:Key="OtherTextMessageDataTemplate" x:DataType="{x:Type models:ChatMessage}">
+            <DataTemplate x:Key="OtherTextMessageDataTemplate" x:DataType="{x:Type models:ChatMessageModel}">
                 <Grid
                     Margin="8"
                     ColumnDefinitions="Auto,*,40"
@@ -44,7 +44,7 @@
                     </Frame>
                 </Grid>
             </DataTemplate>
-            <DataTemplate x:Key="SelfTextMessageDataTemplate" x:DataType="{x:Type models:ChatMessage}">
+            <DataTemplate x:Key="SelfTextMessageDataTemplate" x:DataType="{x:Type models:ChatMessageModel}">
                 <Grid
                     Margin="8"
                     ColumnDefinitions="40,*,Auto"
@@ -71,7 +71,7 @@
                         WidthRequest="40" />
                 </Grid>
             </DataTemplate>
-            <DataTemplate x:Key="SelfFileMessageDataTemplate" x:DataType="{x:Type models:ChatMessage}">
+            <DataTemplate x:Key="SelfFileMessageDataTemplate" x:DataType="{x:Type models:ChatMessageModel}">
                 <Grid
                     Margin="8"
                     ColumnDefinitions="40,*,Auto"

@@ -1,17 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-
-using QianShiChatClient.Core;
-using QianShiChatClient.Core.Common;
-
-namespace QianShiChatClient.Data;
+﻿namespace QianShiChatClient.Data;
 
 public class ChatDbContext : DbContext, IChatContext
 {
     public ChatDbContext(DbContextOptions options) : base(options)
     {
         SQLitePCL.Batteries_V2.Init();
-
         Database.EnsureCreated();
     }
 
@@ -36,6 +29,9 @@ public class ChatDbContext : DbContext, IChatContext
             .Property(p => p.NickName)
             .IsRequired()
             .HasMaxLength(64);
+        modelBuilder.Entity<UserInfo>()
+            .Property(p => p.CreateTime)
+            .IsRequired();
 
         modelBuilder.Entity<ChatMessage>()
             .HasKey(p => p.LocalId);
@@ -45,15 +41,15 @@ public class ChatDbContext : DbContext, IChatContext
         modelBuilder.Entity<ChatMessage>()
             .HasIndex(p => p.Id)
             .IsUnique();
-        modelBuilder.Entity<ChatMessage>()
-            .Ignore(p => p.FromAvatar)
-            .Ignore(p => p.ToAvatar);
 
         modelBuilder.Entity<Session>()
             .HasKey(p => p.Id);
+        modelBuilder.Entity<Session>()
+            .Property(p => p.Id)
+            .ValueGeneratedOnAdd();
     }
 
-    private IDbContextTransaction _currentTransaction;
+    private IDbContextTransaction _currentTransaction = default!;
 
     public IDbContextTransaction GetCurrentTransaction() => _currentTransaction;
 
@@ -92,7 +88,6 @@ public class ChatDbContext : DbContext, IChatContext
             }
         }
     }
-
     private void RollbackTransaction()
     {
         try

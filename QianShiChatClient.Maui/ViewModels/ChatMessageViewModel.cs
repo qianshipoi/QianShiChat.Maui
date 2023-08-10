@@ -7,10 +7,10 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
 
     [ObservableProperty]
-    private Session _session;
+    private SessionModel _session;
 
     [ObservableProperty]
-    private ChatMessage _toMessage;
+    private ChatMessageModel _toMessage;
 
     [ObservableProperty]
     private string _message;

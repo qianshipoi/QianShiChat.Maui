@@ -4,7 +4,7 @@
 public sealed partial class MessageViewModel : ViewModelBase
 {
     private readonly ChatHub _chatHub;
-    private readonly Dictionary<Session, View> _viewCache;
+    private readonly Dictionary<SessionModel, View> _viewCache;
     private readonly ILogger<MessageViewModel> _logger;
 
     [ObservableProperty]
@@ -13,9 +13,9 @@ public sealed partial class MessageViewModel : ViewModelBase
     public DataCenter DataCenter { get; }
 
     [ObservableProperty]
-    private Session _currentSelectedSession;
+    private SessionModel _currentSelectedSession;
 
-    partial void OnCurrentSelectedSessionChanged(Session value)
+    partial void OnCurrentSelectedSessionChanged(SessionModel value)
     {
         if (value is null)
         {
@@ -49,7 +49,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     }
 
     [ObservableProperty]
-    private ChatMessage _toMessage;
+    private ChatMessageModel _toMessage;
 
     [ObservableProperty]
     private bool _scrollAnimated;
@@ -93,7 +93,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void OpenNewWindow(Session session)
+    private void OpenNewWindow(SessionModel session)
     {
         ServiceHelper.GetService<IWindowManagerService>().OpenChatRoomWindow(session.User);
         if (CurrentSelectedSession == session)
@@ -109,7 +109,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private Task JoinDetail(Session item)
+    private Task JoinDetail(SessionModel item)
     {
         if (AppConsts.IsDesktop)
         {

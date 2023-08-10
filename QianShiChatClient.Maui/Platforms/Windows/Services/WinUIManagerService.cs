@@ -1,5 +1,7 @@
 ﻿using QianShiChatClient.Maui.Windows;
 
+using Windows.System;
+
 using MicrosoftuiXaml = Microsoft.UI.Xaml;
 
 namespace QianShiChatClient.Maui.Services;
@@ -17,9 +19,9 @@ public class WinUIManagerService : IWindowManagerService
         _opendWindows = new();
     }
 
-    private string GetUserWindowId(UserInfo user) => $"user_{user.Id}";
+    private string GetUserWindowId(UserInfoModel user) => $"user_{user.Id}";
 
-    public void OpenChatRoomWindow(UserInfo user)
+    public void OpenChatRoomWindow(UserInfoModel user)
     {
         var windowId = GetUserWindowId(user);
         if (_opendWindows.ContainsKey(windowId))
@@ -35,7 +37,7 @@ public class WinUIManagerService : IWindowManagerService
 
         if (session is null)
         {
-            session = new Session(user, new List<ChatMessage>());
+            session = new SessionModel(user, new List<ChatMessageModel>());
             _dataConter.Sessions.Insert(0, session);
         }
         else
@@ -56,12 +58,12 @@ public class WinUIManagerService : IWindowManagerService
         App.Current.OpenWindow(window);
     }
 
-    public bool ContainsChatRootWindow(UserInfo user)
+    public bool ContainsChatRootWindow(UserInfoModel user)
     {
         return _opendWindows.ContainsKey(GetUserWindowId(user));
     }
 
-    public void CloseChatRoomWindow(UserInfo user) => CloseWindow(GetUserWindowId(user));
+    public void CloseChatRoomWindow(UserInfoModel user) => CloseWindow(GetUserWindowId(user));
 
     private void CloseWindow(string windowId)
     {

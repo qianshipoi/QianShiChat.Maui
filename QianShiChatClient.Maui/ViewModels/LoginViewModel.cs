@@ -33,7 +33,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         _dispatcher = dispatcher;
     }
 
-    private void JoinMainPage(UserInfo user)
+    private void JoinMainPage(UserInfoModel user)
     {
         _dispatcher.Dispatch(() => {
             App.Current.User = user;
@@ -72,7 +72,7 @@ public sealed partial class LoginViewModel : ViewModelBase
             await Toast
                 .Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString())
                 .Show();
-            JoinMainPage(user.ToUserInfo());
+            JoinMainPage(user.ToUserInfoModel());
         }
         finally
         {
@@ -164,7 +164,7 @@ public sealed partial class LoginViewModel : ViewModelBase
                     .Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString())
                     .Show();
             });
-            JoinMainPage(checkResponse.User.ToUserInfo());
+            JoinMainPage(checkResponse.User.ToUserInfoModel());
         }
     }
 }

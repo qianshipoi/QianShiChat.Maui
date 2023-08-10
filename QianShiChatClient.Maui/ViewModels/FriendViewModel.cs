@@ -43,7 +43,7 @@ public sealed partial class FriendViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void OpenNewWindow(UserInfo user)
+    private void OpenNewWindow(UserInfoModel user)
     {
         if (AppConsts.IsDesktop)
         {
@@ -72,7 +72,7 @@ public sealed partial class FriendViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task JoinDetail(UserInfo user)
+    private async Task JoinDetail(UserInfoModel user)
     {
         if (AppConsts.IsDesktop)
         {

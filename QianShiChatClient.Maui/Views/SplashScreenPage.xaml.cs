@@ -43,7 +43,7 @@ public partial class SplashScreenPage : ContentPage
         await Task.Delay(3000);
 
         Dispatcher.Dispatch(() => {
-            App.Current.User = user.ToUserInfo();
+            App.Current.User = user.ToUserInfoModel();
             Settings.CurrentUser = App.Current.User;
             App.Current.MainPage = AppConsts.IsDesktop ?
                 ServiceHelper.GetService<DesktopShell>() :

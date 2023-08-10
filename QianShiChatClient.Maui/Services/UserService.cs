@@ -17,35 +17,35 @@ public class UserService : IUserService
 
     private string GetUserCacheKey(int id) => nameof(GetUserInfoByIdAsync) + id;
 
-    public async Task<UserInfo> GetUserInfoByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<UserInfoModel> GetUserInfoByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         var cacheKey = GetUserCacheKey(id);
-        var userInfo = _memoryCache.Get<UserInfo>(cacheKey);
+        var userInfo = _memoryCache.Get<UserInfoModel>(cacheKey);
 
         if (userInfo is not null)
         {
             return userInfo;
         }
 
-        userInfo = await _chatDatabase.GetUserByIdAsync(id);
-        if (userInfo is null)
+        var user  = await _chatDatabase.GetUserByIdAsync(id);
+        if (user is null)
         {
             try
             {
                 var serverUser = await _client.FindUserAsync(id, cancellationToken);
                 if (serverUser is not null)
                 {
-                    userInfo = serverUser.ToUserInfo();
-                    await _chatDatabase.SaveUserAsync(userInfo);
+                    userInfo = serverUser.ToUserInfoModel();
+                    await _chatDatabase.SaveUserAsync(userInfo.ToUserInfo());
                 }
                 else
                 {
-                    userInfo = UserInfo.Unknown;
+                    userInfo = UserInfoModel.Unknown;
                 }
             }
             catch (Exception ex)
             {
-                userInfo = UserInfo.Unknown;
+                userInfo = UserInfoModel.Unknown;
                 _logger.LogError(ex, "查询用户异常: id - {id}", id);
             }
         }
@@ -54,5 +54,5 @@ public class UserService : IUserService
         return userInfo;
     }
 
-    public UserInfo CurrentUser() => App.Current.User;
+    public UserInfoModel CurrentUser() => App.Current.User;
 }

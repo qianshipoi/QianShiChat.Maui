@@ -29,4 +29,8 @@
 	  <PackageReference Include="Squidex.Assets.TusClient" Version="5.16.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\QianShiChatClient.Core\QianShiChatClient.Core.csproj" />
+	</ItemGroup>
+
 </Project>

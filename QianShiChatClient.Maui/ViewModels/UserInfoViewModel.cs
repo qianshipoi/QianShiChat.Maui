@@ -5,7 +5,7 @@ public sealed partial class UserInfoViewModel : ViewModelBase
     private readonly DataCenter _dataCenter;
 
     [ObservableProperty]
-    private UserInfo _info;
+    private UserInfoModel _info;
 
     public UserInfoViewModel(DataCenter dataCenter)
     {
@@ -25,7 +25,7 @@ public sealed partial class UserInfoViewModel : ViewModelBase
         }
         else
         {
-            session = new Session(Info, new List<ChatMessage>());
+            session = new SessionModel(Info, new List<ChatMessageModel>());
         }
 
         _dataCenter.Sessions.Insert(0, session);
