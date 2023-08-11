@@ -1,8 +1,4 @@
-﻿using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-
-namespace QianShiChatClient.MauiBlazor.ViewModels;
+﻿namespace QianShiChatClient.MauiBlazor.ViewModels;
 
 public sealed partial class LoginViewModel : ViewModelBase
 {
@@ -37,7 +33,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         _dispatcher = dispatcher;
     }
 
-    private void JoinMainPage(UserInfo user)
+    private void JoinMainPage(UserInfoModel user)
     {
         _dispatcher.Dispatch(() => {
             App.Current.User = user;
@@ -54,7 +50,11 @@ public sealed partial class LoginViewModel : ViewModelBase
 
         if (string.IsNullOrEmpty(Account) || string.IsNullOrEmpty(Password))
         {
-            await Toast.Make("账号或密码不能为空").Show();
+            await Toast
+                .Make(
+                    "账号或密码不能为空"
+                )
+                .Show();
             return;
         }
 
@@ -70,7 +70,7 @@ public sealed partial class LoginViewModel : ViewModelBase
             await Toast
                 .Make("登录成功")
                 .Show();
-            JoinMainPage(user.ToUserInfo());
+            JoinMainPage(user.ToUserInfoModel());
         }
         finally
         {
@@ -162,7 +162,7 @@ public sealed partial class LoginViewModel : ViewModelBase
                     .Make("登录成功")
                     .Show();
             });
-            JoinMainPage(checkResponse.User.ToUserInfo());
+            JoinMainPage(checkResponse.User.ToUserInfoModel());
         }
     }
 }

@@ -5,14 +5,14 @@ public class ChatDbContext : DbContext, IChatContext
     public ChatDbContext(DbContextOptions options) : base(options)
     {
         SQLitePCL.Batteries_V2.Init();
-        Database.EnsureCreated();
+        Database.Migrate();
     }
 
-    public virtual DbSet<UserInfo> UserInfos { get; } = default!;
+    public virtual DbSet<UserInfo> UserInfos { get; set; } = default!;
 
-    public virtual DbSet<ChatMessage> ChatMessages { get; } = default!;
+    public virtual DbSet<ChatMessage> ChatMessages { get; set; } = default!;
 
-    public virtual DbSet<Session> Sessions { get; } = default!;
+    public virtual DbSet<Session> Sessions { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

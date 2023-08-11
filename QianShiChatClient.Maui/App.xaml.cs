@@ -33,9 +33,9 @@ public partial class App : Microsoft.Maui.Controls.Application
         window.MinimumHeight = minHeight;
 
 #if WINDOWS
-        var screenHeight =  Microsoft.UI.Windowing.DisplayArea.Primary.WorkArea.Height;
-        var screenWidth =  Microsoft.UI.Windowing.DisplayArea.Primary.WorkArea.Width;
-        
+        var screenHeight = Microsoft.UI.Windowing.DisplayArea.Primary.WorkArea.Height;
+        var screenWidth = Microsoft.UI.Windowing.DisplayArea.Primary.WorkArea.Width;
+
         window.X = (screenWidth - width) / 2;
         window.Y = (screenHeight - height) / 2;
 #endif

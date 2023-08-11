@@ -49,7 +49,7 @@ public static class MauiProgram
     {
         services.AddLocalization();
         services.AddMemoryCache();
-        services.AddChatDbContext(Path.Combine(FileSystem.AppDataDirectory, "chat.db3"));
+        services.AddChatDbContext(Path.Combine(FileSystem.AppDataDirectory, "main.db3"));
 
         services.AddHttpClient(AppConsts.API_CLIENT_NAME, client => {
             client.BaseAddress = new Uri(AppConsts.API_BASE_URL);

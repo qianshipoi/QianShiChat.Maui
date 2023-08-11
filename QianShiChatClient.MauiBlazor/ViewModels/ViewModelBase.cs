@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-
-namespace QianShiChatClient.MauiBlazor.ViewModels;
+﻿namespace QianShiChatClient.MauiBlazor.ViewModels;
 
 public partial class ViewModelBase : ObservableObject
 {
@@ -17,5 +15,5 @@ public partial class ViewModelBase : ObservableObject
     [ObservableProperty]
     protected string _title;
 
-    public UserInfo User => App.Current.User;
+    public UserInfoModel User => App.Current.User;
 }

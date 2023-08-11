@@ -59,7 +59,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\QianShiChatClient.Core\QianShiChatClient.Core.csproj" />
+      <ProjectReference Include="..\QianShiChatClient.Application\QianShiChatClient.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>

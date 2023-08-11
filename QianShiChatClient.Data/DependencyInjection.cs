@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using QianShiChatClient.Core.Common;
-using QianShiChatClient.Data;
+﻿using QianShiChatClient.Data;
 using QianShiChatClient.Data.Repository;
 
 namespace Microsoft.Extensions.DependencyInjection;
