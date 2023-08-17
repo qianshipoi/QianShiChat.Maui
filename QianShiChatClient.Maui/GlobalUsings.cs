@@ -25,10 +25,10 @@ global using Mopups.Hosting;
 global using Mopups.Interfaces;
 global using Mopups.Services;
 
+global using QianShiChatClient.Application.Maui;
 global using QianShiChatClient.Application.Data;
 global using QianShiChatClient.Application.Extensions;
 global using QianShiChatClient.Application.Helpers;
-global using QianShiChatClient.Application.Maui;
 global using QianShiChatClient.Application.Models;
 global using QianShiChatClient.Application.Services;
 global using QianShiChatClient.Core;

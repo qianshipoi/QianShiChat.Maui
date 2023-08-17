@@ -86,7 +86,7 @@ public sealed partial class DataCenter : ObservableObject
         if (session is null)
         {
             var user = await _userService.GetUserInfoByIdAsync(obj.FromId);
-            session = new SessionModel(user, new List<ChatMessageModel>());
+            session = new SessionModel(_userService, user, new List<ChatMessageModel>());
         }
         var message = obj.ToChatMessage();
         if (message is null)
@@ -114,7 +114,7 @@ public sealed partial class DataCenter : ObservableObject
                     if (user != null)
                     {
                         var messages = await _chatMessageRepository.GetChatMessageAsync(user.Id, 0, 20);
-                        session = new SessionModel(user, messages.Select(x => x.ToChatMessageModel()));
+                        session = new SessionModel(_userService, user, messages.Select(x => x.ToChatMessageModel()));
                         _dispatcher.Dispatch(() => Sessions.Add(session));
                     }
                 }
@@ -127,7 +127,7 @@ public sealed partial class DataCenter : ObservableObject
         var session = Sessions.FirstOrDefault(x => x.User.Id == user.Id);
         if (session is null)
         {
-            session = new SessionModel(user, messages);
+            session = new SessionModel(_userService, user, messages);
             _dispatcher.Dispatch(() => {
                 Sessions.Add(session);
             });
@@ -276,19 +276,6 @@ public sealed partial class DataCenter : ObservableObject
         }
     }
 
-    private Task<ChatMessageDto> MockSendFileAsync(Action<double, double> uploadProgressValue)
-    {
-        var total = 25;
-        return Task.Run(async () => {
-            for (int i = 0; i < total; i++)
-            {
-                await Task.Delay(250);
-                uploadProgressValue.Invoke(i + 1, total);
-            }
-            return new ChatMessageDto { Id = DateTime.Now.Ticks };
-        });
-    }
-
     public async Task<ChatMessageModel> SendFileAsync(UserInfoModel user, SessionModel session, string filePath)
     {
         var message = CreateSendMessage(user, session.User.Id, filePath, ChatMessageType.OtherFile);
@@ -296,11 +283,6 @@ public sealed partial class DataCenter : ObservableObject
         _ = Task.Run(async () => {
             try
             {
-                //var chatDto = await MockSendFileAsync((loaded, total) => {
-                //    MainThread.BeginInvokeOnMainThread(() => {
-                //        message.UploadProgressValue = loaded / total;
-                //    });
-                //});
                 var chatDto = await _apiClient
                       .SendFileAsync(
                     session.User.Id,

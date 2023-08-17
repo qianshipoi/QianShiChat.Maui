@@ -3,6 +3,8 @@
 public partial class SessionModel : ObservableObject
 {
     private readonly ObservableCollection<ChatMessageModel> _messages;
+    private readonly IUserService _userService;
+
     public int Id { get; }
 
     [ObservableProperty]
@@ -18,8 +20,9 @@ public partial class SessionModel : ObservableObject
 
     public ReadOnlyObservableCollection<ChatMessageModel> Messages { get; }
 
-    public SessionModel(UserInfoModel user, IEnumerable<ChatMessageModel> messages, int id = 0)
+    public SessionModel(IUserService userService, UserInfoModel user, IEnumerable<ChatMessageModel> messages, int id = 0)
     {
+        _userService = userService;
         User = user;
         Id = id;
         _messages = new();
@@ -32,11 +35,10 @@ public partial class SessionModel : ObservableObject
     {
         var ids = messages.Select(x => x.FromId).Concat(messages.Select(x => x.ToId)).ToHashSet();
         var dic = new Dictionary<int, UserInfoModel>();
-        var userService = ServiceHelper.GetReqiredService<IUserService>();
 
         foreach (var id in ids)
         {
-            var userInfo = await userService.GetUserInfoByIdAsync(id, cancellationToken);
+            var userInfo = await _userService.GetUserInfoByIdAsync(id, cancellationToken);
             dic.Add(id, userInfo);
         }
 
@@ -63,18 +65,18 @@ public partial class SessionModel : ObservableObject
             return;
         }
 
-        var userService = ServiceHelper.GetReqiredService<IUserService>();
         if (string.IsNullOrWhiteSpace(message.FromAvatar))
         {
-            message.FromAvatar = (await userService.GetUserInfoByIdAsync(message.FromId, cancellationToken)).Avatar;
+            message.FromAvatar = (await _userService.GetUserInfoByIdAsync(message.FromId, cancellationToken)).Avatar;
 
         }
         if (string.IsNullOrWhiteSpace(message.ToAvatar))
         {
-            message.ToAvatar = (await userService.GetUserInfoByIdAsync(message.ToId, cancellationToken)).Avatar;
+            message.ToAvatar = (await _userService.GetUserInfoByIdAsync(message.ToId, cancellationToken)).Avatar;
         }
 
         _messages.Add(message);
+
         UnreadCount = message.IsSelfSend ? 0 : UnreadCount + 1;
         LastMessageTime = message.CreateTime;
         LastMessageContent = message.Content;

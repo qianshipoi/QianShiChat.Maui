@@ -3,13 +3,15 @@
 public sealed partial class UserInfoViewModel : ViewModelBase
 {
     private readonly DataCenter _dataCenter;
+    private readonly IUserService _userService;
 
     [ObservableProperty]
     private UserInfoModel _info;
 
-    public UserInfoViewModel(DataCenter dataCenter)
+    public UserInfoViewModel(DataCenter dataCenter, IUserService userService)
     {
         _dataCenter = dataCenter;
+        _userService = userService;
     }
 
     [RelayCommand]
@@ -25,7 +27,7 @@ public sealed partial class UserInfoViewModel : ViewModelBase
         }
         else
         {
-            session = new SessionModel(Info, new List<ChatMessageModel>());
+            session = new SessionModel(_userService, Info, new List<ChatMessageModel>());
         }
 
         _dataCenter.Sessions.Insert(0, session);

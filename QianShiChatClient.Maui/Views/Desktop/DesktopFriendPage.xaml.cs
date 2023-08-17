@@ -10,7 +10,7 @@ public partial class DesktopFriendPage : ContentPage
 
     private void OpenChatWindow_Clicked(object sender, EventArgs e)
     {
-        if(sender is not MenuFlyoutItem item || item.CommandParameter is not UserInfo user)
+        if(sender is not MenuFlyoutItem item || item.CommandParameter is not UserInfoModel user)
         {
             return;
         }

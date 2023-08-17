@@ -191,20 +191,6 @@
                     VerticalOptions="End"
                     WidthRequest="100" />
             </Grid>
-            <!--<Grid
-                Grid.Row="1"
-                Margin="8,0,8,8"
-                ColumnDefinitions="*, Auto"
-                ColumnSpacing="8">
-                <Entry
-                    Text="{Binding Message}"
-                    VerticalOptions="Center"
-                    VerticalTextAlignment="Center" />
-                <Button
-                    Grid.Column="1"
-                    Command="{Binding SendCommand}"
-                    Text="{local:Localize Send}" />
-            </Grid>-->
         </Grid>
     </Grid>
 </ContentView>

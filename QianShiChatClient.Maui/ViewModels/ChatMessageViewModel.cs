@@ -36,9 +36,8 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
         IsBusy = true;
         try
         {
-            var message = await _dataCenter.SendTextAsync(User, Session, Message);
+            ToMessage = await _dataCenter.SendTextAsync(User, Session, Message);
             ScrollAnimated = true;
-            ToMessage = message;
             Message = string.Empty;
         }
         catch (Exception ex)

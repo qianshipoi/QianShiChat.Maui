@@ -9,9 +9,9 @@ public class ChatMessageSelector : DataTemplateSelector
 
     protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
     {
-        if (item is not ChatMessage message)
+        if (item is not ChatMessageModel message)
         {
-            throw new Exception("item should be ChatMessage.");
+            throw new Exception("item should be ChatMessageModel.");
         }
 
         if (message.MessageType == ChatMessageType.Text)
