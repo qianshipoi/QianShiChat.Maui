@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddChatDbContext(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "chat.db3"));
+builder.Services.AddDataStore(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "chat.db3"));
 
 
 var app = builder.Build();

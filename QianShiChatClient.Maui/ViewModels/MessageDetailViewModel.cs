@@ -2,9 +2,9 @@
 
 public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttributable
 {
-    private readonly ChatDatabase _database;
     private readonly DataCenter _dataCenter;
     private readonly IUserService _userService;
+    private readonly IChatMessageRepository _chatMessageRepository;
 
     public int SessionId { get; private set; }
 
@@ -21,13 +21,13 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
     private string _message;
 
     public MessageDetailViewModel(
-        ChatDatabase database,
         DataCenter dataCenter,
-        IUserService userService)
+        IUserService userService,
+        IChatMessageRepository chatMessageRepository)
     {
-        _database = database;
         _dataCenter = dataCenter;
         _userService = userService;
+        _chatMessageRepository = chatMessageRepository;
     }
 
     [RelayCommand]
@@ -64,7 +64,7 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
             var user = await _userService.GetUserInfoByIdAsync(SessionId);
             if (user != null)
             {
-                var message = await _database.GetChatMessageAsync(user.Id);
+                var message = await _chatMessageRepository.GetChatMessageAsync(user.Id);
                 Session = new SessionModel(user, message.Select(x=>x.ToChatMessageModel()));
             }
         }

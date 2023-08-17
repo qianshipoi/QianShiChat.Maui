@@ -1,25 +1,22 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-
-using QianShiChatClient.Application.Data;
-using QianShiChatClient.Application.Models;
-using QianShiChatClient.Application.Services;
-using QianShiChatClient.MauiBlazor;
-
-namespace QianShiChatClient.Maui.Services;
+﻿namespace QianShiChatClient.Maui.Services;
 
 public class UserService : IUserService
 {
-    private readonly ChatDatabase _chatDatabase;
     private readonly ILogger<UserService> _logger;
     private readonly IApiClient _client;
     private readonly IMemoryCache _memoryCache;
+    private readonly IUserInfoRepository _userInfoRepository;
 
-    public UserService(ChatDatabase chatDatabase, ILogger<UserService> logger, IApiClient client, IMemoryCache memoryCache)
+    public UserService(
+        ILogger<UserService> logger, 
+        IApiClient client, 
+        IMemoryCache memoryCache, 
+        IUserInfoRepository userInfoRepository)
     {
-        _chatDatabase = chatDatabase;
         _logger = logger;
         _client = client;
         _memoryCache = memoryCache;
+        _userInfoRepository = userInfoRepository;
     }
 
     private string GetUserCacheKey(int id) => nameof(GetUserInfoByIdAsync) + id;
@@ -34,7 +31,7 @@ public class UserService : IUserService
             return userInfo;
         }
 
-        var user = await _chatDatabase.GetUserByIdAsync(id);
+        var user = await _userInfoRepository.GetByIdAsync(id);
         if (user is null)
         {
             try
@@ -43,7 +40,7 @@ public class UserService : IUserService
                 if (serverUser is not null)
                 {
                     userInfo = serverUser.ToUserInfoModel();
-                    await _chatDatabase.SaveUserAsync(userInfo.ToUserInfo());
+                    await _userInfoRepository.SaveUserAsync(userInfo.ToUserInfo());
                 }
                 else
                 {

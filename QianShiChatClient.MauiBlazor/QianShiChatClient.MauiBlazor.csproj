@@ -59,7 +59,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\QianShiChatClient.Application\QianShiChatClient.Application.csproj" />
+      <ProjectReference Include="..\QianShiChatClient.Application.Maui\QianShiChatClient.Application.Maui.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,7 +1,5 @@
 ﻿using QianShiChatClient.Maui.Windows;
 
-using Windows.System;
-
 using MicrosoftuiXaml = Microsoft.UI.Xaml;
 
 namespace QianShiChatClient.Maui.Services;
@@ -49,11 +47,11 @@ public class WinUIManagerService : IWindowManagerService
             }
         }
 
-        var viewModel = ServiceHelper.GetService<ChatMessageViewModel>();
+        var viewModel = App.Current.ServiceProvider.GetService<ChatMessageViewModel>();
         viewModel.Session = session;
         var page = new ChatRoomPage();
         page.BindingContext = viewModel;
-        var window = new DesktopWindow(page);
+        var window = new DesktopWindow(windowId, page);
         _opendWindows.Add(windowId, window);
         App.Current.OpenWindow(window);
     }
@@ -65,7 +63,7 @@ public class WinUIManagerService : IWindowManagerService
 
     public void CloseChatRoomWindow(UserInfoModel user) => CloseWindow(GetUserWindowId(user));
 
-    private void CloseWindow(string windowId)
+    public void CloseWindow(string windowId)
     {
         if (!_opendWindows.ContainsKey(windowId))
         {
@@ -87,8 +85,8 @@ public class WinUIManagerService : IWindowManagerService
             return;
         }
 
-        var page = ServiceHelper.GetService<DesktopAddQueryPage>();
-        var window = new DesktopWindow(page);
+        var page = App.Current.ServiceProvider.GetService<DesktopAddQueryPage>();
+        var window = new DesktopWindow(QueryWindowId, page);
         window.Height = 400;
         window.Width = 320;
         _opendWindows.Add(QueryWindowId, window);
@@ -102,20 +100,6 @@ public class WinUIManagerService : IWindowManagerService
     {
         foreach (var window in _opendWindows.Values)
         {
-            App.Current.CloseWindow(window);
-        }
-    }
-
-    public void CloseWindow(Window window)
-    {
-        var keys = _opendWindows.Where(x => x.Value.Equals(window)).Select(x => x.Key);
-
-        if (keys.Any())
-        {
-            foreach (var key in keys)
-            {
-                _opendWindows.Remove(key);
-            }
             App.Current.CloseWindow(window);
         }
     }

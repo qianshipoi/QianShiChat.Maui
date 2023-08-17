@@ -45,7 +45,7 @@ public sealed partial class FriendViewModel : ViewModelBase
     [RelayCommand]
     private void OpenNewWindow(UserInfoModel user)
     {
-        if (AppConsts.IsDesktop)
+        if (MauiAppConsts.IsDesktop)
         {
             ServiceHelper.GetService<IWindowManagerService>().OpenChatRoomWindow(user);
         }
@@ -60,7 +60,7 @@ public sealed partial class FriendViewModel : ViewModelBase
     [RelayCommand]
     private Task JoinNewFriendPage()
     {
-        if (AppConsts.IsDesktop)
+        if (MauiAppConsts.IsDesktop)
         {
             Content = ServiceHelper.GetService<NewFriendView>();
             return Task.CompletedTask;
@@ -74,7 +74,7 @@ public sealed partial class FriendViewModel : ViewModelBase
     [RelayCommand]
     private async Task JoinDetail(UserInfoModel user)
     {
-        if (AppConsts.IsDesktop)
+        if (MauiAppConsts.IsDesktop)
         {
             var view = ServiceHelper.GetService<UserInfoView>();
             (view.BindingContext as UserInfoViewModel).Info = user;

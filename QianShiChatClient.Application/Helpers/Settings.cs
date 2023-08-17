@@ -1,20 +1,27 @@
 ﻿namespace QianShiChatClient.Application.Helpers;
 
-public static class Settings
+public class Settings
 {
-    public static AppTheme Theme
+    IPreferencesService Preferences;
+
+    public Settings(IPreferencesService preferences)
+    {
+        Preferences = preferences;
+    }
+
+    public AppTheme Theme
     {
         get
         {
             if (!Preferences.ContainsKey(nameof(Theme)))
                 return AppTheme.Unspecified;
-            var appThemeStr = Preferences.Get(nameof(Theme), Enum.GetName(AppTheme.Unspecified));
+            var appThemeStr = Preferences.Get(nameof(Theme), AppTheme.Unspecified.ToString());
             return Enum.Parse<AppTheme>(appThemeStr!);
         }
         set => Preferences.Set(nameof(Theme), value.ToString());
     }
 
-    public static string Language
+    public string Language
     {
         get
         {
@@ -33,7 +40,7 @@ public static class Settings
         }
     }
 
-    public static string? AccessToken
+    public string? AccessToken
     {
         get
         {
@@ -52,7 +59,7 @@ public static class Settings
         }
     }
 
-    public static UserInfoModel? CurrentUser
+    public UserInfoModel? CurrentUser
     {
         get
         {

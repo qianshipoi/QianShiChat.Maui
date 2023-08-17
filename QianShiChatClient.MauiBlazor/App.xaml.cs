@@ -3,6 +3,7 @@
 public partial class App : Microsoft.Maui.Controls.Application
 {
     public readonly IServiceProvider ServiceProvider;
+    private readonly Settings _settings;
 
     public new static App Current => (App)Microsoft.Maui.Controls.Application.Current;
 
@@ -11,10 +12,16 @@ public partial class App : Microsoft.Maui.Controls.Application
     public App(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
-        InitializeComponent();
-        UserAppTheme = Settings.Theme;
-        var culture = new CultureInfo(Settings.Language);
-        _ = ServiceProvider.GetRequiredService<ChatDatabase>().Init();
+        ServiceHelper.Current = serviceProvider;
+        InitializeComponent(); 
+        _settings = ServiceProvider.GetRequiredService<Settings>();
+        UserAppTheme = _settings.Theme switch
+        {
+            Core.AppTheme.Light => Microsoft.Maui.ApplicationModel.AppTheme.Light,
+            Core.AppTheme.Dark => Microsoft.Maui.ApplicationModel.AppTheme.Dark,
+            _ => Microsoft.Maui.ApplicationModel.AppTheme.Unspecified,
+        };
+        var culture = new CultureInfo(_settings.Language);
         MainPage = ServiceProvider.GetRequiredService<SplashScreenPage>();
     }
 

@@ -7,13 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Maui", "Q
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.MauiBlazor", "QianShiChatClient.MauiBlazor\QianShiChatClient.MauiBlazor.csproj", "{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Application", "QianShiChatClient.Application\QianShiChatClient.Application.csproj", "{6212EC45-763C-420D-83C4-A964A0287789}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Application.Maui", "QianShiChatClient.Application.Maui\QianShiChatClient.Application.Maui.csproj", "{6212EC45-763C-420D-83C4-A964A0287789}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Data", "QianShiChatClient.Data\QianShiChatClient.Data.csproj", "{BD7DCFD3-1F50-4718-912C-279FDD973885}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Core", "QianShiChatClient.Core\QianShiChatClient.Core.csproj", "{D3AA0677-76D4-4CA8-AAE2-441474637068}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QianShiChatClient.Data.Migration", "QianShiChatClient.Data.Migration\QianShiChatClient.Data.Migration.csproj", "{018AA1AD-9FD8-452F-B5B4-A6286491E263}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Data.Migration", "QianShiChatClient.Data.Migration\QianShiChatClient.Data.Migration.csproj", "{018AA1AD-9FD8-452F-B5B4-A6286491E263}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QianShiChatClient.Application", "QianShiChatClient.Application\QianShiChatClient.Application.csproj", "{E81B5CE1-5580-4368-932E-4C19DC856FBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{018AA1AD-9FD8-452F-B5B4-A6286491E263}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{018AA1AD-9FD8-452F-B5B4-A6286491E263}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{018AA1AD-9FD8-452F-B5B4-A6286491E263}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E81B5CE1-5580-4368-932E-4C19DC856FBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E81B5CE1-5580-4368-932E-4C19DC856FBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E81B5CE1-5580-4368-932E-4C19DC856FBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E81B5CE1-5580-4368-932E-4C19DC856FBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

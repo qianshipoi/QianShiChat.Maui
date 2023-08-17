@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Maui.Core;
-
-namespace QianShiChatClient.Application.Services;
+﻿namespace QianShiChatClient.Application.Services;
 
 public interface IDialogService
 {
@@ -12,9 +10,7 @@ public interface IDialogService
         string message,
         Action? action = null,
         string actionButtonText = "OK",
-        TimeSpan? duration = null,
-        SnackbarOptions? visualOptions = null,
-        IView? anchor = null
+        TimeSpan? duration = null
     );
 
     Task Toast(

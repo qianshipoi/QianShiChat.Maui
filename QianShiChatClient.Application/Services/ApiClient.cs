@@ -8,17 +8,26 @@ public class ApiClient : IApiClient
     private readonly JsonSerializerOptions _serializerOptions;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ApiClient> _logger;
+    private readonly Settings Settings;
+    private readonly ApiOptions _options;
 
-    public ApiClient(INavigationService navigationService, IHttpClientFactory httpClientFactory, ILogger<ApiClient> logger)
+    public ApiClient(
+        INavigationService navigationService,
+        IHttpClientFactory httpClientFactory,
+        ILogger<ApiClient> logger,
+        IOptions<ApiOptions> options,
+        Settings settings)
     {
         _navigationService = navigationService;
         _httpClientFactory = httpClientFactory;
+        _options = options.Value;
         _serializerOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true
         };
         _logger = logger;
+        Settings = settings;
     }
 
     public string? AccessToken
@@ -27,11 +36,11 @@ public class ApiClient : IApiClient
         private set => Settings.AccessToken = value;
     }
 
-    public string ClientType => AppConsts.CLIENT_TYPE;
+    public string ClientType => _options.ClientType;
 
     public async Task<(bool succeeded, UserDto? data, string message)> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
-        using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
+        using var client = _httpClientFactory.CreateClient(_options.ClientName);
         using var response = await client.PostAsJsonAsync("/api/Auth", request, cancellationToken);
         response.EnsureSuccessStatusCode();
         var accessToken = response.Headers.GetValues(ACCESS_TOKEN_HEADER_KEY).FirstOrDefault();
@@ -48,7 +57,7 @@ public class ApiClient : IApiClient
 
     public async Task<(bool, UserDto?)> CheckAccessToken(CancellationToken cancellationToken = default)
     {
-        using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
+        using var client = _httpClientFactory.CreateClient(_options.ClientName);
         try
         {
             using var response = await client.GetAsync("/api/auth", cancellationToken);
@@ -78,7 +87,7 @@ public class ApiClient : IApiClient
 
     private async Task<(bool Succeeded, T? Data, string Message)> GetJsonAsync<T>(string url, CancellationToken cancellationToken = default)
     {
-        using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
+        using var client = _httpClientFactory.CreateClient(_options.ClientName);
         using var response = await client.GetAsync(url, cancellationToken);
         if (response.StatusCode == HttpStatusCode.Unauthorized)
         {
@@ -110,7 +119,7 @@ public class ApiClient : IApiClient
 
     private async Task<(bool Succeeded, TResponse? Data, string Message)> PostJsonAsync<TResponse, TRequest>(string url, TRequest? request, CancellationToken cancellationToken = default)
     {
-        using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
+        using var client = _httpClientFactory.CreateClient(_options.ClientName);
         using var response = await client.PostAsJsonAsync(url, request, cancellationToken);
         if (response.StatusCode == HttpStatusCode.Unauthorized)
         {
@@ -143,7 +152,7 @@ public class ApiClient : IApiClient
     private async Task<(bool Succeeded, string Message)> PostJsonAsync<TRequest>(string url, TRequest request, CancellationToken
         cancellationToken = default)
     {
-        using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
+        using var client = _httpClientFactory.CreateClient(_options.ClientName);
         using var response = await client.PostAsJsonAsync(url, request, cancellationToken);
         if (response.StatusCode == HttpStatusCode.Unauthorized)
         {
@@ -177,7 +186,7 @@ public class ApiClient : IApiClient
     private async Task<(bool Succeeded, TReponse? response, string Message)> PostAsync<TReponse>(string url, HttpContent? request = null, CancellationToken
        cancellationToken = default)
     {
-        using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
+        using var client = _httpClientFactory.CreateClient(_options.ClientName);
 
         using var response = await client.PostAsync(url, request, cancellationToken);
         if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -212,7 +221,7 @@ public class ApiClient : IApiClient
     private async Task<(bool Succeeded, TReponse? response, string Message)> PostProgressAsync<TReponse>(string url, HttpContent? request = null, CancellationToken
        cancellationToken = default)
     {
-        using var client = _httpClientFactory.CreateClient(AppConsts.API_CLIENT_NAME);
+        using var client = _httpClientFactory.CreateClient(_options.ClientName);
 
         //var handler = new DelegatingProgressHandler();
 
@@ -342,7 +351,7 @@ public class ApiClient : IApiClient
     public async Task<CheckQrAuthKeyResponse?> CheckQrKeyAsync(string key, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await GetJsonAsync<CheckQrAuthKeyResponse>($"/api/Auth/qr/check?key={key}", cancellationToken);
-        if (succeeded && data is not null && data.Code  == 803)
+        if (succeeded && data is not null && data.Code == 803)
         {
             AccessToken = data.AccessToken;
         }

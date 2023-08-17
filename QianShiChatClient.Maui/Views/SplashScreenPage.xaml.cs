@@ -2,10 +2,12 @@ namespace QianShiChatClient.Maui.Views;
 
 public partial class SplashScreenPage : ContentPage
 {
-    public SplashScreenPage()
-    {
-        InitializeComponent();
+    private readonly Settings _settings;
 
+    public SplashScreenPage(Settings settings)
+    {
+        _settings = settings;
+        InitializeComponent();
         Loaded += SplashScreenPage_Loaded;
     }
 
@@ -19,7 +21,7 @@ public partial class SplashScreenPage : ContentPage
     private void GoToLoginPage()
     {
         Dispatcher.Dispatch(() => {
-            var loginPage = ServiceHelper.GetService<LoginPage>();
+            var loginPage = App.Current.ServiceProvider.GetService<LoginPage>();
             App.Current.MainPage = new NavigationPage(loginPage);
         });
 
@@ -27,14 +29,14 @@ public partial class SplashScreenPage : ContentPage
 
     private async void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
     {
-        if (string.IsNullOrEmpty(Settings.AccessToken))
+        if (string.IsNullOrEmpty(_settings.AccessToken))
         {
             await Task.Delay(1000);
             GoToLoginPage();
             return;
         }
 
-        var (succeeded, user) = await ServiceHelper.GetService<IApiClient>().CheckAccessToken();
+        var (succeeded, user) = await App.Current.ServiceProvider.GetService<IApiClient>().CheckAccessToken();
         if (!succeeded)
         {
             GoToLoginPage();
@@ -44,10 +46,10 @@ public partial class SplashScreenPage : ContentPage
 
         Dispatcher.Dispatch(() => {
             App.Current.User = user.ToUserInfoModel();
-            Settings.CurrentUser = App.Current.User;
-            App.Current.MainPage = AppConsts.IsDesktop ?
-                ServiceHelper.GetService<DesktopShell>() :
-                ServiceHelper.GetService<AppShell>();
+            _settings.CurrentUser = App.Current.User;
+            App.Current.MainPage = MauiAppConsts.IsDesktop ? 
+                App.Current.ServiceProvider.GetService<DesktopShell>() :
+                App.Current.ServiceProvider.GetService<AppShell>();
         });
     }
 }

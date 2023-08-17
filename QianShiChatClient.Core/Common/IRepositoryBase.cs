@@ -1,27 +1,26 @@
-﻿namespace QianShiChatClient.Core.Common
+﻿namespace QianShiChatClient.Core.Common;
+
+public interface IRepositoryBase<TEntity> : IReadRepositoryBase<TEntity> where TEntity : class
 {
-    public interface IRepositoryBase<TEntity> : IReadRepositoryBase<TEntity> where TEntity : class
-    {
-        IUnitOfWork UnitOfWork { get; }
+    IUnitOfWork UnitOfWork { get; }
 
-        TEntity Add(TEntity entity);
+    TEntity Add(TEntity entity);
 
-        Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
+    Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
 
-        ICollection<TEntity> AddRange(ICollection<TEntity> entities);
+    ICollection<TEntity> AddRange(ICollection<TEntity> entities);
 
-        Task<int> AddRangeAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default);
+    Task<int> AddRangeAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default);
 
-        void Delete(TEntity entity);
+    void Delete(TEntity entity);
 
-        Task<int> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
+    Task<int> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
 
-        void DeleteRange(ICollection<TEntity> entities);
+    void DeleteRange(ICollection<TEntity> entities);
 
-        Task<int> DeleteRangeAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default);
+    Task<int> DeleteRangeAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default);
 
-        void Update(TEntity entity);
+    void Update(TEntity entity);
 
-        Task<int> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
-    }
+    Task<int> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 }

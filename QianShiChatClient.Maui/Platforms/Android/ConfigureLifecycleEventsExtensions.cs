@@ -7,7 +7,7 @@
             builder.ConfigureLifecycleEvents(events => {
                 events.AddAndroid(android => {
                     android.OnResume(res => {
-                        _ = ServiceHelper.Current.GetRequiredService<ChatHub>().Connect();
+                        _ = App.Current.ServiceProvider.GetRequiredService<ChatHub>().Connect();
                     });
                 });
             });
@@ -19,10 +19,11 @@
         {
             builder.AddAndroid(android => {
                 android.OnResume(res => {
-                    if (App.Current.User != null && !string.IsNullOrWhiteSpace(Settings.AccessToken))
+                    var settings = App.Current.ServiceProvider.GetRequiredService<Settings>();
+                    if (App.Current.User != null && !string.IsNullOrWhiteSpace(settings.AccessToken))
                     {
-                        _ = ServiceHelper.Current.GetRequiredService<ChatHub>().Connect();
-                        _ = ServiceHelper.Current.GetRequiredService<DataCenter>().GetUnreadMessageAsync();
+                        _ = App.Current.ServiceProvider.GetRequiredService<ChatHub>().Connect();
+                        _ = App.Current.ServiceProvider.GetRequiredService<DataCenter>().GetUnreadMessageAsync();
                     }
                 });
             });

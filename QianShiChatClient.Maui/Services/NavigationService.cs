@@ -5,6 +5,13 @@
 /// </summary>
 public class NavigationService : INavigationService
 {
+    private readonly Settings _settings;
+
+    public NavigationService(Settings settings)
+    {
+        _settings = settings;
+    }
+
     public Task GoToRoot() => Shell.Current.Navigation.PopToRootAsync();
 
     public Task GoBack() => Shell.Current.GoToAsync("..");
@@ -22,7 +29,7 @@ public class NavigationService : INavigationService
         return Shell.Current.GoToAsync(nameof(MessageDetailPage), true, navigationParameter);
     }
 
-    public Task GoToSettingsPage() => Shell.Current.GoToAsync((AppConsts.IsDesktop ? "" : "//") + nameof(SettingsPage));
+    public Task GoToSettingsPage() => Shell.Current.GoToAsync((MauiAppConsts.IsDesktop ? "" : "//") + nameof(SettingsPage));
 
     public Task GoToMessagePage() => Shell.Current.GoToAsync($"//{nameof(MessagePage)}");
 
@@ -40,8 +47,8 @@ public class NavigationService : INavigationService
     public Task GoToLoginPage()
     {
         App.Current.MainPage = App.Current.ServiceProvider.GetRequiredService<LoginPage>();
-        Settings.AccessToken = null;
-        Settings.CurrentUser = null;
+        _settings.AccessToken = null;
+        _settings.CurrentUser = null;
         return Task.CompletedTask;
     }
 

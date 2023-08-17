@@ -88,15 +88,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\QianShiChatClient.Application\QianShiChatClient.Application.csproj" />
+	  <ProjectReference Include="..\QianShiChatClient.Application.Maui\QianShiChatClient.Application.Maui.csproj" />
 	  <ProjectReference Include="..\QianShiChatClient.Data\QianShiChatClient.Data.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Compile Update="AppShell - 复制.xaml.cs">
-	    <DependentUpon>%(Filename)</DependentUpon>
-	  </Compile>
-	  <Compile Update="DesktopShell - 复制.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
 	  <Compile Update="Resources\Strings\MyStrings.Designer.cs">
@@ -121,9 +118,6 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="AppShell - 复制.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="DesktopShell - 复制.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="DesktopShell.xaml">

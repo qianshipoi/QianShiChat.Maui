@@ -111,7 +111,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     [RelayCommand]
     private Task JoinDetail(SessionModel item)
     {
-        if (AppConsts.IsDesktop)
+        if (MauiAppConsts.IsDesktop)
         {
             CurrentSelectedSession = item;
 
@@ -139,7 +139,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     [RelayCommand]
     private Task JoinQueryPage()
     {
-        if (AppConsts.IsDesktop)
+        if (MauiAppConsts.IsDesktop)
         {
             ServiceHelper.GetService<IWindowManagerService>()?.OpenQueryWindow();
             return Task.CompletedTask;

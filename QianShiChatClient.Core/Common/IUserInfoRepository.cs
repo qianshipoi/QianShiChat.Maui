@@ -2,5 +2,5 @@
 
 public interface IUserInfoRepository : IRepository<UserInfo>
 {
-
+    Task SaveUserAsync(UserInfo info);
 }

@@ -4,6 +4,7 @@ public sealed partial class LoginViewModel : ViewModelBase
 {
     private readonly IApiClient _apiClient;
     private readonly IDispatcher _dispatcher;
+    private readonly Settings _settings;
 
     private Timer _updateQrCodeTimer;
     private Timer _checkTimer;
@@ -27,20 +28,22 @@ public sealed partial class LoginViewModel : ViewModelBase
     public LoginViewModel(
         IDispatcher dispatcher,
         IApiClient apiClient
-    )
+,
+        Settings settings)
     {
         _apiClient = apiClient;
         _dispatcher = dispatcher;
+        _settings = settings;
     }
 
     private void JoinMainPage(UserInfoModel user)
     {
         _dispatcher.Dispatch(() => {
             App.Current.User = user;
-            Settings.CurrentUser = App.Current.User;
-            App.Current.MainPage = AppConsts.IsDesktop ?
-                ServiceHelper.GetService<DesktopShell>() :
-                ServiceHelper.GetService<AppShell>();
+            _settings.CurrentUser = App.Current.User;
+            App.Current.MainPage = MauiAppConsts.IsDesktop ?
+                App.Current.ServiceProvider.GetService<DesktopShell>() :
+                App.Current.ServiceProvider.GetService<AppShell>();
         });
     }
 
@@ -158,7 +161,7 @@ public sealed partial class LoginViewModel : ViewModelBase
         {
             // auth successed.
             ClearAuthTimer();
-            Settings.AccessToken = checkResponse.AccessToken;
+            _settings.AccessToken = checkResponse.AccessToken;
             await MainThread.InvokeOnMainThreadAsync(async () => {
                 await Toast
                     .Make(LocalizationResourceManager.Instance["LoginSuccessed"].ToString())

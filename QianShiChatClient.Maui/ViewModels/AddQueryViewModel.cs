@@ -52,7 +52,7 @@ public sealed partial class AddQueryViewModel : ViewModelBase
     [RelayCommand]
     private Task AddFriend(UserInfo user)
     {
-        if (AppConsts.IsDesktop)
+        if (MauiAppConsts.IsDesktop)
         {
             AddFriendVM = ServiceHelper.GetService<AddFriendViewModel>();
             AddFriendVM.UserInfo = user;

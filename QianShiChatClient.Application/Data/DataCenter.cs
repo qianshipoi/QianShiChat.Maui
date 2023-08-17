@@ -2,13 +2,15 @@
 
 public sealed partial class DataCenter : ObservableObject
 {
-    private readonly IDispatcher _dispatcher;
+    private readonly IGlobalDispatcher _dispatcher;
     private readonly IApiClient _apiClient;
-    private readonly ChatDatabase _database;
     private readonly ChatHub _chatHub;
     private readonly ILogger<DataCenter> _logger;
     private readonly IUserService _userService;
-    private IDispatcherTimer? _timer;
+    private readonly IUserInfoRepository _userInfoRepository;
+    private readonly ISessionRepository _sessionRepository;
+    private readonly IChatMessageRepository _chatMessageRepository;
+    private IGlobalDispatcherTimer? _timer;
 
     [ObservableProperty]
     private bool _isConnected;
@@ -21,17 +23,21 @@ public sealed partial class DataCenter : ObservableObject
 
     public DataCenter(
         IApiClient apiClient,
-        ChatDatabase database,
         ChatHub chatHub,
-        IDispatcher dispatcher,
+        IGlobalDispatcher dispatcher,
         ILogger<DataCenter> logger,
-        IUserService userService)
+        IUserService userService,
+        IUserInfoRepository userInfoRepository,
+        ISessionRepository sessionRepository,
+        IChatMessageRepository chatMessageRepository)
     {
         _apiClient = apiClient;
-        _database = database;
         _chatHub = chatHub;
         _dispatcher = dispatcher;
         _logger = logger;
+        _userInfoRepository = userInfoRepository;
+        _sessionRepository = sessionRepository;
+        _chatMessageRepository = chatMessageRepository;
         Friends = new();
         Pendings = new();
         Sessions = new();
@@ -70,7 +76,7 @@ public sealed partial class DataCenter : ObservableObject
 
     private async Task SaveSessionsAsync()
     {
-        await _database.SaveSessionsAsync(Sessions.OrderByDescending(x => x.LastMessageTime).Select(x => x.ToSession()));
+        await _sessionRepository.SaveSessionAsync(Sessions.OrderByDescending(x => x.LastMessageTime).Select(x => x.ToSession()));
         ClearTimer();
     }
 
@@ -89,13 +95,13 @@ public sealed partial class DataCenter : ObservableObject
         }
         await session.AddMessageAsync(message.ToChatMessageModel());
         UpdateSessions(session);
-        await _database.SaveChatMessageAsnyc(message);
-        await _database.SaveSessionAsync(session.ToSession());
+        await _chatMessageRepository.SaveChatMessageAsnyc(message);
+        await _sessionRepository.SaveSessionAsync(session.ToSession());
     }
 
     private async Task GetSessionsAsync()
     {
-        var sessionModels = await _database.GetAllSessionAsync();
+        var sessionModels = await _sessionRepository.GetAllSessionAsync();
 
         foreach (var model in sessionModels)
         {
@@ -107,8 +113,8 @@ public sealed partial class DataCenter : ObservableObject
                     var user = await _userService.GetUserInfoByIdAsync(model.ToId);
                     if (user != null)
                     {
-                        var messages = await _database.GetChatMessageAsync(user.Id, 0, 20);
-                        session = new SessionModel(user, messages.Select(x=>x.ToChatMessageModel()));
+                        var messages = await _chatMessageRepository.GetChatMessageAsync(user.Id, 0, 20);
+                        session = new SessionModel(user, messages.Select(x => x.ToChatMessageModel()));
                         _dispatcher.Dispatch(() => Sessions.Add(session));
                     }
                 }
@@ -146,14 +152,14 @@ public sealed partial class DataCenter : ObservableObject
                 message.IsSelfSend = message.FromId == _userService.CurrentUser().Id;
             }
 
-            var session = await AddSessionsAsync(user, messages.Select(x=>x.ToChatMessageModel()));
+            var session = await AddSessionsAsync(user, messages.Select(x => x.ToChatMessageModel()));
 
-            await _database.SaveUserAsync(user.ToUserInfo());
+            await _userInfoRepository.SaveUserAsync(user.ToUserInfo());
             if (messages.Any())
             {
-                await _database.SaveChatMessagesAsnyc(messages);
+                await _chatMessageRepository.SaveChatMessagesAsnyc(messages);
             }
-            await _database.SaveSessionAsync(session.ToSession());
+            await _sessionRepository.SaveSessionAsync(session.ToSession());
         }
     }
 
@@ -190,7 +196,7 @@ public sealed partial class DataCenter : ObservableObject
                 friend.NickName = user.NickName;
                 friend.Content = user.Content;
             }
-            await _database.SaveUserAsync(user.ToUserInfo());
+            await _userInfoRepository.SaveUserAsync(user.ToUserInfo());
         }
     }
 
@@ -233,7 +239,7 @@ public sealed partial class DataCenter : ObservableObject
                     message.Status = MessageStatus.Successful;
                 });
 
-                await _database.UpdateChatMessageAsync(message.ToChatMessage());
+                await _chatMessageRepository.UpdateChatMessageAsync(message.ToChatMessage());
             }
             catch (Exception ex)
             {
@@ -246,7 +252,7 @@ public sealed partial class DataCenter : ObservableObject
         UpdateSessions(session);
         try
         {
-            await _database.SaveChatMessageAsnyc(message.ToChatMessage());
+            await _chatMessageRepository.SaveChatMessageAsnyc(message.ToChatMessage());
         }
         catch (Exception ex)
         {
@@ -301,7 +307,7 @@ public sealed partial class DataCenter : ObservableObject
                     ChatMessageSendType.Personal,
                     filePath,
                     (loaded, total) => {
-                        MainThread.BeginInvokeOnMainThread(() => {
+                        _dispatcher.Dispatch(() => {
                             message.UploadProgressValue = loaded / total;
                         });
                     });
@@ -309,7 +315,7 @@ public sealed partial class DataCenter : ObservableObject
                 _dispatcher.Dispatch(() => {
                     message.Status = MessageStatus.Successful;
                 });
-                await _database.UpdateChatMessageAsync(message.ToChatMessage());
+                await _chatMessageRepository.UpdateChatMessageAsync(message.ToChatMessage());
             }
             catch (Exception ex)
             {
@@ -322,7 +328,7 @@ public sealed partial class DataCenter : ObservableObject
         UpdateSessions(session);
         try
         {
-            await _database.SaveChatMessageAsnyc(message.ToChatMessage());
+            await _chatMessageRepository.SaveChatMessageAsnyc(message.ToChatMessage());
         }
         catch (Exception ex)
         {

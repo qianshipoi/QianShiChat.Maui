@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using QianShiChatClient.Core.Common;
-
-using System.Linq.Expressions;
-
-namespace QianShiChatClient.Data.Repository;
+﻿namespace QianShiChatClient.Data.Repository;
 
 public class BaseRepository<TEntity> : IRepository<TEntity>, IReadRepository<TEntity> where TEntity : class
 {

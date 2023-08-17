@@ -1,14 +1,11 @@
-﻿using QianShiChatClient.Data;
-using QianShiChatClient.Data.Repository;
+﻿namespace Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
-
-public static class DependencyInjection
+public static class DependencyInjectionExtensions
 {
-    public static IServiceCollection AddChatDbContext(this IServiceCollection services, string filePath)
+    public static IServiceCollection AddDataStore(this IServiceCollection services, string filePath)
     {
-        services.AddDbContext<ChatDbContext>(options => 
-            options.UseSqlite($"Filename={filePath}", 
+        services.AddDbContext<ChatDbContext>(options =>
+            options.UseSqlite($"Filename={filePath}",
             builder => builder.MigrationsAssembly(typeof(ChatDbContext).Assembly.FullName)));
 
         services.AddScoped<IChatContext>(provider => provider.GetRequiredService<ChatDbContext>());
@@ -16,6 +13,8 @@ public static class DependencyInjection
         services.AddTransient(typeof(IRepository<>), typeof(BaseRepository<>));
         services.AddTransient(typeof(IReadRepository<>), typeof(BaseRepository<>));
         services.AddTransient<IUserInfoRepository, UserInfoRepository>();
+        services.AddTransient<ISessionRepository, SessionRepository>();
+        services.AddTransient<IChatMessageRepository, ChatMessageRepository>();
 
         return services;
     }

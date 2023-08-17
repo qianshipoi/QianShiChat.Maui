@@ -4,19 +4,21 @@ public sealed partial class AppShellViewModel : ViewModelBase
 {
     private readonly ChatHub _chatHub;
     private readonly IDialogService _dialogService;
+    private readonly Settings _settings;
 
-    public AppShellViewModel(ChatHub chatHub, IDialogService dialogService)
+    public AppShellViewModel(ChatHub chatHub, IDialogService dialogService, Settings settings)
     {
         _ = chatHub.Connect();
         _chatHub = chatHub;
         _dialogService = dialogService;
+        _settings = settings;
     }
 
     [RelayCommand]
     private async Task Logout()
     {
-        Settings.CurrentUser = null;
-        Settings.AccessToken = null;
+        _settings.CurrentUser = null;
+        _settings.AccessToken = null;
         App.Current.User = null;
         await _chatHub.Deconnect();
         await _navigationService.GoToLoginPage();

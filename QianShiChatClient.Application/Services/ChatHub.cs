@@ -4,6 +4,9 @@ public class ChatHub
 {
     private readonly ILogger<ChatHub> _logger;
     private readonly HubConnection _connection;
+    private readonly ApiOptions _options;
+    private readonly Settings _settings;
+    private readonly IDialogService _dialogService;
     private bool _isConnected;
     private bool _isConnecting;
 
@@ -28,14 +31,15 @@ public class ChatHub
         }
     }
 
-    public ChatHub(ILogger<ChatHub> logger)
+    public ChatHub(ILogger<ChatHub> logger, IOptions<ApiOptions> options, Settings settings, IDialogService dialogService)
     {
         _logger = logger;
+        _options = options.Value;
         _connection = new HubConnectionBuilder()
-          .WithUrl($"{AppConsts.API_BASE_URL}/Hubs/Chat", options => {
-              options.AccessTokenProvider = () => ChatHub.GetAccessToken();
+          .WithUrl($"{_options.BaseUrl}/Hubs/Chat", options => {
+              options.AccessTokenProvider = () => GetAccessToken();
               options.Headers.Add("User-Agent", "QianShiChatClient-Maui");
-              options.Headers.Add("Client-Type", AppConsts.CLIENT_TYPE);
+              options.Headers.Add("Client-Type", _options.ClientType);
           })
           .WithAutomaticReconnect()
           .Build();
@@ -62,9 +66,11 @@ public class ChatHub
             _isConnecting = false;
             return Task.CompletedTask;
         };
+        _settings = settings;
+        _dialogService = dialogService;
     }
 
-    private static Task<string?> GetAccessToken() => Task.FromResult(Settings.AccessToken);
+    private Task<string?> GetAccessToken() => Task.FromResult(_settings.AccessToken);
 
     public async Task Connect()
     {
@@ -77,7 +83,7 @@ public class ChatHub
         }
         catch (Exception ex)
         {
-            await Toast.Make(ex.Message).Show();
+            await _dialogService.Toast(ex.Message);
             _logger.LogError(ex, "chat hub connect error.");
         }
         finally
