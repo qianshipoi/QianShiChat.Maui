@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Extensions.DependencyInjection;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjectionExtensions
 {
@@ -10,6 +12,7 @@ public static class DependencyInjectionExtensions
         services.AddSingleton<ChatHub>();
         services.AddSingleton<DataCenter>();
         services.AddSingleton<Settings>();
+        services.AddSingleton<IRoomRemoteService, RoomHubService>();
 
         services.PostConfigure<ApiOptions>(options => {
             options.ClientName = AppConsts.API_CLIENT_NAME;

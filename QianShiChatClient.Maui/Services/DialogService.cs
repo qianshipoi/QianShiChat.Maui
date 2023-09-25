@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.Services;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Maui.Services;
 
 public class DialogService : IDialogService
 {

@@ -1,4 +1,5 @@
-﻿using QianShiChatClient.MauiBlazor.Services;
+﻿using QianShiChatClient.Application.IServices;
+using QianShiChatClient.MauiBlazor.Services;
 
 namespace QianShiChatClient.MauiBlazor;
 

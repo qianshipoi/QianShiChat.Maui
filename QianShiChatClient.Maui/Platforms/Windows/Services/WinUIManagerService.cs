@@ -1,4 +1,4 @@
-﻿using QianShiChatClient.Application.Services;
+﻿using QianShiChatClient.Application.IServices;
 using QianShiChatClient.Maui.Windows;
 
 using MicrosoftuiXaml = Microsoft.UI.Xaml;
@@ -9,15 +9,13 @@ public class WinUIManagerService : IWindowManagerService
 {
     private const string QueryWindowId = "query";
     private readonly DataCenter _dataConter;
-    private readonly IUserService _userService;
 
     private Dictionary<string, DesktopWindow> _opendWindows;
 
-    public WinUIManagerService(DataCenter dataConter, IUserService userService)
+    public WinUIManagerService(DataCenter dataConter)
     {
         _dataConter = dataConter;
         _opendWindows = new();
-        _userService = userService;
     }
 
     private string GetUserWindowId(UserInfoModel user) => $"user_{user.Id}";
@@ -38,7 +36,7 @@ public class WinUIManagerService : IWindowManagerService
 
         if (session is null)
         {
-            session = new SessionModel(_userService, user, new List<ChatMessageModel>());
+            session = new SessionModel(user, new List<ChatMessageModel>());
             _dataConter.Sessions.Insert(0, session);
         }
         else

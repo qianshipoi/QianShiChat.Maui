@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Application.Services;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Application.Services;
 
 public class ApiClient : IApiClient
 {
@@ -63,7 +65,6 @@ public class ApiClient : IApiClient
             using var response = await client.GetAsync("/api/auth", cancellationToken);
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                //await _navigationService.GoToLoginPage();
                 return (false, null);
             }
             response.EnsureSuccessStatusCode();
@@ -80,7 +81,6 @@ public class ApiClient : IApiClient
         catch (Exception ex)
         {
             _logger.LogError(ex, "check token error.");
-            //await Toast.Make(ex.Message).Show();
             return (false, null);
         }
     }

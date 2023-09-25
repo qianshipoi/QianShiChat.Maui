@@ -1,4 +1,4 @@
-﻿namespace QianShiChatClient.Application.Services;
+﻿namespace QianShiChatClient.Application.IServices;
 
 public interface IGlobalDispatcher
 {

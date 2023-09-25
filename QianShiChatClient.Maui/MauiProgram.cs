@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Maui;
 
 public static class MauiProgram
 {
@@ -59,7 +61,7 @@ public static class MauiProgram
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<IDialogService, DialogService>();
 
-        services.AddSingleton<IUserService, UserService>();
+        services.AddScoped<IUserService, UserService>();
 
 #if WINDOWS
         services.AddSingleton<IWindowManagerService, WinUIManagerService>();

@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Application.Services;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Application.Services;
 
 public class ChatHub
 {
@@ -11,12 +13,11 @@ public class ChatHub
     private bool _isConnecting;
 
     public event Action<string, string>? ReceiveMessage;
-
     public event Action<NotificationMessage>? Notification;
-
     public event Action<ChatMessageDto>? PrivateChat;
-
     public event Action<bool>? IsConnectedChanged;
+
+    public HubConnection HubConnection => _connection;
 
     public bool IsConnected
     {
@@ -47,20 +48,17 @@ public class ChatHub
         _connection.On<string, string>(nameof(ReceiveMessage), (u, n) => ReceiveMessage?.Invoke(u, n));
         _connection.On<NotificationMessage>(nameof(Notification), (msg) => Notification?.Invoke(msg));
         _connection.On<ChatMessageDto>(nameof(PrivateChat), (msg) => PrivateChat?.Invoke(msg));
-
         _connection.Closed += async (error) => {
             IsConnected = false;
             _isConnecting = false;
             await Task.Delay(new Random().Next(0, 5) * 1000);
             await Connect();
         };
-
         _connection.Reconnecting += (msg) => {
             IsConnected = false;
             _isConnecting = true;
             return Task.CompletedTask;
         };
-
         _connection.Reconnected += (msg) => {
             IsConnected = true;
             _isConnecting = false;

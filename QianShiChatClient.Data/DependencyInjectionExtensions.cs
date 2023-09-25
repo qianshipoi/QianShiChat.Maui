@@ -10,11 +10,11 @@ public static class DependencyInjectionExtensions
 
         services.AddScoped<IChatContext>(provider => provider.GetRequiredService<ChatDbContext>());
 
-        services.AddTransient(typeof(IRepository<>), typeof(BaseRepository<>));
-        services.AddTransient(typeof(IReadRepository<>), typeof(BaseRepository<>));
-        services.AddTransient<IUserInfoRepository, UserInfoRepository>();
-        services.AddTransient<ISessionRepository, SessionRepository>();
-        services.AddTransient<IChatMessageRepository, ChatMessageRepository>();
+        services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+        services.AddScoped(typeof(IReadRepository<>), typeof(BaseRepository<>));
+        services.AddScoped<IUserInfoRepository, UserInfoRepository>();
+        services.AddScoped<ISessionRepository, SessionRepository>();
+        services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
 
         return services;
     }

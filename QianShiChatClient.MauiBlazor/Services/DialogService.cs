@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.MauiBlazor.Services;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.MauiBlazor.Services;
 
 public class DialogService : IDialogService
 {

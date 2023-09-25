@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.ViewModels;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Maui.ViewModels;
 
 [QueryProperty(nameof(UserInfo), nameof(UserInfo))]
 public sealed partial class AddFriendViewModel : ViewModelBase

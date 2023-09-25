@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.ViewModels;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Maui.ViewModels;
 
 [QueryProperty(nameof(CurrentSelectedSession), nameof(CurrentSelectedSession))]
 public sealed partial class MessageViewModel : ViewModelBase

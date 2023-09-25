@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Application.Helpers;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Application.Helpers;
 
 public class Settings
 {

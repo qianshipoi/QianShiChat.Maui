@@ -9,7 +9,7 @@ public partial class ChatMessageModel : ObservableObject
     private string? _fromAvatar;
     public int ToId { get; set; }
     [ObservableProperty]
-    private string? _toAvatar;
+    private UserInfoModel _fromUser;
     public ChatMessageSendType SendType { get; set; }
     public ChatMessageType MessageType { get; set; }
     public string Content { get; set; } = null!;

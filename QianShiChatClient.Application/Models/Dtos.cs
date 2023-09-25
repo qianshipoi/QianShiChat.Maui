@@ -37,6 +37,7 @@ public class GlobalResult<T>
 }
 
 public record UserDto(int Id, string Account, string NickName, string Avatar, long CreateTime);
+public record GroupDto(int Id, int UserId, string Name, string Avatar, int TotalUser, long CreateTime);
 
 public class QrAuthResponse
 {
@@ -110,22 +111,41 @@ public record UserWithMessageDto : UserDto
 public record ChatMessageDto
 {
     public long Id { get; set; }
-
     public int FromId { get; set; }
-
     public int ToId { get; set; }
-
+    public string RoomId { get; set; } = string.Empty;
     public ChatMessageSendType SendType { get; set; }
-
     public ChatMessageType MessageType { get; set; }
-
     public string Content { get; set; } = null!;
-
     public long CreateTime { get; set; }
-
     public bool IsSelfSend { get; set; }
-
     public UserDto? FromUser { get; set; }
+
+    public List<AttachmentDto> Attachments { get; set; } = new List<AttachmentDto>();
+}
+
+public class AttachmentDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string RawPath { get; set; } = string.Empty;
+    public string? PreviewPath { get; set; }
+    public string Hash { get; set; } = string.Empty;
+    public string ContentType { get; set; } = string.Empty;
+    public long Size { get; set; }
+}
+
+public class RoomDto
+{
+    public string Id { get; set; } = string.Empty;
+    public ChatMessageSendType Type { get; set; }
+    public int FromId { get; set; }
+    public int ToId { get; set; }
+    public int UnreadCount { get; set; }
+    public long LastMessageTime { get; set; }
+    public object? LastMessageContent { get; set; }
+    public UserDto? FromUser { get; set; }
+    public object? ToObject { get; set; }
 }
 
 public record NotificationMessage(NotificationType Type, string Message);

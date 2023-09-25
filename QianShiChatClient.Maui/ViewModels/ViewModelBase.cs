@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.ViewModels;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Maui.ViewModels;
 
 public partial class ViewModelBase : ObservableObject
 {

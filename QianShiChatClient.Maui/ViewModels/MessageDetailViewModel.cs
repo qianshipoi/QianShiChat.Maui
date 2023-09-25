@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.ViewModels;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Maui.ViewModels;
 
 public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttributable
 {
@@ -65,7 +67,7 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
             if (user != null)
             {
                 var message = await _chatMessageRepository.GetChatMessageAsync(user.Id);
-                Session = new SessionModel(_userService, user, message.Select(x => x.ToChatMessageModel()));
+                Session = new SessionModel(user, message.Select(x=>x.ToChatMessageModel()));
             }
         }
     }

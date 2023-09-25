@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.ViewModels;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Maui.ViewModels;
 
 public sealed partial class ChatMessageViewModel : ViewModelBase
 {
@@ -36,8 +38,9 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
         IsBusy = true;
         try
         {
-            ToMessage = await _dataCenter.SendTextAsync(User, Session, Message);
+            var message = await _dataCenter.SendTextAsync(User, Session, Message);
             ScrollAnimated = true;
+            ToMessage = message;
             Message = string.Empty;
         }
         catch (Exception ex)

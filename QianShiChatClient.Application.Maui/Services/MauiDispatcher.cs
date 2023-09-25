@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Application.Maui.Services;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Application.Maui.Services;
 
 public class MauiDispatcher : IGlobalDispatcher
 {

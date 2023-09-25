@@ -1,3 +1,5 @@
+using QianShiChatClient.Application.IServices;
+
 namespace QianShiChatClient.Maui.Views;
 
 public partial class SplashScreenPage : ContentPage

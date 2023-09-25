@@ -9,8 +9,8 @@ public sealed class MauiAppConsts
     public static readonly string CLIENT_TYPE = $"MauiClient{DeviceInfo.Platform}{DeviceInfo.Idiom}";
 
     public static readonly string API_BASE_URL = DeviceInfo.Platform == DevicePlatform.Android ?
-            "https://chat.kuriyama.top" :
-            "https://chat.kuriyama.top";
+            "https://chat-api.kuriyama.top" :
+            "https://chat-api.kuriyama.top";
 
     public static bool IsDesktop => DeviceInfo.Idiom == DeviceIdiom.Desktop;
 }

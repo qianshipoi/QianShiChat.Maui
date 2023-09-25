@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Application.Data;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Application.Data;
 
 public sealed partial class DataCenter : ObservableObject
 {
@@ -10,16 +12,16 @@ public sealed partial class DataCenter : ObservableObject
     private readonly IUserInfoRepository _userInfoRepository;
     private readonly ISessionRepository _sessionRepository;
     private readonly IChatMessageRepository _chatMessageRepository;
+    private readonly IRoomRemoteService _roomRemoteService;
     private IGlobalDispatcherTimer? _timer;
 
     [ObservableProperty]
     private bool _isConnected;
 
     public ObservableCollection<SessionModel> Sessions { get; }
-
     public ObservableCollection<ApplyPending> Pendings { get; }
-
     public ObservableCollection<UserInfoModel> Friends { get; }
+    public ObservableCollection<RoomModelBase> Rooms { get; }
 
     public DataCenter(
         IApiClient apiClient,
@@ -29,7 +31,8 @@ public sealed partial class DataCenter : ObservableObject
         IUserService userService,
         IUserInfoRepository userInfoRepository,
         ISessionRepository sessionRepository,
-        IChatMessageRepository chatMessageRepository)
+        IChatMessageRepository chatMessageRepository,
+        IRoomRemoteService roomRemoteService)
     {
         _apiClient = apiClient;
         _chatHub = chatHub;
@@ -41,15 +44,35 @@ public sealed partial class DataCenter : ObservableObject
         Friends = new();
         Pendings = new();
         Sessions = new();
+        Rooms = new();
         Sessions.CollectionChanged += Sessions_CollectionChanged;
         _chatHub.PrivateChat += ChatHubPrivateChat;
         _chatHub.IsConnectedChanged += (val) => IsConnected = val;
         IsConnected = _chatHub.IsConnected;
         _userService = userService;
+        _roomRemoteService = roomRemoteService;
 
         _ = GetSessionsAsync();
         _ = GetApplyPendingsAsync();
         _ = GetAllFriendAsync();
+    }
+
+    private async Task GetRooms()
+    {
+        await foreach (var roomDto in _roomRemoteService.GetRoomsAsync())
+        {
+            if(roomDto.Type == ChatMessageSendType.Personal)
+            {
+                var user = await _userService.GetUserInfoByIdAsync(roomDto.ToId);
+                Rooms.Add(new UserRoomModel(roomDto.Id, user));
+            }
+            else if (roomDto.Type == ChatMessageSendType.Group)
+            {
+                var group = await _roo
+            Rooms.Add(new GroupRoomModel(roomDto.Id, ))
+            }
+
+        }
     }
 
     private void Sessions_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -85,6 +108,8 @@ public sealed partial class DataCenter : ObservableObject
         var session = Sessions.FirstOrDefault(x => x.User.Id == obj.FromId);
         if (session is null)
         {
+            var room = await _roomRemoteService.GetRoomAsync(obj.ToId, obj.SendType);
+
             var user = await _userService.GetUserInfoByIdAsync(obj.FromId);
             session = new SessionModel(_userService, user, new List<ChatMessageModel>());
         }

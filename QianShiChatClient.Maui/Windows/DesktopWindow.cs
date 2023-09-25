@@ -1,4 +1,6 @@
-﻿namespace QianShiChatClient.Maui.Windows;
+﻿using QianShiChatClient.Application.IServices;
+
+namespace QianShiChatClient.Maui.Windows;
 
 public partial class DesktopWindow : Window
 {
