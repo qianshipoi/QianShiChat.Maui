@@ -3,6 +3,7 @@
 public record LoginRequest(string Account, string Password);
 
 public record PrivateChatMessageRequest(int ToId, string Message, ChatMessageSendType SendType);
+public record AttachmentMessageRequest(int ToId, int AttachmentId, ChatMessageSendType SendType);
 
 public record FriendApplyRequest(int UserId, string Remark);
 

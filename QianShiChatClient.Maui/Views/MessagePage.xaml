@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:exts="clr-namespace:QianShiChatClient.Maui.Extensions"
+    xmlns:helpers="clr-namespace:QianShiChatClient.Maui.Helpers"
     xmlns:local="clr-namespace:QianShiChatClient.Maui"
     xmlns:models="clr-namespace:QianShiChatClient.Application.Models;assembly=QianShiChatClient.Application"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -20,6 +21,92 @@
             <toolkit:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
             <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <exts:TimestampConverter x:Key="TimestampConverter" />
+            <DataTemplate x:Key="UserRoom" x:DataType="{x:Type models:UserRoomModel}">
+                <ViewCell x:DataType="{x:Type models:UserRoomModel}">
+                    <Grid
+                        Padding="20,0"
+                        x:DataType="{x:Type models:SessionModel}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource White},
+                                                          Dark={StaticResource Black}}"
+                        ColumnDefinitions="60,*,80"
+                        RowDefinitions="*,*">
+                        <toolkit:AvatarView
+                            Grid.RowSpan="2"
+                            BorderColor="{DynamicResource Gray300}"
+                            BorderWidth="1"
+                            CornerRadius="24"
+                            HeightRequest="48"
+                            HorizontalOptions="Start"
+                            ImageSource="{Binding User.Avatar}"
+                            Text="{Binding User.NickName}"
+                            VerticalOptions="Center"
+                            WidthRequest="48" />
+                        <Label
+                            Grid.Column="1"
+                            Margin="0,4"
+                            FontSize="22"
+                            Text="{Binding User.NickName}"
+                            VerticalOptions="End" />
+                        <Label
+                            Grid.Column="2"
+                            HorizontalOptions="End"
+                            Text="{Binding LastMessageTime, Converter={StaticResource TimestampConverter}, StringFormat='{0:t}'}"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            LineBreakMode="TailTruncation"
+                            Text="{Binding LastMessageContent}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+            <DataTemplate x:Key="GroupRoom" x:DataType="{x:Type models:GroupRoomModel}">
+                <ViewCell x:DataType="{x:Type models:GroupRoomModel}">
+                    <Grid
+                        Padding="20,0"
+                        x:DataType="{x:Type models:GroupRoomModel}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource White},
+                                                          Dark={StaticResource Black}}"
+                        ColumnDefinitions="60,*,80"
+                        RowDefinitions="*,*">
+                        <toolkit:AvatarView
+                            Grid.RowSpan="2"
+                            BorderColor="{DynamicResource Gray300}"
+                            BorderWidth="1"
+                            CornerRadius="24"
+                            HeightRequest="48"
+                            HorizontalOptions="Start"
+                            ImageSource="{Binding Group.Avatar}"
+                            Text="{Binding Group.Name}"
+                            VerticalOptions="Center"
+                            WidthRequest="48" />
+                        <Label
+                            Grid.Column="1"
+                            Margin="0,4"
+                            FontSize="22"
+                            Text="{Binding Group.Name}"
+                            VerticalOptions="End" />
+                        <Label
+                            Grid.Column="2"
+                            HorizontalOptions="End"
+                            Text="{Binding LastMessageTime, Converter={StaticResource TimestampConverter}, StringFormat='{0:t}'}"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            LineBreakMode="TailTruncation"
+                            Text="{Binding LastMessageContent}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+            <helpers:RoomModelSelector
+                x:Key="RoomSelector"
+                GroupRoomTemplate="{StaticResource GroupRoom}"
+                UserRoomTemplate="{StaticResource UserRoom}" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <Grid RowDefinitions="Auto,Auto,*">
@@ -127,7 +214,8 @@
             HasUnevenRows="False"
             IsPullToRefreshEnabled="True"
             IsRefreshing="{Binding IsBusy}"
-            ItemsSource="{Binding DataCenter.Sessions}"
+            ItemTemplate="{StaticResource RoomSelector}"
+            ItemsSource="{Binding DataCenter.Rooms}"
             RefreshCommand="{Binding UpdateMessageCommand}"
             RowHeight="60"
             SelectionMode="None"
@@ -138,58 +226,6 @@
                     EventArgsConverter="{StaticResource ItemTappedEventArgsConverter}"
                     EventName="ItemTapped" />
             </ListView.Behaviors>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell x:DataType="{x:Type models:SessionModel}">
-                        <SwipeView xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls" android:SwipeView.SwipeTransitionMode="Drag">
-                            <SwipeView.RightItems>
-                                <SwipeItems>
-                                    <SwipeItem BackgroundColor="LightPink" IconImageSource="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily}, Glyph={x:Static models:IconFontIcons.Delete}, Size=22}" />
-                                    <SwipeItem BackgroundColor="SkyBlue" IconImageSource="{FontImage FontFamily={x:Static models:IconFontIcons.FontFamily}, Glyph={x:Static models:IconFontIcons.Top}, Size=22}" />
-                                </SwipeItems>
-                            </SwipeView.RightItems>
-                            <!--  Content  -->
-                            <Grid
-                                Padding="20,0"
-                                x:DataType="{x:Type models:SessionModel}"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource White},
-                                                                  Dark={StaticResource Black}}"
-                                ColumnDefinitions="60,*,80"
-                                RowDefinitions="*,*">
-                                <toolkit:AvatarView
-                                    Grid.RowSpan="2"
-                                    BorderColor="{DynamicResource Gray300}"
-                                    BorderWidth="1"
-                                    CornerRadius="24"
-                                    HeightRequest="48"
-                                    HorizontalOptions="Start"
-                                    ImageSource="{Binding User.Avatar}"
-                                    Text="{Binding User.NickName}"
-                                    VerticalOptions="Center"
-                                    WidthRequest="48" />
-                                <Label
-                                    Grid.Column="1"
-                                    Margin="0,4"
-                                    FontSize="22"
-                                    Text="{Binding User.NickName}"
-                                    VerticalOptions="End" />
-                                <Label
-                                    Grid.Column="2"
-                                    HorizontalOptions="End"
-                                    Text="{Binding LastMessageTime, Converter={StaticResource TimestampConverter}, StringFormat='{0:t}'}"
-                                    VerticalOptions="Center" />
-                                <Label
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Grid.ColumnSpan="2"
-                                    LineBreakMode="TailTruncation"
-                                    Text="{Binding LastMessageContent}"
-                                    VerticalOptions="Center" />
-                            </Grid>
-                        </SwipeView>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
         </ListView>
     </Grid>
 </ContentPage>

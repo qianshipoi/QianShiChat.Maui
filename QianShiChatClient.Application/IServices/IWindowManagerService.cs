@@ -3,11 +3,11 @@
 public interface IWindowManagerService
 {
     void CloseAllWindow();
-    void CloseChatRoomWindow(UserInfoModel user);
+    void CloseChatRoomWindow(RoomModelBase room);
     void CloseQueryWindow();
     void CloseWindow(string winId);
-    bool ContainsChatRootWindow(UserInfoModel user);
-    void OpenChatRoomWindow(UserInfoModel user);
+    bool ContainsChatRootWindow(RoomModelBase room);
+    void OpenChatRoomWindow(RoomModelBase room);
     void OpenQueryWindow();
 }
 

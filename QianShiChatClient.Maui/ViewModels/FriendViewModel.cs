@@ -12,13 +12,14 @@ public class OperationItem
 public sealed partial class FriendViewModel : ViewModelBase
 {
     public DataCenter DataCenter { get; }
+    private readonly IRoomRemoteService _roomRemoteService;
 
     public List<OperationItem> Operations { get; private set; }
 
     [ObservableProperty]
     private View _content;
 
-    public FriendViewModel(DataCenter dataCenter)
+    public FriendViewModel(DataCenter dataCenter, IRoomRemoteService roomRemoteService)
     {
         DataCenter = dataCenter;
         Operations = new List<OperationItem>
@@ -34,6 +35,7 @@ public sealed partial class FriendViewModel : ViewModelBase
                 Command = JoinNewFriendPageCommand
             }
         };
+        _roomRemoteService = roomRemoteService;
     }
 
     [RelayCommand]
@@ -45,11 +47,13 @@ public sealed partial class FriendViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void OpenNewWindow(UserInfoModel user)
+    private async Task OpenNewWindow(UserInfoModel user)
     {
         if (MauiAppConsts.IsDesktop)
         {
-            ServiceHelper.GetService<IWindowManagerService>().OpenChatRoomWindow(user);
+            var roomDto = await _roomRemoteService.GetRoomAsync(user.Id, ChatMessageSendType.Personal);
+            var room = new UserRoomModel(roomDto.Id, user);
+            ServiceHelper.GetService<IWindowManagerService>().OpenChatRoomWindow(room);
         }
     }
 
@@ -84,7 +88,8 @@ public sealed partial class FriendViewModel : ViewModelBase
         }
         else
         {
-            await _navigationService.GoToMessageDetailPage(user.Id);
+            var roomDto = await _roomRemoteService.GetRoomAsync(user.Id, ChatMessageSendType.Personal);
+            await _navigationService.GoToMessageDetailPage(roomDto.Id);
         }
     }
 

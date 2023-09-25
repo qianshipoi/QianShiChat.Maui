@@ -10,7 +10,7 @@ public interface INavigationService
 
     Task GoToLoginPage();
 
-    Task GoToMessageDetailPage(int sessionId);
+    Task GoToMessageDetailPage(string roomId);
 
     Task GoToNewFriendDetailPage(ApplyPending pending);
 

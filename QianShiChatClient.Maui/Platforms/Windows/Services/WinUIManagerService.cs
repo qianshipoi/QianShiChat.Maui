@@ -1,5 +1,4 @@
-﻿using QianShiChatClient.Application.IServices;
-using QianShiChatClient.Maui.Windows;
+﻿using QianShiChatClient.Maui.Windows;
 
 using MicrosoftuiXaml = Microsoft.UI.Xaml;
 
@@ -8,21 +7,19 @@ namespace QianShiChatClient.Maui.Services;
 public class WinUIManagerService : IWindowManagerService
 {
     private const string QueryWindowId = "query";
-    private readonly DataCenter _dataConter;
 
     private Dictionary<string, DesktopWindow> _opendWindows;
 
-    public WinUIManagerService(DataCenter dataConter)
+    public WinUIManagerService(DataCenter dataConter, IUserService userService)
     {
-        _dataConter = dataConter;
         _opendWindows = new();
     }
 
-    private string GetUserWindowId(UserInfoModel user) => $"user_{user.Id}";
+    private string GetUserWindowId(RoomModelBase room) => $"user_{room.Id}";
 
-    public void OpenChatRoomWindow(UserInfoModel user)
+    public void OpenChatRoomWindow(RoomModelBase room)
     {
-        var windowId = GetUserWindowId(user);
+        var windowId = GetUserWindowId(room);
         if (_opendWindows.ContainsKey(windowId))
         {
             var roomWindow = _opendWindows[windowId];
@@ -32,24 +29,9 @@ public class WinUIManagerService : IWindowManagerService
             return;
         }
 
-        var session = _dataConter.Sessions.FirstOrDefault(x => x.User.Id == user.Id);
-
-        if (session is null)
-        {
-            session = new SessionModel(user, new List<ChatMessageModel>());
-            _dataConter.Sessions.Insert(0, session);
-        }
-        else
-        {
-            var index = _dataConter.Sessions.IndexOf(session);
-            if (index > 0)
-            {
-                _dataConter.Sessions.Move(index, 0);
-            }
-        }
 
         var viewModel = App.Current.ServiceProvider.GetService<ChatMessageViewModel>();
-        viewModel.Session = session;
+        viewModel.Session = room;
         var page = new ChatRoomPage();
         page.BindingContext = viewModel;
         var window = new DesktopWindow(windowId, page);
@@ -57,12 +39,12 @@ public class WinUIManagerService : IWindowManagerService
         App.Current.OpenWindow(window);
     }
 
-    public bool ContainsChatRootWindow(UserInfoModel user)
+    public bool ContainsChatRootWindow(RoomModelBase user)
     {
         return _opendWindows.ContainsKey(GetUserWindowId(user));
     }
 
-    public void CloseChatRoomWindow(UserInfoModel user) => CloseWindow(GetUserWindowId(user));
+    public void CloseChatRoomWindow(RoomModelBase user) => CloseWindow(GetUserWindowId(user));
 
     public void CloseWindow(string windowId)
     {

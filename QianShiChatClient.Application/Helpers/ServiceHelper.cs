@@ -8,5 +8,5 @@ public static class ServiceHelper
 
     public static TService GetReqiredService<TService>() where TService : notnull => Current.GetRequiredService<TService>();
 
-    public static IServiceProvider Current { get; set; }
+    public static IServiceProvider Current { get; set; } = default!;
 }

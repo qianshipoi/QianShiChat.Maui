@@ -31,6 +31,7 @@ global using QianShiChatClient.Application.Extensions;
 global using QianShiChatClient.Application.Helpers;
 global using QianShiChatClient.Application.Models;
 global using QianShiChatClient.Application.Services;
+global using QianShiChatClient.Application.IServices;
 global using QianShiChatClient.Core;
 global using QianShiChatClient.Core.Common;
 global using QianShiChatClient.Maui.Resources.Strings;

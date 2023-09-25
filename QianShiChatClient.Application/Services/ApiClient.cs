@@ -1,5 +1,7 @@
 ﻿using QianShiChatClient.Application.IServices;
 
+using System.Threading;
+
 namespace QianShiChatClient.Application.Services;
 
 public class ApiClient : IApiClient
@@ -275,6 +277,12 @@ public class ApiClient : IApiClient
     public async Task<ChatMessageDto?> SendTextAsync(PrivateChatMessageRequest request, CancellationToken cancellationToken = default)
     {
         var (succeeded, data, message) = await PostJsonAsync<ChatMessageDto, PrivateChatMessageRequest>("/api/chat/text", request, cancellationToken);
+        return data;
+    }
+
+    public async Task<ChatMessageDto> SendAttachmentAsync(AttachmentMessageRequest request, CancellationToken cancellationToken = default)
+    {
+        var (succeeded, data, message) = await PostJsonAsync<ChatMessageDto, AttachmentMessageRequest>("/api/chat/file", request, cancellationToken);
         return data;
     }
 

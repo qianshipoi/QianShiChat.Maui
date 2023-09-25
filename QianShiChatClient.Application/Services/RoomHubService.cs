@@ -1,8 +1,4 @@
-﻿using QianShiChatClient.Application.IServices;
-
-using System;
-
-namespace QianShiChatClient.Application.Services;
+﻿namespace QianShiChatClient.Application.Services;
 
 public class RoomHubService : IRoomRemoteService
 {
@@ -61,35 +57,13 @@ public class RoomHubService : IRoomRemoteService
         return result.Data;
     }
 
-    public async Task<GroupDto> GetGroupByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<GroupDto?> GetGroupByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         using var client = _httpClientFactory.CreateClient(_options.ClientName);
-        using var response = await client.GetAsync($"/api/group/{id}", cancellationToken);
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
-        {
-            //await _navigationService.GoToLoginPage();
-            return null;
-        }
-        response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        var response = await client.GetFromJsonAsync<GlobalResult<GroupDto>>($"/api/group/{id}", _serializerOptions, cancellationToken);
+        if (response is null) return null;
 
-        if (string.IsNullOrWhiteSpace(content))
-        {
-            return null;
-        }
-
-        var result = JsonSerializer.Deserialize<GlobalResult<GroupDto>>(content, _serializerOptions);
-
-        if (result is null)
-        {
-            return null;
-        }
-        if (!result.Succeeded)
-        {
-            return null;
-        }
-
-        return result.Data;
+        return response.Data;
     }
 }
 

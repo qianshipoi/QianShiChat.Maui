@@ -18,6 +18,7 @@ public static class DependencyInjectionExtensions
             options.ClientName = AppConsts.API_CLIENT_NAME;
         });
 
+        services.AddSingleton<ApiUnauthorizationHttpMessageHandler>();
         services.AddHttpClient(AppConsts.API_CLIENT_NAME, (provider, client) => {
             var options = provider.GetRequiredService<IOptions<ApiOptions>>();
             var settings = provider.GetRequiredService<Settings>();
@@ -30,7 +31,7 @@ public static class DependencyInjectionExtensions
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", settings.AccessToken);
             }
-        });
+        }).AddHttpMessageHandler<ApiUnauthorizationHttpMessageHandler>();
 
         return services;
     }

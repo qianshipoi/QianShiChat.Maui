@@ -1,6 +1,4 @@
-﻿using QianShiChatClient.Application.IServices;
-
-namespace QianShiChatClient.Maui.Services;
+﻿namespace QianShiChatClient.Maui.Services;
 
 public class UserService : IUserService
 {
@@ -50,6 +48,18 @@ public class UserService : IUserService
                 userInfo = UserInfoModel.Unknown;
                 _logger.LogError(ex, "查询用户异常: id - {id}", id);
             }
+        }
+        else
+        {
+            userInfo = new UserInfoModel()
+            {
+                Id = user.Id,
+                Account = user.Account,
+                Avatar = user.Avatar,
+                Content = user.Content,
+                CreateTime = user.CreateTime,
+                NickName = user.NickName,
+            };
         }
 
         _memoryCache.Set(cacheKey, userInfo, DateTimeOffset.Now.AddMinutes(2));

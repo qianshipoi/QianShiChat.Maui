@@ -22,11 +22,11 @@ public class NavigationService : INavigationService
 
     public Task GoToQueryPage() => Shell.Current.GoToAsync(nameof(QueryPage));
 
-    public Task GoToMessageDetailPage(int sessionId)
+    public Task GoToMessageDetailPage(string roomId)
     {
         var navigationParameter = new Dictionary<string, object>
         {
-            { nameof(MessageDetailViewModel.SessionId), sessionId }
+            { nameof(MessageDetailViewModel.RoomId), roomId }
         };
         return Shell.Current.GoToAsync(nameof(MessageDetailPage), true, navigationParameter);
     }

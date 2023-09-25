@@ -18,24 +18,12 @@ public sealed partial class UserInfoViewModel : ViewModelBase
     private async Task Send()
     {
         if (Info is null) return;
-
-        var session = _dataCenter.Sessions.FirstOrDefault(x => x.User.Id == Info.Id);
-
-        if (session is not null)
-        {
-            _dataCenter.Sessions.Remove(session);
-        }
-        else
-        {
-            session = new SessionModel(_userService, Info, new List<ChatMessageModel>());
-        }
-
-        _dataCenter.Sessions.Insert(0, session);
+        var session = _dataCenter.Rooms.FirstOrDefault(x => x.ToId == Info.Id);
 
         // goto message page.
         var parameters = new Dictionary<string, object>
         {
-            [nameof(MessageViewModel.CurrentSelectedSession)] = session
+            [nameof(MessageViewModel.CurrentSelectedRoom)] = session
         };
         await _navigationService.GoToMessagePage(parameters);
     }

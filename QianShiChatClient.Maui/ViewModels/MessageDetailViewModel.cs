@@ -1,20 +1,16 @@
-﻿using QianShiChatClient.Application.IServices;
-
-namespace QianShiChatClient.Maui.ViewModels;
+﻿namespace QianShiChatClient.Maui.ViewModels;
 
 public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttributable
 {
     private readonly DataCenter _dataCenter;
-    private readonly IUserService _userService;
-    private readonly IChatMessageRepository _chatMessageRepository;
 
-    public int SessionId { get; private set; }
+    public string RoomId { get; private set; }
 
     [ObservableProperty]
-    private SessionModel _session;
+    private RoomModelBase _room;
 
     [ObservableProperty]
-    private ChatMessageModel _toMessage;
+    private MessageModel _toMessage;
 
     [ObservableProperty]
     private bool _scrollAnimated;
@@ -23,25 +19,20 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
     private string _message;
 
     public MessageDetailViewModel(
-        DataCenter dataCenter,
-        IUserService userService,
-        IChatMessageRepository chatMessageRepository)
+        DataCenter dataCenter)
     {
         _dataCenter = dataCenter;
-        _userService = userService;
-        _chatMessageRepository = chatMessageRepository;
     }
 
     [RelayCommand]
-    private async Task Send()
+    private void Send()
     {
         if (IsBusy || string.IsNullOrEmpty(Message)) return;
 
         IsBusy = true;
         try
         {
-            var message = await _dataCenter.SendTextAsync(User, Session, Message);
-
+            var message = _dataCenter.SendText(Room, Message);
             ScrollAnimated = true;
             ToMessage = message;
             Message = string.Empty;
@@ -52,23 +43,17 @@ public sealed partial class MessageDetailViewModel : ViewModelBase, IQueryAttrib
         }
     }
 
-    public async void ApplyQueryAttributes(IDictionary<string, object> query)
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        SessionId = (int)query[nameof(SessionId)];
-
-        var session = _dataCenter.Sessions.FirstOrDefault(x => x.User.Id == SessionId);
-        if (session != null)
+        RoomId = (string)query[nameof(RoomId)];
+        var room = _dataCenter.Rooms.FirstOrDefault(x => x.Id == RoomId);
+        if (room != null)
         {
-            Session = session;
+            Room = room;
         }
         else
         {
-            var user = await _userService.GetUserInfoByIdAsync(SessionId);
-            if (user != null)
-            {
-                var message = await _chatMessageRepository.GetChatMessageAsync(user.Id);
-                Session = new SessionModel(user, message.Select(x=>x.ToChatMessageModel()));
-            }
+            Room = _dataCenter.Rooms.FirstOrDefault(x => x.Id == RoomId);
         }
     }
 }

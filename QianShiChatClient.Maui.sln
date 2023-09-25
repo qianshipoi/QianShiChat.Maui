@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Maui", "QianShiChatClient.Maui\QianShiChatClient.Maui.csproj", "{BCA5A8C3-E322-4F44-9035-C5ACA4A78E1A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.MauiBlazor", "QianShiChatClient.MauiBlazor\QianShiChatClient.MauiBlazor.csproj", "{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Application.Maui", "QianShiChatClient.Application.Maui\QianShiChatClient.Application.Maui.csproj", "{6212EC45-763C-420D-83C4-A964A0287789}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Data", "QianShiChatClient.Data\QianShiChatClient.Data.csproj", "{BD7DCFD3-1F50-4718-912C-279FDD973885}"
@@ -15,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Core", "Q
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Data.Migration", "QianShiChatClient.Data.Migration\QianShiChatClient.Data.Migration.csproj", "{018AA1AD-9FD8-452F-B5B4-A6286491E263}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QianShiChatClient.Application", "QianShiChatClient.Application\QianShiChatClient.Application.csproj", "{E81B5CE1-5580-4368-932E-4C19DC856FBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QianShiChatClient.Application", "QianShiChatClient.Application\QianShiChatClient.Application.csproj", "{E81B5CE1-5580-4368-932E-4C19DC856FBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,12 +27,6 @@ Global
 		{BCA5A8C3-E322-4F44-9035-C5ACA4A78E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCA5A8C3-E322-4F44-9035-C5ACA4A78E1A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCA5A8C3-E322-4F44-9035-C5ACA4A78E1A}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D01FF6AF-0767-468E-A5A0-B09EA7FF62A5}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{6212EC45-763C-420D-83C4-A964A0287789}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6212EC45-763C-420D-83C4-A964A0287789}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6212EC45-763C-420D-83C4-A964A0287789}.Release|Any CPU.ActiveCfg = Release|Any CPU

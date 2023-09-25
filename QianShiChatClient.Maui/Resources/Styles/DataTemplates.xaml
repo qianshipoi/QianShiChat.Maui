@@ -110,7 +110,7 @@
             <toolkit:AvatarView
                 Grid.Column="2"
                 HeightRequest="40"
-                ImageSource="{Binding ToAvatar}"
+                ImageSource="{Binding FromAvatar}"
                 VerticalOptions="Start"
                 WidthRequest="40" />
         </Grid>

@@ -63,9 +63,9 @@ public static class MauiProgram
 
         services.AddScoped<IUserService, UserService>();
 
-#if WINDOWS
-        services.AddSingleton<IWindowManagerService, WinUIManagerService>();
-#endif
+//#if WINDOWS
+        //services.AddSingleton<IWindowManagerService, WinUIManagerService>();
+//#endif
 
         if (MauiAppConsts.IsDesktop)
         {

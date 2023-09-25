@@ -1,12 +1,10 @@
-﻿using QianShiChatClient.Application.IServices;
+﻿namespace QianShiChatClient.Maui.ViewModels;
 
-namespace QianShiChatClient.Maui.ViewModels;
-
-[QueryProperty(nameof(CurrentSelectedSession), nameof(CurrentSelectedSession))]
+[QueryProperty(nameof(CurrentSelectedRoom), nameof(CurrentSelectedRoom))]
 public sealed partial class MessageViewModel : ViewModelBase
 {
     private readonly ChatHub _chatHub;
-    private readonly Dictionary<SessionModel, View> _viewCache;
+    private readonly Dictionary<RoomModelBase, View> _viewCache;
     private readonly ILogger<MessageViewModel> _logger;
 
     [ObservableProperty]
@@ -15,9 +13,9 @@ public sealed partial class MessageViewModel : ViewModelBase
     public DataCenter DataCenter { get; }
 
     [ObservableProperty]
-    private SessionModel _currentSelectedSession;
+    private RoomModelBase _currentSelectedRoom;
 
-    partial void OnCurrentSelectedSessionChanged(SessionModel value)
+    partial void OnCurrentSelectedRoomChanged(RoomModelBase value)
     {
         if (value is null)
         {
@@ -25,17 +23,16 @@ public sealed partial class MessageViewModel : ViewModelBase
             return;
         }
 
-        var windowManagerService =  ServiceHelper.GetService<IWindowManagerService>();
-        if(windowManagerService != null)
+        var windowManagerService = ServiceHelper.GetService<IWindowManagerService>();
+        if (windowManagerService != null)
         {
-            if (windowManagerService.ContainsChatRootWindow(value.User))
+            if (windowManagerService.ContainsChatRootWindow(value))
             {
-                windowManagerService.OpenChatRoomWindow(value.User);
-                CurrentSelectedSession = null;
+                windowManagerService.OpenChatRoomWindow(value);
+                CurrentSelectedRoom = null;
                 return;
             }
         }
-
 
         if (!_viewCache.TryGetValue(value, out var view))
         {
@@ -51,7 +48,7 @@ public sealed partial class MessageViewModel : ViewModelBase
     }
 
     [ObservableProperty]
-    private ChatMessageModel _toMessage;
+    private MessageModel _toMessage;
 
     [ObservableProperty]
     private bool _scrollAnimated;
@@ -72,14 +69,14 @@ public sealed partial class MessageViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task Send()
+    private void Send()
     {
         if (IsBusy || string.IsNullOrEmpty(Message)) return;
 
         IsBusy = true;
         try
         {
-            var message = await DataCenter.SendTextAsync(User, CurrentSelectedSession, Message);
+            var message = DataCenter.SendText(CurrentSelectedRoom, Message);
             ScrollAnimated = true;
             ToMessage = message;
             Message = string.Empty;
@@ -95,12 +92,12 @@ public sealed partial class MessageViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void OpenNewWindow(SessionModel session)
+    private void OpenNewWindow(RoomModelBase session)
     {
-        ServiceHelper.GetService<IWindowManagerService>().OpenChatRoomWindow(session.User);
-        if (CurrentSelectedSession == session)
+        ServiceHelper.GetService<IWindowManagerService>().OpenChatRoomWindow(session);
+        if (CurrentSelectedRoom == session)
         {
-            CurrentSelectedSession = null;
+            CurrentSelectedRoom = null;
         }
     }
 
@@ -111,27 +108,24 @@ public sealed partial class MessageViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private Task JoinDetail(SessionModel item)
+    private Task JoinDetail(RoomModelBase room)
     {
         if (MauiAppConsts.IsDesktop)
         {
-            CurrentSelectedSession = item;
-
-            if (!_viewCache.TryGetValue(item, out var view))
+            CurrentSelectedRoom = room;
+            if (!_viewCache.TryGetValue(room, out var view))
             {
                 var viewModel = ServiceHelper.GetService<ChatMessageViewModel>();
-                viewModel.Session = item;
+                viewModel.Session = room;
                 view = new ChatMessageView(viewModel);
-                _viewCache.Add(item, view);
+                _viewCache.Add(room, view);
             }
-
             Content = view;
-
             return Task.CompletedTask;
         }
         else
         {
-            return _navigationService.GoToMessageDetailPage(item.User.Id);
+            return _navigationService.GoToMessageDetailPage(room.Id);
         }
     }
 

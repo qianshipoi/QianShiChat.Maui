@@ -1,6 +1,4 @@
-﻿using QianShiChatClient.Application.IServices;
-
-namespace QianShiChatClient.Maui.ViewModels;
+﻿namespace QianShiChatClient.Maui.ViewModels;
 
 public sealed partial class ChatMessageViewModel : ViewModelBase
 {
@@ -9,10 +7,10 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
 
     [ObservableProperty]
-    private SessionModel _session;
+    private RoomModelBase _session;
 
     [ObservableProperty]
-    private ChatMessageModel _toMessage;
+    private MessageModel _toMessage;
 
     [ObservableProperty]
     private string _message;
@@ -38,7 +36,7 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
         IsBusy = true;
         try
         {
-            var message = await _dataCenter.SendTextAsync(User, Session, Message);
+            var message = _dataCenter.SendText(Session, Message);
             ScrollAnimated = true;
             ToMessage = message;
             Message = string.Empty;
@@ -66,7 +64,7 @@ public sealed partial class ChatMessageViewModel : ViewModelBase
         // 上传到服务器
         foreach (var fileResult in results)
         {
-            ToMessage = await _dataCenter.SendFileAsync(User, Session, fileResult.FullPath);
+            ToMessage = _dataCenter.SendFile(Session, 0);
         }
         ScrollAnimated = true;
     }

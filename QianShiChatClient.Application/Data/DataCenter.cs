@@ -1,6 +1,4 @@
-﻿using QianShiChatClient.Application.IServices;
-
-namespace QianShiChatClient.Application.Data;
+﻿namespace QianShiChatClient.Application.Data;
 
 public sealed partial class DataCenter : ObservableObject
 {
@@ -47,7 +45,7 @@ public sealed partial class DataCenter : ObservableObject
         Rooms = new();
         Sessions.CollectionChanged += Sessions_CollectionChanged;
         _chatHub.PrivateChat += ChatHubPrivateChat;
-        _chatHub.IsConnectedChanged += (val) => IsConnected = val;
+        _chatHub.IsConnectedChanged += ChatHub_IsConnectedChanged;
         IsConnected = _chatHub.IsConnected;
         _userService = userService;
         _roomRemoteService = roomRemoteService;
@@ -57,21 +55,42 @@ public sealed partial class DataCenter : ObservableObject
         _ = GetAllFriendAsync();
     }
 
+    private void ChatHub_IsConnectedChanged(bool val)
+    {
+        IsConnected = val;
+        if (val && !Rooms.Any())
+        {
+            _ = GetRooms();
+        }
+    }
+
     private async Task GetRooms()
     {
         await foreach (var roomDto in _roomRemoteService.GetRoomsAsync())
         {
-            if(roomDto.Type == ChatMessageSendType.Personal)
+            if (roomDto.Type == ChatMessageSendType.Personal)
             {
                 var user = await _userService.GetUserInfoByIdAsync(roomDto.ToId);
                 Rooms.Add(new UserRoomModel(roomDto.Id, user));
             }
             else if (roomDto.Type == ChatMessageSendType.Group)
             {
-                var group = await _roo
-            Rooms.Add(new GroupRoomModel(roomDto.Id, ))
+                var group = await _roomRemoteService.GetGroupByIdAsync(roomDto.ToId);
+                if (group is null)
+                {
+                    return;
+                }
+                var groupModel = new GroupModel
+                {
+                    Avatar = group.Avatar,
+                    CreateTime = group.CreateTime,
+                    Id = group.Id,
+                    Name = group.Name,
+                    TotalUser = group.TotalUser,
+                    UserId = group.UserId,
+                };
+                Rooms.Add(new GroupRoomModel(roomDto.Id, groupModel));
             }
-
         }
     }
 
@@ -105,23 +124,65 @@ public sealed partial class DataCenter : ObservableObject
 
     private async void ChatHubPrivateChat(ChatMessageDto obj)
     {
-        var session = Sessions.FirstOrDefault(x => x.User.Id == obj.FromId);
+        var session = Rooms.FirstOrDefault(x => x.Id == obj.RoomId);
+        var user = await _userService.GetUserInfoByIdAsync(obj.FromId);
         if (session is null)
         {
             var room = await _roomRemoteService.GetRoomAsync(obj.ToId, obj.SendType);
-
-            var user = await _userService.GetUserInfoByIdAsync(obj.FromId);
-            session = new SessionModel(_userService, user, new List<ChatMessageModel>());
+            if (obj.SendType == ChatMessageSendType.Personal)
+            {
+                session = new UserRoomModel(obj.RoomId, user);
+            }
+            else if (obj.SendType == ChatMessageSendType.Group)
+            {
+                var group = await _roomRemoteService.GetGroupByIdAsync(obj.FromId);
+                if (group == null) return;
+                var groupModel = new GroupModel
+                {
+                    Avatar = group.Avatar,
+                    CreateTime = group.CreateTime,
+                    Id = group.Id,
+                    Name = group.Name,
+                    TotalUser = group.TotalUser,
+                    UserId = group.UserId,
+                };
+                session = new GroupRoomModel(obj.RoomId, groupModel);
+            }
+            else
+            {
+                throw new NotSupportedException("未实现房间类型");
+            }
         }
         var message = obj.ToChatMessage();
         if (message is null)
         {
             return;
         }
-        await session.AddMessageAsync(message.ToChatMessageModel());
-        UpdateSessions(session);
-        await _chatMessageRepository.SaveChatMessageAsnyc(message);
-        await _sessionRepository.SaveSessionAsync(session.ToSession());
+        var currentUser = _userService.CurrentUser();
+
+        var messageModel = new MessageModel(user, currentUser.Id == user.Id, obj.Attachments.Select(x => new AttachmentModel
+        {
+            ContentType = x.ContentType,
+            Hash = x.Hash,
+            Id = x.Id,
+            Name = x.Name,
+            PreviewPath = x.PreviewPath,
+            RawPath = x.RawPath,
+            Size = x.Size,
+        }))
+        {
+            Content = obj.Content,
+            CreateTime = obj.CreateTime,
+            FromId = user.Id,
+            Id = user.Id,
+            MessageType = message.MessageType,
+            SendType = message.SendType,
+            Status = message.Status,
+            ToId = user.Id,
+        };
+
+        session.AddMessage(messageModel);
+        UpdateRooms(session);
     }
 
     private async Task GetSessionsAsync()
@@ -225,104 +286,88 @@ public sealed partial class DataCenter : ObservableObject
         }
     }
 
-    private ChatMessageModel CreateSendMessage(
+    private MessageModel CreateSendMessage(
         UserInfoModel user,
         int toId,
         string content,
-        ChatMessageType messageType = ChatMessageType.Text)
+        ChatMessageType messageType = ChatMessageType.Text,
+        ChatMessageSendType sendType = ChatMessageSendType.Personal)
     {
-        return new ChatMessageModel
+        return new MessageModel(user, true)
         {
-            LocalId = Guid.NewGuid(),
             MessageType = messageType,
-            SendType = ChatMessageSendType.Personal,
+            SendType = sendType,
             Status = MessageStatus.Sending,
             CreateTime = Timestamp.Now,
             FromId = user.Id,
             ToId = toId,
-            FromAvatar = user.Avatar,
-            ToAvatar = user.Avatar,
             IsSelfSend = true,
-            Content = content
+            Content = content,
+            Id = Timestamp.Now
         };
     }
 
-    public async Task<ChatMessageModel> SendTextAsync(UserInfoModel user, SessionModel session, string text)
+    public MessageModel SendText(RoomModelBase room, string text)
     {
-        var message = CreateSendMessage(user, session.User.Id, text);
+        var currentUser = _userService.CurrentUser();
+        var message = CreateSendMessage(currentUser, room.ToId, text, ChatMessageType.Text, room.SendType);
 
         _ = Task.Run(async () => {
             try
             {
                 var chatDto = await _apiClient
                       .SendTextAsync(new PrivateChatMessageRequest(
-                          session.User.Id,
+                          room.ToId,
                           text,
                           ChatMessageSendType.Personal));
                 message.Id = chatDto!.Id;
                 _dispatcher.Dispatch(() => {
                     message.Status = MessageStatus.Successful;
                 });
-
-                await _chatMessageRepository.UpdateChatMessageAsync(message.ToChatMessage());
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "send text message error.");
             }
         });
-
-        await session.AddMessageAsync(message);
-
-        UpdateSessions(session);
-        try
-        {
-            await _chatMessageRepository.SaveChatMessageAsnyc(message.ToChatMessage());
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "");
-        }
-
+        room.AddMessage(message);
+        UpdateRooms(room);
         return message;
     }
 
-    private void UpdateSessions(SessionModel session)
+    private void UpdateRooms(RoomModelBase room)
     {
-        var index = Sessions.IndexOf(session);
+        var index = Rooms.IndexOf(room);
 
         if (index != -1)
         {
-            Sessions.Move(index, 0);
+            Rooms.Move(index, 0);
         }
         else if (index != 0)
         {
-            Sessions.Insert(0, session);
+            Rooms.Insert(0, room);
         }
     }
 
-    public async Task<ChatMessageModel> SendFileAsync(UserInfoModel user, SessionModel session, string filePath)
+    public MessageModel SendFile(RoomModelBase room, int attachmentId)
     {
-        var message = CreateSendMessage(user, session.User.Id, filePath, ChatMessageType.OtherFile);
+        var currentUser = _userService.CurrentUser();
+        var message = CreateSendMessage(currentUser, room.ToId, "", ChatMessageType.OtherFile, room.SendType);
 
         _ = Task.Run(async () => {
             try
             {
-                var chatDto = await _apiClient
-                      .SendFileAsync(
-                    session.User.Id,
-                    ChatMessageSendType.Personal,
-                    filePath,
-                    (loaded, total) => {
-                        _dispatcher.Dispatch(() => {
-                            message.UploadProgressValue = loaded / total;
-                        });
-                    });
+                var chatDto = await _apiClient.SendAttachmentAsync(new AttachmentMessageRequest
+                (
+                    room.ToId,
+                    attachmentId,
+                    room.SendType
+                ));
+
                 message.Id = chatDto!.Id;
                 _dispatcher.Dispatch(() => {
                     message.Status = MessageStatus.Successful;
                 });
-                await _chatMessageRepository.UpdateChatMessageAsync(message.ToChatMessage());
             }
             catch (Exception ex)
             {
@@ -330,17 +375,9 @@ public sealed partial class DataCenter : ObservableObject
             }
         });
 
-        await session.AddMessageAsync(message);
+        room.AddMessage(message);
 
-        UpdateSessions(session);
-        try
-        {
-            await _chatMessageRepository.SaveChatMessageAsnyc(message.ToChatMessage());
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "");
-        }
+        UpdateRooms(room);
 
         return message;
     }
