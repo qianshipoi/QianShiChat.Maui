@@ -19,14 +19,14 @@
             <exts:TimestampConverter x:Key="TimestampConverter" />
             <helpers:PathToFilenameConverter x:Key="PathToFilenameConverter" />
             <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
-            <DataTemplate x:Key="OtherTextMessageDataTemplate" x:DataType="{x:Type models:ChatMessageModel}">
+            <DataTemplate x:Key="OtherTextMessageDataTemplate" x:DataType="{x:Type models:MessageModel}">
                 <Grid
                     Margin="8"
                     ColumnDefinitions="Auto,*,40"
                     ColumnSpacing="8">
                     <toolkit:AvatarView
                         HeightRequest="40"
-                        ImageSource="{Binding FromAvatar}"
+                        ImageSource="{Binding FromUser.Avatar}"
                         VerticalOptions="Start"
                         WidthRequest="40" />
                     <Frame
@@ -44,7 +44,7 @@
                     </Frame>
                 </Grid>
             </DataTemplate>
-            <DataTemplate x:Key="SelfTextMessageDataTemplate" x:DataType="{x:Type models:ChatMessageModel}">
+            <DataTemplate x:Key="SelfTextMessageDataTemplate" x:DataType="{x:Type models:MessageModel}">
                 <Grid
                     Margin="8"
                     ColumnDefinitions="40,*,Auto"
@@ -66,12 +66,12 @@
                     <toolkit:AvatarView
                         Grid.Column="2"
                         HeightRequest="40"
-                        ImageSource="{Binding FromAvatar}"
+                        ImageSource="{Binding FromUser.Avatar}"
                         VerticalOptions="Start"
                         WidthRequest="40" />
                 </Grid>
             </DataTemplate>
-            <DataTemplate x:Key="SelfFileMessageDataTemplate" x:DataType="{x:Type models:ChatMessageModel}">
+            <DataTemplate x:Key="SelfFileMessageDataTemplate" x:DataType="{x:Type models:MessageModel}">
                 <Grid
                     Margin="8"
                     ColumnDefinitions="40,*,Auto"
@@ -102,13 +102,13 @@
                                 CornerRadius="4"
                                 HeightRequest="50"
                                 WidthRequest="50" />
-                            <Label
+                            <!--<Label
                                 Grid.Column="1"
                                 FontAttributes="Bold"
                                 HorizontalTextAlignment="Center"
-                                Text="{Binding UploadProgressValue, StringFormat='{0:F2}'}"
+                                Text="{Binding Attachments[0].Progress, StringFormat='{0:F2}'}"
                                 TextColor="White"
-                                VerticalOptions="Center" />
+                                VerticalOptions="Center" />-->
                             <StackLayout
                                 Grid.Row="1"
                                 Orientation="Horizontal"
@@ -127,13 +127,13 @@
                     <toolkit:AvatarView
                         Grid.Column="2"
                         HeightRequest="40"
-                        ImageSource="{Binding FromAvatar}"
+                        ImageSource="{Binding FromUser.Avatar}"
                         VerticalOptions="Start"
                         WidthRequest="40" />
                 </Grid>
             </DataTemplate>
-            <helpers:ChatMessageSelector
-                x:Key="ChatMessageSelector"
+            <helpers:MessageModelSelector
+                x:Key="MessageModelSelector"
                 OtherTextMessageDataTemplate="{StaticResource OtherTextMessageDataTemplate}"
                 SelfFileMessageDataTemplate="{StaticResource SelfFileMessageDataTemplate}"
                 SelfTextMessageDataTemplate="{StaticResource SelfTextMessageDataTemplate}" />
@@ -143,7 +143,7 @@
         <Label
             Margin="16,0"
             FontSize="22"
-            Text="{Binding Session.User.NickName}"
+            Text="{Binding Session.DisplayName}"
             VerticalOptions="Center" />
         <Border
             BackgroundColor="White"
@@ -159,7 +159,7 @@
                 helpers:ScrollViewHelper.ScrollToPosition="End">
                 <VerticalStackLayout
                     x:Name="MessageCantainer"
-                    BindableLayout.ItemTemplateSelector="{StaticResource ChatMessageSelector}"
+                    BindableLayout.ItemTemplateSelector="{StaticResource MessageModelSelector}"
                     BindableLayout.ItemsSource="{Binding Session.Messages}" />
             </ScrollView>
             <Grid

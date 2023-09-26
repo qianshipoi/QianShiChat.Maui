@@ -45,15 +45,15 @@
                 HasUnevenRows="False"
                 IsPullToRefreshEnabled="True"
                 IsRefreshing="{Binding IsBusy}"
-                ItemsSource="{Binding DataCenter.Sessions}"
+                ItemsSource="{Binding DataCenter.Rooms}"
                 RefreshCommand="{Binding UpdateMessageCommand}"
                 RowHeight="68"
-                SelectedItem="{Binding CurrentSelectedSession}"
+                SelectedItem="{Binding CurrentSelectedRoom}"
                 SelectionMode="Single"
                 SeparatorVisibility="None">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell x:DataType="{x:Type models:SessionModel}">
+                        <ViewCell x:DataType="{x:Type models:RoomModelBase}">
                             <Grid
                                 Padding="8,0"
                                 ColumnDefinitions="Auto,*,Auto"
@@ -75,8 +75,8 @@
                                     CornerRadius="20"
                                     HeightRequest="40"
                                     HorizontalOptions="Start"
-                                    ImageSource="{Binding User.Avatar}"
-                                    Text="{Binding User.NickName}"
+                                    ImageSource="{Binding AvatarPath}"
+                                    Text="{Binding DisplayName}"
                                     VerticalOptions="Center"
                                     WidthRequest="40" />
                                 <Label
@@ -84,7 +84,7 @@
                                     Padding="0"
                                     FontSize="16"
                                     LineBreakMode="TailTruncation"
-                                    Text="{Binding User.NickName}"
+                                    Text="{Binding DisplayName}"
                                     VerticalOptions="End" />
                                 <Label
                                     Grid.Column="2"

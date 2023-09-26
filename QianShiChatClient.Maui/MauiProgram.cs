@@ -1,6 +1,4 @@
-﻿using QianShiChatClient.Application.IServices;
-
-namespace QianShiChatClient.Maui;
+﻿namespace QianShiChatClient.Maui;
 
 public static class MauiProgram
 {
@@ -63,9 +61,9 @@ public static class MauiProgram
 
         services.AddScoped<IUserService, UserService>();
 
-//#if WINDOWS
-        //services.AddSingleton<IWindowManagerService, WinUIManagerService>();
-//#endif
+#if WINDOWS
+        services.AddSingleton<IWindowManagerService, WinUIManagerService>();
+#endif
 
         if (MauiAppConsts.IsDesktop)
         {

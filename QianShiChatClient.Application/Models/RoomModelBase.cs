@@ -10,7 +10,8 @@ public abstract partial class RoomModelBase : ObservableObject
     public string Id { get; init; }
     public int ToId { get; }
     public ChatMessageSendType SendType { get; }
-
+    [ObservableProperty]
+    private string _displayName = string.Empty;
     [ObservableProperty]
     private int _unreadCount;
     [ObservableProperty]

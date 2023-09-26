@@ -7,5 +7,6 @@ public partial class UserRoomModel : RoomModelBase
     {
         User = user;
         AvatarPath = user.Avatar;
+        DisplayName = user.NickName ?? "";
     }
 }

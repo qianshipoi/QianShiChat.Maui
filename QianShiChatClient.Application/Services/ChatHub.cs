@@ -1,6 +1,4 @@
-﻿using QianShiChatClient.Application.IServices;
-
-namespace QianShiChatClient.Application.Services;
+﻿namespace QianShiChatClient.Application.Services;
 
 public class ChatHub
 {

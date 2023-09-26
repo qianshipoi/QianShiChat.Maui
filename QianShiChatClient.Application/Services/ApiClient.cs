@@ -1,8 +1,4 @@
-﻿using QianShiChatClient.Application.IServices;
-
-using System.Threading;
-
-namespace QianShiChatClient.Application.Services;
+﻿namespace QianShiChatClient.Application.Services;
 
 public class ApiClient : IApiClient
 {

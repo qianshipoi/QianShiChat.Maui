@@ -7,5 +7,6 @@ public partial class GroupRoomModel : RoomModelBase
     {
         Group = group;
         AvatarPath = group.Avatar;
+        DisplayName = group.Name;
     }
 }

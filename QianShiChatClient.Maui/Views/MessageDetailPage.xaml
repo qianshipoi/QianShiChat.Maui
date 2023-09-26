@@ -5,10 +5,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:helpers="clr-namespace:QianShiChatClient.Maui.Helpers"
     xmlns:local="clr-namespace:QianShiChatClient.Maui"
-    xmlns:models="clr-namespace:QianShiChatClient.Maui.Models"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:vms="clr-namespace:QianShiChatClient.Maui.ViewModels"
-    Title="{Binding Session.User.NickName}"
+    Title="{Binding Room.DisplayName}"
     x:DataType="{x:Type vms:MessageDetailViewModel}"
     Shell.FlyoutBehavior="{OnPlatform Default=Disabled,
                                       WinUI=Locked}"
@@ -22,7 +21,7 @@
             <StackLayout
                 x:Name="MessageCantainer"
                 BindableLayout.ItemTemplateSelector="{StaticResource ChatMessageSelector}"
-                BindableLayout.ItemsSource="{Binding Session.Messages}" />
+                BindableLayout.ItemsSource="{Binding Room.Messages}" />
         </ScrollView>
         <Grid
             Grid.Row="1"
